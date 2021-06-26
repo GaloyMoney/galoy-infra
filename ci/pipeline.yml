@@ -1,0 +1,24 @@
+#@ load("@ytt:data", "data")
+
+jobs:
+- name: test
+  plan:
+  - in_parallel:
+    - { get: src, trigger: true }
+    - { get: pipeline-tasks }
+
+resources:
+- name: src
+  type: git
+  source:
+    ignore_paths: ["ci/*[^md]"]
+    uri: #@ data.values.git_uri
+    branch: #@ data.values.git_branch
+    private_key: #@ data.values.github_private_key
+- name: pipeline-tasks
+  type: git
+  source:
+    paths: [ci/tasks/*, Makefile]
+    uri: #@ data.values.git_uri
+    branch: #@ data.values.git_branch
+    private_key: #@ data.values.github_private_key

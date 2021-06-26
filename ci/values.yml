@@ -1,0 +1,5 @@
+#@data/values
+---
+git_uri: git@github.com:GaloyMoney/galoy-infra.git
+git_branch: ci
+github_private_key: ((github-ssh-key.private_key))
