@@ -1,5 +1,9 @@
 #@ load("@ytt:data", "data")
 
+#@ def pipeline_image():
+#@   return data.values.docker_registry + "/galoy-infra-pipeline"
+#@ end
+
 jobs:
 - name: build-pipeline-image
   serial: true
@@ -49,9 +53,10 @@ resources:
 - name: pipeline-image
   type: registry-image
   source:
+    tag: latest
     username: #@ data.values.docker_registry_user
     password: #@ data.values.docker_registry_password
-    repository: #@ data.values.docker_registry
+    repository: #@ pipeline_image()
 - name: pipeline-image-def
   type: git
   source:

@@ -3,6 +3,6 @@
 git_uri: git@github.com:GaloyMoney/galoy-infra.git
 git_branch: ci
 github_private_key: ((github-ssh-key.private_key))
-docker_registry: gcr.io/galoy-org
+docker_registry: us.gcr.io/galoy-org
 docker_registry_user: ((docker-creds.username))
 docker_registry_password: ((docker-creds.password))
