@@ -25,6 +25,12 @@ EOF
 
 export KUBE_CONFIG="~/.kube/config"
 
+sed -i'' "s/ref=.*\"/ref=$(cat .git/short_ref)\"/" bootstrap/main.tf
+
+echo RUNNING REF: $(cat .git/short_ref)
+cat bootstrap/main.tf
+
 terraform init
 export TF_VAR_name_prefix=testflight
+export TF_VAR_gcp_project=galoy-infra-testflight
 make bootstrap
