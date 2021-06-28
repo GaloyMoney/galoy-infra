@@ -28,11 +28,34 @@ jobs:
   - put: pipeline-image
     params:
       image: image/image.tar
-- name: gcp-testflight
+
+- name: bootstrap
+  serial_groups: [testflight]
   plan:
+  - put: testflight-lock
+    params: { claim: gcp-testflight }
   - in_parallel:
     - { get: src, trigger: true }
     - { get: pipeline-tasks }
+- name: cleanup
+  serial_groups: [testflight]
+  plan:
+  - in_parallel:
+    - { get: testflight-lock, passed: [bootstrap]}
+    - { get: src, passed: [bootstrap], trigger: true }
+  - put: testflight-lock
+    params: { release: testflight-lock }
+
+        #! - name: inception
+        #!   serial_groups: [testflight]
+        #!   plan:
+        #!   - in_parallel:
+        #!     - { get: src, passed: [bootstrap], trigger: true }
+        #!     - { get: pipeline-tasks }
+        #!     - { get: gcp-testflight, passed: [bootstrap] }
+        #!   - put: gcp-testflight
+        #!     resource: testflight-lock
+        #!     params: { release: gcp-testflight }
 
 resources:
 - name: src
@@ -63,4 +86,12 @@ resources:
     paths: [ci/image/Dockerfile]
     uri: #@ data.values.git_uri
     branch: #@ data.values.git_branch
+    private_key: #@ data.values.github_private_key
+
+- name: testflight-lock
+  type: pool
+  source:
+    uri: git@github.com:GaloyMoney/concourse-locks.git
+    branch: main
+    pool: infra-testflight
     private_key: #@ data.values.github_private_key
