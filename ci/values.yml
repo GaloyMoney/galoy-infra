@@ -6,3 +6,6 @@ github_private_key: ((github-ssh-key.private_key))
 docker_registry: us.gcr.io/galoy-org
 docker_registry_user: ((docker-creds.username))
 docker_registry_password: ((docker-creds.password))
+concourse_tf_kube_host:  ((tf-backend-creds.host))
+concourse_tf_kube_ca_cert:  ((tf-backend-creds.ca_cert))
+concourse_tf_kube_token:  ((tf-backend-creds.token))

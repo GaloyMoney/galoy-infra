@@ -4,6 +4,15 @@
 #@   return data.values.docker_registry + "/galoy-infra-pipeline"
 #@ end
 
+#@ def task_image_config():
+type: registry-image
+source:
+  username: #@ data.values.docker_registry_user
+  password: #@ data.values.docker_registry_password
+  repository: #@ pipeline_image()
+#@ end
+
+
 jobs:
 - name: build-pipeline-image
   serial: true
@@ -35,14 +44,40 @@ jobs:
   - put: testflight-lock
     params: { claim: gcp-testflight }
   - in_parallel:
-    - { get: src, trigger: true }
+    - { get: repo, trigger: true }
     - { get: pipeline-tasks }
+  - task: bootstrap
+    config:
+      platform: linux
+      image_resource: #@ task_image_config()
+      inputs:
+      - name: pipeline-tasks
+      - name: repo
+      params:
+        KUBE_HOST: #@ data.values.concourse_tf_kube_host
+        KUBE_CA_CERT: #@ data.values.concourse_tf_kube_ca_cert
+        KUBE_TOKEN: #@ data.values.concourse_tf_kube_token
+      run:
+        path: pipeline-tasks/ci/tasks/boostrap.sh
 - name: cleanup
   serial_groups: [testflight]
   plan:
   - in_parallel:
-    - { get: testflight-lock, passed: [bootstrap]}
-    - { get: src, passed: [bootstrap], trigger: true }
+    - { get: testflight-lock, passed: [bootstrap], trigger: true}
+    - { get: repo, passed: [bootstrap]}
+  - task: teardown-bootstrap
+    config:
+      platform: linux
+      image_resource: #@ task_image_config()
+      inputs:
+      - name: pipeline-tasks
+      - name: repo
+      params:
+        KUBE_HOST: #@ data.values.concourse_tf_kube_host
+        KUBE_CA_CERT: #@ data.values.concourse_tf_kube_ca_cert
+        KUBE_TOKEN: #@ data.values.concourse_tf_kube_token
+      run:
+        path: pipeline-tasks/ci/tasks/teardown-boostrap.sh
   - put: testflight-lock
     params: { release: testflight-lock }
 
@@ -58,7 +93,7 @@ jobs:
         #!     params: { release: gcp-testflight }
 
 resources:
-- name: src
+- name: repo
   type: git
   source:
     ignore_paths: ["ci/*[^md]"]

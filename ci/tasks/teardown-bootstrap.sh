@@ -26,4 +26,4 @@ export KUBE_CONFIG="~/.kube/config"
 
 terraform init
 export TF_VAR_name_prefix=testflight
-make bootstrap
+make teardown-bootstrap
