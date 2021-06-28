@@ -18,6 +18,7 @@ cat <<EOF >> bootstrap/main.tf
 terraform {
   backend "kubernetes" {
     secret_suffix = "testflight"
+    namespace = "concourse-tf"
   }
 }
 EOF

@@ -58,7 +58,7 @@ jobs:
         KUBE_CA_CERT: #@ data.values.concourse_tf_kube_ca_cert
         KUBE_TOKEN: #@ data.values.concourse_tf_kube_token
       run:
-        path: pipeline-tasks/ci/tasks/boostrap.sh
+        path: pipeline-tasks/ci/tasks/bootstrap.sh
 - name: cleanup
   serial_groups: [testflight]
   plan:
@@ -77,7 +77,7 @@ jobs:
         KUBE_CA_CERT: #@ data.values.concourse_tf_kube_ca_cert
         KUBE_TOKEN: #@ data.values.concourse_tf_kube_token
       run:
-        path: pipeline-tasks/ci/tasks/teardown-boostrap.sh
+        path: pipeline-tasks/ci/tasks/teardown-bootstrap.sh
   - put: testflight-lock
     params: { release: testflight-lock }
 
