@@ -2,13 +2,9 @@ FROM ubuntu
 
 RUN wget -O- https://carvel.dev/install.sh | bash
 
-ENV TERRAFORM_VERSION=1.0.0
-
-RUN curl https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip > terraform.zip \
-            && unzip terraform.zip \
-            && mv terraform /usr/local/bin/terraform \
-            && rm terraform.zip \
-            && terraform --help
+RUN curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add - \
+  && apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main" \
+  && apt-get update && apt-get install -y make jq terraform tree
 
 RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl \
             && chmod +x ./kubectl \
