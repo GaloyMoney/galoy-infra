@@ -7,4 +7,5 @@ variable "tf_state_bucket_location" {
 locals {
   name_prefix              = var.name_prefix
   tf_state_bucket_location = var.tf_state_bucket_location
+  project                  = var.gcp_project
 }
