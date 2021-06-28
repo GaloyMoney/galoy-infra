@@ -1,14 +1,91 @@
 #@ load("@ytt:data", "data")
 
+#@ def pipeline_image():
+#@   return data.values.docker_registry + "/galoy-infra-pipeline"
+#@ end
+
+#@ def task_image_config():
+type: registry-image
+source:
+  username: #@ data.values.docker_registry_user
+  password: #@ data.values.docker_registry_password
+  repository: #@ pipeline_image()
+#@ end
+
+
 jobs:
-- name: gcp-testflight
+- name: build-pipeline-image
+  serial: true
   plan:
+  - {get: pipeline-image-def, trigger: true}
+  - task: build
+    privileged: true
+    config:
+      platform: linux
+      image_resource:
+        type: registry-image
+        source:
+          repository: vito/oci-build-task
+      inputs:
+      - name: pipeline-image-def
+      outputs:
+      - name: image
+      params:
+        CONTEXT: pipeline-image-def/ci/image
+      run:
+        path: build
+  - put: pipeline-image
+    params:
+      image: image/image.tar
+
+- name: bootstrap
+  serial_groups: [testflight]
+  plan:
+  - put: testflight-lock
+    params: { claim: gcp-testflight }
   - in_parallel:
-    - { get: src, trigger: true }
+    - { get: repo, trigger: true }
     - { get: pipeline-tasks }
+  - task: bootstrap
+    config:
+      platform: linux
+      image_resource: #@ task_image_config()
+      inputs:
+      - name: pipeline-tasks
+      - name: repo
+      params:
+        GOOGLE_CREDENTIALS: #@ data.values.testflight_gcp_creds
+        KUBE_HOST: #@ data.values.concourse_tf_kube_host
+        KUBE_CA_CERT: #@ data.values.concourse_tf_kube_ca_cert
+        KUBE_TOKEN: #@ data.values.concourse_tf_kube_token
+      run:
+        path: pipeline-tasks/ci/tasks/bootstrap.sh
+- name: cleanup
+  serial_groups: [testflight]
+  plan:
+  - { get: testflight-lock, passed: [bootstrap], trigger: true}
+  - in_parallel:
+    - { get: repo, passed: [bootstrap], trigger: true}
+    - { get: pipeline-tasks }
+  - task: teardown
+    config:
+      platform: linux
+      image_resource: #@ task_image_config()
+      inputs:
+      - name: pipeline-tasks
+      - name: repo
+      params:
+        GOOGLE_CREDENTIALS: #@ data.values.testflight_gcp_creds
+        KUBE_HOST: #@ data.values.concourse_tf_kube_host
+        KUBE_CA_CERT: #@ data.values.concourse_tf_kube_ca_cert
+        KUBE_TOKEN: #@ data.values.concourse_tf_kube_token
+      run:
+        path: pipeline-tasks/ci/tasks/teardown.sh
+  - put: testflight-lock
+    params: { release: testflight-lock }
 
 resources:
-- name: src
+- name: repo
   type: git
   source:
     ignore_paths: ["ci/*[^md]"]
@@ -21,4 +98,27 @@ resources:
     paths: [ci/tasks/*, Makefile]
     uri: #@ data.values.git_uri
     branch: #@ data.values.git_branch
+    private_key: #@ data.values.github_private_key
+
+- name: pipeline-image
+  type: registry-image
+  source:
+    tag: latest
+    username: #@ data.values.docker_registry_user
+    password: #@ data.values.docker_registry_password
+    repository: #@ pipeline_image()
+- name: pipeline-image-def
+  type: git
+  source:
+    paths: [ci/image/Dockerfile]
+    uri: #@ data.values.git_uri
+    branch: #@ data.values.git_branch
+    private_key: #@ data.values.github_private_key
+
+- name: testflight-lock
+  type: pool
+  source:
+    uri: git@github.com:GaloyMoney/concourse-locks.git
+    branch: main
+    pool: infra-testflight
     private_key: #@ data.values.github_private_key
