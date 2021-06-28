@@ -2,9 +2,12 @@ FROM ubuntu
 
 RUN wget -O- https://carvel.dev/install.sh | bash
 
-RUN curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add - \
+RUN apt-get update && apt-get install -y \
+  make jq curl tree
+
+RUN curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add - \
   && apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main" \
-  && apt-get update && apt-get install -y make jq terraform tree
+  && apt-get update && apt-get install -y terraform
 
 RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl \
             && chmod +x ./kubectl \
