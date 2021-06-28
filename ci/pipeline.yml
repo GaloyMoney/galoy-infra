@@ -1,6 +1,29 @@
 #@ load("@ytt:data", "data")
 
 jobs:
+- name: build-pipeline-image
+  serial: true
+  plan:
+  - {get: pipeline-image-def, trigger: true}
+  - task: build
+    privileged: true
+    config:
+      platform: linux
+      image_resource:
+        type: registry-image
+        source:
+          repository: vito/oci-build-task
+      inputs:
+      - name: pipeline-image-def
+      outputs:
+      - name: image
+      params:
+        CONTEXT: pipeline-image-def/ci/image
+      run:
+        path: build
+  - put: pipeline-image
+    params:
+      image: image/image.tar
 - name: gcp-testflight
   plan:
   - in_parallel:
@@ -19,6 +42,20 @@ resources:
   type: git
   source:
     paths: [ci/tasks/*, Makefile]
+    uri: #@ data.values.git_uri
+    branch: #@ data.values.git_branch
+    private_key: #@ data.values.github_private_key
+
+- name: pipeline-image
+  type: registry-image
+  source:
+    username: #@ data.values.docker_registry_user
+    password: #@ data.values.docker_registry_password
+    repository: #@ data.values.docker_registry
+- name: pipeline-image-def
+  type: git
+  source:
+    paths: [ci/image/Dockerfile]
     uri: #@ data.values.git_uri
     branch: #@ data.values.git_branch
     private_key: #@ data.values.github_private_key
