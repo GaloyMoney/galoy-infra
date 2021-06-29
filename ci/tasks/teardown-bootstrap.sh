@@ -25,6 +25,6 @@ EOF
 
 export KUBE_CONFIG="~/.kube/config"
 
-terraform init
 export TF_VAR_name_prefix=testflight
+export TF_VAR_gcp_project=galoy-infra-testflight
 make teardown-bootstrap
