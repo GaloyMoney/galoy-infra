@@ -28,8 +28,6 @@ export KUBE_CONFIG="~/.kube/config"
 
 sed -i'' "s/ref=.*\"/ref=${git_ref}\"/" bootstrap/main.tf
 
-cat bootstrap/main.tf
-
 export TF_VAR_name_prefix=testflight
 export TF_VAR_gcp_project=galoy-infra-testflight
 make bootstrap
