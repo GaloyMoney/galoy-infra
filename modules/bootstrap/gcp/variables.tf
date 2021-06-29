@@ -3,6 +3,9 @@ variable "gcp_project" {}
 variable "tf_state_bucket_location" {
   default = "US"
 }
+variable "enable_services" {
+  default = true
+}
 
 locals {
   name_prefix              = var.name_prefix
