@@ -9,5 +9,5 @@ module "bootstrap" {
 
   name_prefix = var.name_prefix
   gcp_project = var.gcp_project
-  enable_services = enable_services
+  enable_services = var.enable_services
 }
