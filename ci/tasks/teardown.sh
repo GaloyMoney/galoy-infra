@@ -22,4 +22,4 @@ update_examples_git_ref
 make init
 make teardown
 
-make_commit "Bump modules to '${GIT_REF}' in examples"
+make_commit "Bump modules to '${MODULES_GIT_REF}' in examples"
