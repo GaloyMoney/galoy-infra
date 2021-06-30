@@ -13,6 +13,7 @@ EOF
 }
 
 function update_examples_git_ref() {
+  echo "Bumping examples to '${GIT_REF}'"
   sed -i'' "s/ref=.*\"/ref=${GIT_REF}\"/" bootstrap/main.tf
 }
 
