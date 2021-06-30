@@ -13,6 +13,11 @@ EOF
 }
 
 function update_examples_git_ref() {
+  if [[ "${MODULES_GIT_REF}" == "" ]] {
+    echo "MODULES_GIT_REF is empty"
+    exit 1
+  }
+
   echo "Bumping examples to '${MODULES_GIT_REF}'"
   sed -i'' "s/ref=.*\"/ref=${MODULES_GIT_REF}\"/" bootstrap/main.tf
 }
