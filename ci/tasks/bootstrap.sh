@@ -18,5 +18,7 @@ terraform {
 }
 EOF
 
+update_examples_git_ref
+
 make init
 make bootstrap

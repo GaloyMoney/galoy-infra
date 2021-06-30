@@ -77,6 +77,8 @@ jobs:
       inputs:
       - name: pipeline-tasks
       - name: repo
+      outputs: 
+      - name: repo
       params:
         GOOGLE_CREDENTIALS: #@ data.values.testflight_gcp_creds
         KUBE_HOST: #@ data.values.concourse_tf_kube_host
@@ -85,8 +87,13 @@ jobs:
         TF_VAR_name_prefix: testflight
         TF_VAR_gcp_project: galoy-infra-testflight
         TF_VAR_enable_services: false
+        BRANCH: #@ data.values.git_branch
       run:
         path: pipeline-tasks/ci/tasks/teardown.sh
+  - put: repo
+    params:
+      repository: repo
+      rebase: true
   - put: testflight-lock
     params: { release: testflight-lock }
 
