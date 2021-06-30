@@ -5,7 +5,7 @@ variable "enable_services" {
 }
 
 module "bootstrap" {
-  source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/bootstrap/gcp?ref=fc29919"
+  source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/bootstrap/gcp?ref=d09002b"
 
   name_prefix = var.name_prefix
   gcp_project = var.gcp_project
