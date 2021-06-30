@@ -6,6 +6,8 @@ source pipeline-tasks/ci/tasks/helpers.sh
 
 pushd repo/examples/gcp
 
+init_kubeconfig
+
 cat <<EOF >> bootstrap/main.tf
 
 terraform {
