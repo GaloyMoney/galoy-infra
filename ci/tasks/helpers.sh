@@ -1,4 +1,4 @@
-export GIT_REF="$(cat repo/.git/short_ref)"
+export MODULES_GIT_REF="$(cat modules/.git/short_ref)"
 export KUBE_CONFIG="~/.kube/config"
 
 function init_kubeconfig() {
@@ -13,8 +13,8 @@ EOF
 }
 
 function update_examples_git_ref() {
-  echo "Bumping examples to '${GIT_REF}'"
-  sed -i'' "s/ref=.*\"/ref=${GIT_REF}\"/" bootstrap/main.tf
+  echo "Bumping examples to '${MODULES_GIT_REF}'"
+  sed -i'' "s/ref=.*\"/ref=${MODULES_GIT_REF}\"/" bootstrap/main.tf
 }
 
 function make_commit() {

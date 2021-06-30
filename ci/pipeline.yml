@@ -44,7 +44,8 @@ jobs:
   - put: testflight-lock
     params: { claim: gcp-testflight }
   - in_parallel:
-    - { get: repo, trigger: true }
+    - { get: modules, trigger: true}
+    - { get: repo }
     - { get: pipeline-tasks }
   - task: bootstrap
     config:
@@ -66,9 +67,10 @@ jobs:
 - name: cleanup
   serial_groups: [testflight]
   plan:
-  - { get: testflight-lock, passed: [bootstrap], trigger: true}
+  - { get: testflight-lock, passed: [bootstrap] }
   - in_parallel:
-    - { get: repo, passed: [bootstrap], trigger: true}
+    - { get: modules, passed: [bootstrap], trigger: true}
+    - { get: repo, passed: [bootstrap] }
     - { get: pipeline-tasks }
   - task: teardown
     config:
@@ -102,6 +104,13 @@ resources:
   type: git
   source:
     ignore_paths: ["ci/*[^md]"]
+    uri: #@ data.values.git_uri
+    branch: #@ data.values.git_branch
+    private_key: #@ data.values.github_private_key
+- name: modules
+  type: git
+  source:
+    paths: ["modules"]
     uri: #@ data.values.git_uri
     branch: #@ data.values.git_branch
     private_key: #@ data.values.github_private_key
