@@ -11,10 +11,3 @@ module "bootstrap" {
   gcp_project = var.gcp_project
   enable_services = var.enable_services
 }
-
-terraform {
-  backend "kubernetes" {
-    secret_suffix = "testflight"
-    namespace = "concourse-tf"
-  }
-}

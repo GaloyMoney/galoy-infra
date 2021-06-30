@@ -8,7 +8,7 @@ pushd repo/examples/gcp
 
 init_kubeconfig
 
-cat <<EOF >> bootstrap/added-in-ci.tf
+cat <<EOF > bootstrap/added-in-ci.tf
 terraform {
   backend "kubernetes" {
     secret_suffix = "testflight"
