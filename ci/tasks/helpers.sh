@@ -35,6 +35,12 @@ EOF
   popd
 }
 
+function write_users() {
+   echo ${TESTFLIGHT_ADMINS} | \
+     jq --arg sa "$(cat ${CI_ROOT}/gcloud-creds.json | jq -r '.client_email')" \
+     '{ users: [ .[] | { id: ., inception: true }, { id: "serviceAccount:$sa", inception: true } ]}' > inception/users.auto.tfvars.json
+}
+
 function cleanup_inception_key() {
   pushd bootstrap
   inception_email=$(terraform output inception_sa | jq -r)

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -eu
 
 pushd bootstrap
 
@@ -29,6 +29,8 @@ terraform {
 EOF
 
 terraform init
+terraform state show module.inception.google_storage_bucket.tf_state || \
+  terraform import module.inception.google_storage_bucket.tf_state ${tf_state_bucket_name}
 terraform apply \
   -target module.inception.google_project_iam_custom_role.inception_make \
   -target module.inception.google_project_iam_custom_role.inception_destroy \

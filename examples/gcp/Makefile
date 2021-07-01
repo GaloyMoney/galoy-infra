@@ -12,12 +12,14 @@ inception:
 
 destroy-inception:
 	cd inception \
+		&& $(TF) state rm module.inception.google_storage_bucket.tf_state \
+		&& $(TF) state rm module.inception.google_storage_bucket_iam_policy.policy \
 		&& $(TF) destroy
 
 destroy-bootstrap:
 	cd bootstrap \
 		&& $(TF) destroy
 
-teardown: destory-inception destroy-bootstrap
+teardown: destroy-inception destroy-bootstrap
 
 .PHONY: bootstrap inception

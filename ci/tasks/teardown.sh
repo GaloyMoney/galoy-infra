@@ -12,11 +12,11 @@ init_gcloud
 init_kubeconfig
 init_bootstrap
 
+write_users
+
 bin/prep-inception.sh
 
 echo yes | GOOGLE_CREDENTIALS=$(cat inception-sa-creds.json) make destroy-inception
-echo yes | TF_VAR_tf_state_bucket_force_destroy=true \
-  make destroy-bootstrap
+echo yes | TF_VAR_tf_state_bucket_force_destroy=true make destroy-bootstrap
 
-rm inception/terraform.tf
 make_commit "Bump modules to '${MODULES_GIT_REF}' in examples"

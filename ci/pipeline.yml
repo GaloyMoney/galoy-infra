@@ -57,6 +57,7 @@ jobs:
       - name: modules
       params:
         GOOGLE_CREDENTIALS: #@ data.values.testflight_gcp_creds
+        TESTFLIGHT_ADMINS: #@ data.values.testflight_admins
         KUBE_HOST: #@ data.values.concourse_tf_kube_host
         KUBE_CA_CERT: #@ data.values.concourse_tf_kube_ca_cert
         KUBE_TOKEN: #@ data.values.concourse_tf_kube_token
@@ -114,6 +115,7 @@ jobs:
       - name: repo
       params:
         GOOGLE_CREDENTIALS: #@ data.values.testflight_gcp_creds
+        TESTFLIGHT_ADMINS: #@ data.values.testflight_admins
         KUBE_HOST: #@ data.values.concourse_tf_kube_host
         KUBE_CA_CERT: #@ data.values.concourse_tf_kube_ca_cert
         KUBE_TOKEN: #@ data.values.concourse_tf_kube_token
