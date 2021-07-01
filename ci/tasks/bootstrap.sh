@@ -13,3 +13,5 @@ init_kubeconfig
 init_bootstrap
 
 echo yes | make bootstrap
+
+cleanup_inception_key

@@ -13,6 +13,7 @@ init_kubeconfig
 init_bootstrap
 
 bin/prep-inception.sh
+export GOOGLE_CREDENTIALS=$(cat inception-sa-creds.json)
 
 echo yes | make destroy-inception
 echo yes | TF_VAR_tf_state_bucket_force_destroy=true make destroy-bootstrap

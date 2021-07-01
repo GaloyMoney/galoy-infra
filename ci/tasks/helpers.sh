@@ -34,12 +34,12 @@ EOF
   popd
 }
 
-function init_tf() {
-  for folder in "$@"; do
-    pushd $folder
-    terraform init
-    popd
-  done
+function cleanup_inception_key() {
+  pushd bootstrap
+  inception_email=$(terraform output inception_sa | jq -r)
+  popd
+  key_id="$(cat ./inception-sa-creds.json | jq -r '.private_key_id')"
+  gcloud iam service-accounts keys delete "${key_id}" --iam-account="${inception_email}"
 }
 
 function update_examples_git_ref() {
