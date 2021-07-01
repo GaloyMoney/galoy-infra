@@ -4,7 +4,7 @@ set -ex
 
 pushd bootstrap
 
-terraform output | sed 'd/tf_state_bucket_name/' > ../inception/terraform.tfvars
+terraform output | sed '/tf_state_bucket_name/d' > ../inception/terraform.tfvars
 
 inception_email=$(terraform output inception_sa | jq -r)
 tf_state_bucket_name=$(terraform output tf_state_bucket_name | jq -r)
