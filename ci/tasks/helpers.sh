@@ -13,7 +13,7 @@ EOF
 }
 
 function init_bootstrap() {
-  cd bootstrap
+  pushd bootstrap
   cat <<EOF > override.tf
 terraform {
   backend "kubernetes" {
@@ -24,6 +24,7 @@ terraform {
 EOF
 
   terraform init
+  popd
 }
 
 function init_tf() {
