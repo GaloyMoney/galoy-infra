@@ -12,7 +12,7 @@ resource "google_service_account" "inception" {
 resource "google_project_iam_custom_role" "bootstrap" {
   project     = local.project
   role_id     = replace("${local.name_prefix}-bootstrap", "-", "_")
-  title       = "Bootstrap"
+  title       = "Bootstrap for ${local.name_prefix}"
   description = "Role for bootstrapping inception tf files"
   permissions = [
     "iam.serviceAccounts.actAs",
@@ -24,6 +24,8 @@ resource "google_project_iam_custom_role" "bootstrap" {
     "iam.roles.get",
     "iam.roles.update",
     "iam.roles.undelete",
+    "storage.buckets.get",
+    "compute.projects.get",
     "resourcemanager.projects.getIamPolicy",
     "resourcemanager.projects.setIamPolicy",
   ]

@@ -1,0 +1,71 @@
+resource "google_project_iam_custom_role" "inception_make" {
+  project = local.project
+  role_id     = replace("${local.name_prefix}-inception-make", "-", "_")
+  title       = "Create Inception"
+  description = "Role for executing inception tf files"
+  permissions = [
+    "compute.addresses.create",
+    "compute.addresses.get",
+    "compute.addresses.use",
+    "compute.disks.create",
+    "compute.firewalls.create",
+    "compute.firewalls.get",
+    "compute.instances.addAccessConfig",
+    "compute.instances.create",
+    "compute.instances.get",
+    "compute.instances.setMetadata",
+    "compute.instances.setServiceAccount",
+    "compute.instances.setTags",
+    "compute.instances.getIamPolicy",
+    "compute.instances.setIamPolicy",
+    "compute.networks.create",
+    "compute.networks.get",
+    "compute.networks.updatePolicy",
+    "compute.subnetworks.create",
+    "compute.subnetworks.get",
+    "compute.subnetworks.use",
+    "compute.subnetworks.useExternalIp",
+    "compute.zones.get",
+    "iam.serviceAccounts.actAs",
+    "iam.serviceAccounts.create",
+    "iam.serviceAccounts.get",
+    "iam.serviceAccounts.getIamPolicy",
+    "iam.serviceAccounts.setIamPolicy",
+    "resourcemanager.projects.getIamPolicy",
+    "resourcemanager.projects.setIamPolicy",
+    "storage.buckets.create",
+    "storage.buckets.update",
+    "storage.buckets.get",
+    "storage.buckets.getIamPolicy",
+    "storage.buckets.setIamPolicy",
+  ]
+}
+
+resource "google_project_iam_custom_role" "inception_destroy" {
+  project = local.project
+  role_id     = replace("${local.name_prefix}-inception-destroy", "-", "_")
+  title       = "Destroy Inception"
+  description = "Role for destroying inception environment"
+  permissions = [
+    "compute.addresses.delete",
+    "compute.firewalls.delete",
+    "compute.instances.delete",
+    "compute.instances.deleteAccessConfig",
+    "compute.networks.delete",
+    "compute.subnetworks.delete",
+    "iam.serviceAccounts.delete",
+    "iam.roles.delete",
+    "storage.buckets.delete",
+  ]
+}
+
+resource "google_project_iam_member" "inception_make" {
+  project = local.project
+  role   = google_project_iam_custom_role.inception_make.id
+  member = "serviceAccount:${var.inception_sa}"
+}
+resource "google_project_iam_member" "inception_destroy" {
+  project = local.project
+  role   = google_project_iam_custom_role.inception_destroy.id
+  member = "serviceAccount:${var.inception_sa}"
+}
