@@ -8,7 +8,7 @@ RUN apt-get update \
   tzdata curl make git build-essential lsb-release \
   apt-transport-https ca-certificates gnupg \
   software-properties-common \
-  vim \
+  vim jq \
   && apt-get clean all
 
 RUN curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add - \
