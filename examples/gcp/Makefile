@@ -12,11 +12,9 @@ inception:
 
 destroy-inception:
 	cd inception \
-		&& $(TF) state show module.inception.google_storage_bucket.tf_state \
-		|| $(TF) state rm module.inception.google_storage_bucket.tf_state
+		&& $(TF) state rm module.inception.google_storage_bucket.tf_state || true
 	cd inception \
-		&& $(TF) state show module.inception.google_storage_bucket_iam_policy.policy \
-		|| $(TF) state rm module.inception.google_storage_bucket_iam_policy.policy
+		&& $(TF) state rm module.inception.google_storage_bucket_iam_policy.policy || true
 	cd inception && $(TF) destroy
 
 destroy-bootstrap:
