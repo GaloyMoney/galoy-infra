@@ -12,7 +12,6 @@ inception:
 
 destroy-inception:
 	cd inception \
-		&& $(TF) state rm module.inception.google_storage_bucket.tf_state \
 		&& $(TF) destroy
 
 destroy-bootstrap:

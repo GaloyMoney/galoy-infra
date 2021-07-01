@@ -1,12 +1,3 @@
-resource "google_storage_bucket" "tf_state" {
-  name     = "${local.name_prefix}-tf-state"
-  project  = local.project
-  location = local.tf_state_bucket_location
-  versioning {
-    enabled = true
-  }
-}
-
 # resource "google_project_iam_custom_role" "list_objects" {
 #   role_id     = replace("${local.name_prefix}-objects-list", "-", "_")
 #   title       = "List bucket Objects"

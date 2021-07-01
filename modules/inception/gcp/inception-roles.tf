@@ -1,5 +1,5 @@
 resource "google_project_iam_custom_role" "inception_make" {
-  project = local.project
+  project     = local.project
   role_id     = replace("${local.name_prefix}-inception-make", "-", "_")
   title       = "Create Inception"
   description = "Role for executing inception tf files"
@@ -42,7 +42,7 @@ resource "google_project_iam_custom_role" "inception_make" {
 }
 
 resource "google_project_iam_custom_role" "inception_destroy" {
-  project = local.project
+  project     = local.project
   role_id     = replace("${local.name_prefix}-inception-destroy", "-", "_")
   title       = "Destroy Inception"
   description = "Role for destroying inception environment"
@@ -61,11 +61,11 @@ resource "google_project_iam_custom_role" "inception_destroy" {
 
 resource "google_project_iam_member" "inception_make" {
   project = local.project
-  role   = google_project_iam_custom_role.inception_make.id
-  member = "serviceAccount:${var.inception_sa}"
+  role    = google_project_iam_custom_role.inception_make.id
+  member  = "serviceAccount:${var.inception_sa}"
 }
 resource "google_project_iam_member" "inception_destroy" {
   project = local.project
-  role   = google_project_iam_custom_role.inception_destroy.id
-  member = "serviceAccount:${var.inception_sa}"
+  role    = google_project_iam_custom_role.inception_destroy.id
+  member  = "serviceAccount:${var.inception_sa}"
 }
