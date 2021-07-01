@@ -1,6 +1,6 @@
 terraform {
   backend "gcs" {
-    bucket = "jcarter-dev-tf-state"
-    prefix = "jcarter-dev/inception"
+    bucket = "testflight-tf-state"
+    prefix = "testflight/inception"
   }
 }

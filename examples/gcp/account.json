@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "galoy-infra-testflight",
+  "private_key_id": "3826cacea7ca3e38e144d5a641eef7723c3f9fbd",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDHamoYsQniFsIY\nG5YL3fE9rPrCSQ5vKdzcPJ5NqzzcKkMx13GjFlh9Soe9XmJtjAhk30N1Gg3DLLdh\nm4mnSTUKkaliTH0epRJtHOBhEK1tOgzlHxPUHk05g9VxMjwunXwU6vUluMq2TvuL\nccbEARuPZ8MEaXZh+QNTLoztxusEykQT407+coUMmw8Xd9dh3mIQy2LUn38DvgM0\n+OK/O0mAxFlra8JcXCCy+KGG+vqfrA7rv7p03RFbvkJsjzsDv1gYIWuMyf98bCDY\nck9OcpBDkkbvewB1zUsTFFSsKwFRs7ASMlOhyjNo772qM6Qx8hXim/FSrBON5fkN\nWkJCMUYHAgMBAAECggEAUiojevb/JnvQD1TWdx9EdfAfBgxJ+T2bddc4NrJWijST\nqSam+NaNMVqTIVCRZ6eqEb34MnjAsOlsybfneNjuFOO9kfYIG6dSN0kNnpDblES1\n6XXrmpu9n/QU7uYO6/oRlSDWT2ubgpB6jpMbnckDDQxoyxmVIHsUhqKIiLRMQ5VF\nQvjKH7FXV3VrlTHEAARdUlT1SXjV1DRCSUGBY/vMx8qctbVblQXOOfQKYJqsF3o+\nSfhxr+9HOLBtW7UnPi3KVG5llQhXkP7JynCkEzNopZ8rGF0xS+uKKRpey3SiZQxT\ndh78td4jHSvm75sH0psm8e2EtmVMAOw8hg2uS+NmgQKBgQDoIW17JXUfON1VwaR+\nheKxE34SEtIZEsxbe9bofmv3K348UNwmfq0fLX9tWBuxWy2JBql9ZCugnai0HggC\nmFGu0FZ/0dqM8HZxxmIIciDIheWSi9tDclkzceOwAfW4POR4k0C/KpxnhivvbS/L\nzkGZiEgXcOMVEDbzW2WI4wmrRwKBgQDb68306Si2qL16IgVuLGIa76XFfrVLzaNV\nLBW7cNEidffZFo9BXLe5v1IL6eH2aqsyb8dRNSBx/BlY/M/Bb+ceovWEKXV53zQ4\nA1/Sevq0NgCBPLkaCM1P1UBhtzrtgNxLgTvSoU1H9nSfwq4NhWvGnyuGV1x/DY5v\nDGNIEz9vQQKBgCL9vvocOF5/fOXLbddgqT5WGN/ylFcRPVrg/RFI1U+J79p5ueXX\nnJMhkZ7S9EG049VO+sebDPSGL4MPL9fsTAvU/eUApjgumzwlUmvBgG2ZuXRwvpmZ\nKBcYKOFEOl0OWMZQNCdc7fyw/fh2dgj7y2mwYGWgL6riKdZfRZvv1WpLAoGAYuYI\nGLtBs+LuUp46EvGirLpYshfpL82qRgMtQr3ZTsX+T4H1qk8n0EBZhUIIe+g8VNIv\nsDVUAe5896e5RiQsq3pdLrH2Qng943KhBOaJF8GxOG02UJ7ktaIQ8eCUf3oTl2Dm\npjIjrtkGWVITM8FsVkX+LMvcrMZL52SKwT7mqAECgYBcIepECFH7X6AmXEnflf+y\ns7uAmJ+EC0mllwL0f8JKSdedi0IYH8Cdc35ecqf0a4IZMJQmFhCtJBXyVLT+Vbgl\nVdTcpk59X1ftQuHb8PcAg2SNwsn1cGe0puWdeMvwanH+THjjXUDOHkzGDWLemJqg\n2p1XL+4NZWRqg90OZIrbPA==\n-----END PRIVATE KEY-----\n",
+  "client_email": "concourse-testflight@galoy-infra-testflight.iam.gserviceaccount.com",
+  "client_id": "100935327318741266172",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/concourse-testflight%40galoy-infra-testflight.iam.gserviceaccount.com"
+}
+
