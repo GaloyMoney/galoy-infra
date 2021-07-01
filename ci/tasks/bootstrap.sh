@@ -12,6 +12,7 @@ init_gcloud
 init_kubeconfig
 init_bootstrap
 
-echo yes | make bootstrap
+echo yes | TF_VAR_tf_state_bucket_force_destroy=true \
+  make bootstrap
 
 cleanup_inception_key
