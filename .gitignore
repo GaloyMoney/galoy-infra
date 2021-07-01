@@ -31,4 +31,6 @@ override.tf.json
 
 .terraform.lock.hcl
 
+terraform.tf
+
 *-creds.json
