@@ -1,6 +1,8 @@
 variable "name_prefix" {}
 variable "tf_state_bucket_name" {}
-variable "tf_state_bucket_location" {}
+variable "tf_state_bucket_location" {
+  default = "US"
+}
 variable "gcp_project" {}
 variable "inception_sa" {}
 variable "users" {
@@ -11,8 +13,8 @@ variable "users" {
 }
 
 module "inception" {
-  # source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/inception/gcp?ref=5de581a"
-  source = "../../../modules/inception/gcp"
+  source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/inception/gcp?ref=5de581a"
+  # source = "../../../modules/inception/gcp"
 
   name_prefix          = var.name_prefix
   gcp_project          = var.gcp_project
