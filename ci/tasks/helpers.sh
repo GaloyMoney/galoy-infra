@@ -1,6 +1,13 @@
 export MODULES_GIT_REF="$(cat modules/.git/short_ref)"
 export KUBE_CONFIG="~/.kube/config"
 
+function init_gcloud() {
+  cat <<EOF > ./account.json
+${GOOGLE_CREDENTIALS}
+EOF
+  gcloud auth activate-service-account --key-file ./account.json
+}
+
 function init_kubeconfig() {
   cat <<EOF > ca.cert
 ${KUBE_CA_CERT}

@@ -8,6 +8,7 @@ pushd repo/examples/gcp
 
 update_examples_git_ref
 
+init_gcloud
 init_kubeconfig
 init_bootstrap
 
