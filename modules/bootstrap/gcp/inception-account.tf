@@ -24,6 +24,7 @@ resource "google_project_iam_custom_role" "bootstrap" {
     "iam.roles.get",
     "iam.roles.update",
     "iam.roles.undelete",
+    "iam.roles.delete",
     "storage.buckets.get",
     "compute.projects.get",
     "resourcemanager.projects.getIamPolicy",
