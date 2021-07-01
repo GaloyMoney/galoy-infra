@@ -1,19 +1,20 @@
 export MODULES_GIT_REF="$(cat modules/.git/short_ref)"
 export KUBE_CONFIG="~/.kube/config"
+export CI_ROOT="$(pwd)"
 
 function init_gcloud() {
-  cat <<EOF > ./account.json
+  cat <<EOF > ${CI_ROOT}/gcloud-creds.json
 ${GOOGLE_CREDENTIALS}
 EOF
-  gcloud auth activate-service-account --key-file ./account.json
+  gcloud auth activate-service-account --key-file ${CI_ROOT}/gcloud-creds.json
 }
 
 function init_kubeconfig() {
-  cat <<EOF > ca.cert
+  cat <<EOF > ${CI_ROOT}/ca.cert
 ${KUBE_CA_CERT}
 EOF
   
-  kubectl config set-cluster tf-backend --server=${KUBE_HOST} --certificate-authority="$(pwd)/ca.cert"
+  kubectl config set-cluster tf-backend --server=${KUBE_HOST} --certificate-authority="${CI_ROOT}/ca.cert"
   kubectl config set-credentials tf-backend-user --token=${KUBE_TOKEN}
   kubectl config set-context tf-backend --cluster=tf-backend --user=tf-backend-user --namespace tf-backend
   kubectl config use-context tf-backend
