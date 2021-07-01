@@ -65,6 +65,35 @@ jobs:
         TF_VAR_enable_services: false
       run:
         path: pipeline-tasks/ci/tasks/bootstrap.sh
+
+#! - name: inception
+#!   serial_groups: [testflight]
+#!   plan:
+#!   - put: testflight-lock
+#!     params: { claim: gcp-testflight }
+#!   - in_parallel:
+#!     - { get: modules, trigger: true}
+#!     - { get: repo }
+#!     - { get: pipeline-tasks }
+#!   - task: bootstrap
+#!     config:
+#!       platform: linux
+#!       image_resource: #@ task_image_config()
+#!       inputs:
+#!       - name: pipeline-tasks
+#!       - name: repo
+#!       - name: modules
+#!       params:
+#!         GOOGLE_CREDENTIALS: #@ data.values.testflight_gcp_creds
+#!         KUBE_HOST: #@ data.values.concourse_tf_kube_host
+#!         KUBE_CA_CERT: #@ data.values.concourse_tf_kube_ca_cert
+#!         KUBE_TOKEN: #@ data.values.concourse_tf_kube_token
+#!         TF_VAR_name_prefix: testflight
+#!         TF_VAR_gcp_project: galoy-infra-testflight
+#!         TF_VAR_enable_services: false
+#!       run:
+#!         path: pipeline-tasks/ci/tasks/bootstrap.sh
+
 - name: cleanup
   serial_groups: [testflight]
   plan:

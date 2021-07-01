@@ -6,20 +6,14 @@ source pipeline-tasks/ci/tasks/helpers.sh
 
 pushd repo/examples/gcp
 
-init_kubeconfig
-
-cat <<EOF > bootstrap/added-in-ci.tf
-terraform {
-  backend "kubernetes" {
-    secret_suffix = "testflight"
-    namespace = "concourse-tf"
-  }
-}
-EOF
-
 update_examples_git_ref
 
-make init
-make teardown
+init_kubeconfig
+init_bootstrap
+
+bin/prep-inception.sh
+
+echo yes | make destroy-inception
+echo yes | TF_VAR_tf_state_bucket_force_destroy=true make destroy-bootstrap
 
 make_commit "Bump modules to '${MODULES_GIT_REF}' in examples"

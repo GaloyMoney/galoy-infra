@@ -12,6 +12,28 @@ EOF
   kubectl config use-context tf-backend
 }
 
+function init_bootstrap() {
+  cd bootstrap
+  cat <<EOF > override.tf
+terraform {
+  backend "kubernetes" {
+    secret_suffix = "testflight"
+    namespace = "concourse-tf"
+  }
+}
+EOF
+
+  terraform init
+}
+
+function init_tf() {
+  for folder in "$@"; do
+    pushd $folder
+    terraform init
+    popd
+  done
+}
+
 function update_examples_git_ref() {
   if [[ "${MODULES_GIT_REF}" == "" ]]; then
     echo "MODULES_GIT_REF is empty"
@@ -20,6 +42,7 @@ function update_examples_git_ref() {
 
   echo "Bumping examples to '${MODULES_GIT_REF}'"
   sed -i'' "s/ref=.*\"/ref=${MODULES_GIT_REF}\"/" bootstrap/main.tf
+  sed -i'' "s/ref=.*\"/ref=${MODULES_GIT_REF}\"/" inception/main.tf
 }
 
 function make_commit() {

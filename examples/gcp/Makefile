@@ -1,15 +1,24 @@
 TF:=terraform
 
-init:
-	cd bootstrap \
-		&& $(TF) init
-
 bootstrap:
 	cd bootstrap \
-		&& TF_VAR_name_prefix=$(TF_VAR_name_prefix) $(TF) apply -auto-approve
+		&& $(TF) init \
+		&& $(TF) apply
+	bin/prep-inception.sh
 
-teardown:
+inception:
+	cd inception \
+		&& $(TF) apply
+
+destroy-inception:
+	cd inception \
+		&& $(TF) state rm module.inception.google_storage_bucket.tf_state \
+		&& $(TF) destroy
+
+destroy-bootstrap:
 	cd bootstrap \
-		&& $(TF) destroy -auto-approve
+		&& $(TF) destroy
 
-.PHONY: bootstrap
+teardown: destory-inception destroy-bootstrap
+
+.PHONY: bootstrap inception
