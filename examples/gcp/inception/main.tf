@@ -4,7 +4,7 @@ variable "gcp_project" {}
 variable "inception_sa" {}
 
 module "inception" {
-  source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/inception/gcp?ref=54d3172"
+  source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/inception/gcp?ref=5de581a"
   # source = "../../../modules/inception/gcp"
 
   name_prefix          = var.name_prefix
