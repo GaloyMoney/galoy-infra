@@ -94,7 +94,7 @@ jobs:
         path: pipeline-tasks/ci/tasks/inception.sh
 
 - name: platform
-  serial_groups: [inception]
+  serial_groups: [testflight]
   plan:
   - { get: testflight-lock, passed: [inception] }
   - in_parallel:
@@ -116,10 +116,10 @@ jobs:
 - name: cleanup
   serial_groups: [testflight]
   plan:
-  - { get: testflight-lock, passed: [inception] }
+  - { get: testflight-lock, passed: [platform] }
   - in_parallel:
-    - { get: modules, passed: [inception], trigger: true}
-    - { get: repo, passed: [inception] }
+    - { get: modules, passed: [platform], trigger: true}
+    - { get: repo, passed: [platform] }
     - { get: pipeline-tasks }
   - task: teardown
     config:
