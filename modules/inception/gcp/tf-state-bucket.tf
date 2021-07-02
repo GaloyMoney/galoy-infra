@@ -39,8 +39,8 @@ data "google_iam_policy" "tf_state_access" {
     ]
 
     condition {
-      title      = "${local.project}/inception"
-      expression = "resource.name.startsWith(\"projects/_/buckets/${google_storage_bucket.tf_state.name}/objects/${local.project}/inception\")"
+      title      = "${local.name_prefix}/inception"
+      expression = "resource.name.startsWith(\"projects/_/buckets/${google_storage_bucket.tf_state.name}/objects/${local.name_prefix}/inception\")"
     }
   }
 
@@ -51,8 +51,8 @@ data "google_iam_policy" "tf_state_access" {
     ]
 
     condition {
-      title      = "${local.project}/platform"
-      expression = "resource.name.startsWith(\"projects/_/buckets/${google_storage_bucket.tf_state.name}/objects/${local.project}/platform\")"
+      title      = "${local.name_prefix}/platform"
+      expression = "resource.name.startsWith(\"projects/_/buckets/${google_storage_bucket.tf_state.name}/objects/${local.name_prefix}/platform\")"
     }
   }
 
@@ -63,8 +63,8 @@ data "google_iam_policy" "tf_state_access" {
     ]
 
     condition {
-      title      = "${local.project}/services"
-      expression = "resource.name.startsWith(\"projects/_/buckets/${google_storage_bucket.tf_state.name}/objects/${local.project}/services\")"
+      title      = "${local.name_prefix}/services"
+      expression = "resource.name.startsWith(\"projects/_/buckets/${google_storage_bucket.tf_state.name}/objects/${local.name_prefix}/services\")"
     }
   }
 }
