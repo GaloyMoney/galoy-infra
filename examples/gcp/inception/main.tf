@@ -7,9 +7,9 @@ variable "gcp_project" {}
 variable "inception_sa" {}
 variable "users" {
   type = list(object({
-    id = string
+    id        = string
     inception = bool
-    platform = bool
+    platform  = bool
   }))
 }
 
@@ -17,10 +17,10 @@ module "inception" {
   source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/inception/gcp?ref=0eb1727"
   # source = "../../../modules/inception/gcp"
 
-  name_prefix          = var.name_prefix
-  gcp_project          = var.gcp_project
-  inception_sa         = var.inception_sa
-  tf_state_bucket_name = var.tf_state_bucket_name
+  name_prefix              = var.name_prefix
+  gcp_project              = var.gcp_project
+  inception_sa             = var.inception_sa
+  tf_state_bucket_name     = var.tf_state_bucket_name
   tf_state_bucket_location = var.tf_state_bucket_location
 
   users = var.users
