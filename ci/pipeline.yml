@@ -101,7 +101,7 @@ jobs:
     - { get: modules, trigger: true, passed: [inception]}
     - { get: repo, passed: [inception] }
     - { get: pipeline-tasks }
-  - task: inception
+  - task: platform
     config:
       platform: linux
       image_resource: #@ task_image_config()

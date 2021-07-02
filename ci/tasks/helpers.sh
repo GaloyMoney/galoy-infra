@@ -2,6 +2,7 @@ alias tf=terraform
 export MODULES_GIT_REF="$(cat modules/.git/short_ref)"
 export KUBE_CONFIG="~/.kube/config"
 export CI_ROOT="$(pwd)"
+export CI_ROOT_DIR="${CI_ROOT##*/}"
 
 function init_gcloud() {
   cat <<EOF > ${CI_ROOT}/gcloud-creds.json
