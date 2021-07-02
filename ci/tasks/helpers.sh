@@ -7,6 +7,7 @@ function init_gcloud() {
 ${GOOGLE_CREDENTIALS}
 EOF
   gcloud auth activate-service-account --key-file ${CI_ROOT}/gcloud-creds.json
+  gcloud config set project "${TF_VAR_gcp_project}"
 }
 
 function init_kubeconfig() {

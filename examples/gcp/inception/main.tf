@@ -29,3 +29,7 @@ module "inception" {
 output "bastion_ip" {
   value = module.inception.bastion_ip
 }
+
+output "bastion_zone" {
+  value = module.inception.bastion_zone
+}
