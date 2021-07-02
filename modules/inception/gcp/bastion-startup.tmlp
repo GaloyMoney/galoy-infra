@@ -1,0 +1,33 @@
+#!/bin/bash
+
+cat <<EOF > /etc/profile.d/aliases.sh
+alias tf="terraform"
+alias k="kubectl"
+alias g="git"
+alias gs="git status"
+
+alias kauth="gcloud container clusters get-credentials ${cluster_name} --zone ${zone} --project ${project}"
+
+alias get-repo="git clone git@github.com:GaloyMoney/galoy-org-infra.git"
+
+export GALOY_ENVIRONMENT=${project}
+export KUBE_CONFIG_PATH=~/.kube/config
+EOF
+
+curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
+apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+
+apt-get update && apt-get install -y make jq terraform tree
+
+curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl
+chmod +x ./kubectl
+mv ./kubectl /usr/local/bin
+
+wget https://github.com/cloudflare/cfssl/releases/download/v${cfssl_version}/cfssl_${cfssl_version}_linux_amd64
+chmod +x cfss* && mv cfss* /usr/bin/cfssl
+wget https://github.com/cloudflare/cfssl/releases/download/v${cfssl_version}/cfssljson_${cfssl_version}_linux_amd64
+chmod +x cfsslj* && mv cfsslj* /usr/bin/cfssljson
+
+curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+
+wget -O- https://k14s.io/install.sh | bash
