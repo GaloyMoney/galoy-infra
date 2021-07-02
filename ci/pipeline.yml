@@ -110,12 +110,13 @@ jobs:
       params: #@ testflight_task_params()
       run:
         path: pipeline-tasks/ci/tasks/teardown.sh
-  - put: repo
-    params:
-      repository: repo
-      rebase: true
-  - put: testflight-lock
-    params: { release: testflight-lock }
+  - in_parallel:
+    - put: repo
+      params:
+        repository: repo
+        rebase: true
+    - put: testflight-lock
+      params: { release: testflight-lock }
 
 resources:
 - name: repo
