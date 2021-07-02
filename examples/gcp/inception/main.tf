@@ -9,6 +9,7 @@ variable "users" {
   type = list(object({
     id = string
     inception = bool
+    platform = bool
   }))
 }
 
