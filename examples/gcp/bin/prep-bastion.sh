@@ -9,6 +9,7 @@ pushd bootstrap
 
 tf_state_bucket_name=$(terraform output tf_state_bucket_name | jq -r)
 name_prefix=$(terraform output name_prefix | jq -r)
+gcp_project=$(terraform output gcp_project | jq -r)
 
 popd
 
@@ -29,7 +30,13 @@ terraform {
 }
 EOF
 
+cat <<EOF > terraform.tfvars
+gcp_project = "${gcp_project}"
+name_prefix = "${name_prefix}"
+EOF
+
 popd
 
 echo "Syncing ${REPO_ROOT##*/} to bastion"
-rsync -avr -e "ssh -l ${BASTION_USER} -o StrictHostKeyChecking=no ${ADDITIONAL_SSH_OPTS}" ${REPO_ROOT} ${bastion_ip}:${REMOTE_FOLDER} > /dev/null
+rsync -avr -e "ssh -l ${BASTION_USER} ${ADDITIONAL_SSH_OPTS:-""}" \
+  ${REPO_ROOT}/ ${bastion_ip}:${REMOTE_FOLDER} > /dev/null
