@@ -33,4 +33,5 @@ popd
 
 echo "Syncing pipeline-tasks to bastion"
 
-rsync -avr -e "ssh -l ${BASTION_USER} -o StrictHostKeyChecking=no ${ADDITIONAL_SSH_OPTS}" pipeline-tasks ${bastion_ip}:${REMOTE_FOLDER}/pipeline-tasks
+rsync -avr -e "ssh -l ${BASTION_USER} -o StrictHostKeyChecking=no ${ADDITIONAL_SSH_OPTS}" \
+  pipeline-tasks ${bastion_ip}:${REMOTE_FOLDER}/pipeline-tasks > /dev/null
