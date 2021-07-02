@@ -33,6 +33,4 @@ destroy-bootstrap:
 prep-bastion:
 	bin/prep-bastion.sh
 
-teardown: destroy-inception destroy-bootstrap
-
 .PHONY: bootstrap inception platform
