@@ -31,4 +31,4 @@ EOF
 
 popd
 
-rsync -avr -e "ssh -l ${BASTION_USER} -o StrictHostKeyChecking=no" ${REPO_ROOT} ${bastion_ip}:${REMOTE_FOLDER}
+rsync -avr -e "ssh -l ${BASTION_USER} -o StrictHostKeyChecking=no ${ADDITIONAL_SSH_OPTS}" ${REPO_ROOT} ${bastion_ip}:${REMOTE_FOLDER}
