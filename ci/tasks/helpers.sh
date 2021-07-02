@@ -1,3 +1,4 @@
+alias tf=terraform
 export MODULES_GIT_REF="$(cat modules/.git/short_ref)"
 export KUBE_CONFIG="~/.kube/config"
 export CI_ROOT="$(pwd)"
@@ -5,6 +6,12 @@ export CI_ROOT="$(pwd)"
 function init_gcloud() {
   cat <<EOF > ${CI_ROOT}/gcloud-creds.json
 ${GOOGLE_CREDENTIALS}
+EOF
+  cat <<EOF > ${CI_ROOT}/login.ssh
+${OS_LOGIN_SSH_PRIVATE_KEY}
+EOF
+  cat <<EOF > ${CI_ROOT}/login.ssh.pub
+${OS_LOGIN_SSH_PUB_KEY}
 EOF
   gcloud auth activate-service-account --key-file ${CI_ROOT}/gcloud-creds.json
   gcloud config set project "${TF_VAR_gcp_project}"
