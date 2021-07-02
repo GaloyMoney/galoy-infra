@@ -52,7 +52,7 @@ jobs:
     params:
       image: image/image.tar
 
-- name: bootstrap
+- name: testflight-bootstrap
   serial_groups: [testflight]
   plan:
   - put: testflight-lock
@@ -73,13 +73,13 @@ jobs:
       run:
         path: pipeline-tasks/ci/tasks/bootstrap.sh
 
-- name: inception
+- name: testflight-inception
   serial_groups: [testflight]
   plan:
-  - { get: testflight-lock, passed: [bootstrap] }
+  - { get: testflight-lock, passed: [testflight-bootstrap] }
   - in_parallel:
-    - { get: modules, trigger: true, passed: [bootstrap]}
-    - { get: repo, passed: [bootstrap] }
+    - { get: modules, trigger: true, passed: [testflight-bootstrap]}
+    - { get: repo, passed: [testflight-bootstrap] }
     - { get: pipeline-tasks }
   - task: inception
     config:
@@ -93,13 +93,13 @@ jobs:
       run:
         path: pipeline-tasks/ci/tasks/inception.sh
 
-- name: platform
+- name: testflight-platform
   serial_groups: [testflight]
   plan:
-  - { get: testflight-lock, passed: [inception] }
+  - { get: testflight-lock, passed: [testflight-inception] }
   - in_parallel:
-    - { get: modules, trigger: true, passed: [inception]}
-    - { get: repo, passed: [inception] }
+    - { get: modules, trigger: true, passed: [testflight-inception]}
+    - { get: repo, passed: [testflight-inception] }
     - { get: pipeline-tasks }
   - task: platform
     config:
@@ -113,13 +113,13 @@ jobs:
       run:
         path: pipeline-tasks/ci/tasks/platform.sh
 
-- name: cleanup
+- name: testflight-cleanup
   serial_groups: [testflight]
   plan:
-  - { get: testflight-lock, passed: [platform] }
+  - { get: testflight-lock, passed: [testflight-platform] }
   - in_parallel:
-    - { get: modules, passed: [platform], trigger: true}
-    - { get: repo, passed: [platform] }
+    - { get: modules, passed: [testflight-platform], trigger: true}
+    - { get: repo, passed: [testflight-platform] }
     - { get: pipeline-tasks }
   - task: teardown
     config:
