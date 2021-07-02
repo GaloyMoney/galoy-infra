@@ -10,6 +10,7 @@ EOF
   cat <<EOF > ${CI_ROOT}/login.ssh
 ${OS_LOGIN_SSH_PRIVATE_KEY}
 EOF
+  chmod 600 ${CI_ROOT}/login.ssh
   cat <<EOF > ${CI_ROOT}/login.ssh.pub
 ${OS_LOGIN_SSH_PUB_KEY}
 EOF

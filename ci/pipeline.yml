@@ -72,6 +72,7 @@ jobs:
       params: #@ testflight_task_params()
       run:
         path: pipeline-tasks/ci/tasks/bootstrap.sh
+
 - name: inception
   serial_groups: [testflight]
   plan:
@@ -91,6 +92,27 @@ jobs:
       params: #@ testflight_task_params()
       run:
         path: pipeline-tasks/ci/tasks/inception.sh
+
+- name: platform
+  serial_groups: [inception]
+  plan:
+  - { get: testflight-lock, passed: [inception] }
+  - in_parallel:
+    - { get: modules, trigger: true, passed: [inception]}
+    - { get: repo, passed: [inception] }
+    - { get: pipeline-tasks }
+  - task: inception
+    config:
+      platform: linux
+      image_resource: #@ task_image_config()
+      inputs:
+      - name: pipeline-tasks
+      - name: repo
+      - name: modules
+      params: #@ testflight_task_params()
+      run:
+        path: pipeline-tasks/ci/tasks/platform.sh
+
 - name: cleanup
   serial_groups: [testflight]
   plan:

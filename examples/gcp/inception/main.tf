@@ -30,6 +30,10 @@ output "bastion_ip" {
   value = module.inception.bastion_ip
 }
 
+output "bastion_name" {
+  value = module.inception.bastion_name
+}
+
 output "bastion_zone" {
   value = module.inception.bastion_zone
 }
