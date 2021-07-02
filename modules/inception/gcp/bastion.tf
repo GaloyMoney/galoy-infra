@@ -57,6 +57,10 @@ data "google_iam_policy" "bastion" {
     role    = "roles/compute.osLogin"
     members = local.platform_admins
   }
+  binding {
+    role    = "roles/compute.viewer"
+    members = local.platform_admins
+  }
 }
 
 resource "google_compute_instance_iam_policy" "bastion" {
