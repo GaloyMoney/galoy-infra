@@ -79,7 +79,7 @@ jobs:
   - { get: testflight-lock, passed: [testflight-bootstrap] }
   - in_parallel:
     - { get: modules, trigger: true, passed: [testflight-bootstrap]}
-    - { get: repo, passed: [testflight-bootstrap] }
+    - { get: repo, trigger: true, passed: [testflight-bootstrap] }
     - { get: pipeline-tasks }
   - task: inception
     config:
@@ -99,7 +99,7 @@ jobs:
   - { get: testflight-lock, passed: [testflight-inception] }
   - in_parallel:
     - { get: modules, trigger: true, passed: [testflight-inception]}
-    - { get: repo, passed: [testflight-inception] }
+    - { get: repo, trigger: true, passed: [testflight-inception] }
     - { get: pipeline-tasks }
   - task: platform
     config:
@@ -119,7 +119,7 @@ jobs:
   - { get: testflight-lock, passed: [testflight-platform] }
   - in_parallel:
     - { get: modules, passed: [testflight-platform], trigger: true}
-    - { get: repo, passed: [testflight-platform] }
+    - { get: repo, trigger: true, passed: [testflight-platform] }
     - { get: pipeline-tasks }
   - task: teardown
     config:
