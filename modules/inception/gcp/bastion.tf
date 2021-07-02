@@ -1,5 +1,5 @@
 locals {
-  tag = "${local.name_prefix}-bastion"
+  tag           = "${local.name_prefix}-bastion"
   cfssl_version = "1.4.1"
 }
 
@@ -10,13 +10,13 @@ resource "google_service_account" "bastion" {
 }
 
 resource "google_compute_address" "bastion" {
-  project              = local.project
-  name = "${local.name_prefix}-bastion"
-  region = local.region
+  project = local.project
+  name    = "${local.name_prefix}-bastion"
+  region  = local.region
 }
 
 resource "google_compute_instance" "bastion" {
-  project              = local.project
+  project      = local.project
   name         = "${local.name_prefix}-bastion"
   machine_type = local.bastion_machine_type
   zone         = local.bastion_zone
@@ -60,15 +60,15 @@ data "google_iam_policy" "bastion" {
 }
 
 resource "google_compute_instance_iam_policy" "bastion" {
-  project      = local.project
+  project       = local.project
   zone          = google_compute_instance.bastion.zone
   instance_name = google_compute_instance.bastion.name
   policy_data   = data.google_iam_policy.bastion.policy_data
 }
 
 resource "google_compute_firewall" "bastion_allow_all_inbound" {
-  project              = local.project
-  name = "${local.name_prefix}-bastion-allow-ingress"
+  project = local.project
+  name    = "${local.name_prefix}-bastion-allow-ingress"
 
   network = google_compute_network.vpc.self_link
 

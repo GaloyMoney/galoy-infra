@@ -20,26 +20,26 @@ variable "tf_state_bucket_name" {}
 variable "tf_state_bucket_location" {}
 variable "users" {
   type = list(object({
-    id = string
+    id        = string
     inception = bool
-    platform = bool
+    platform  = bool
   }))
 }
 
 locals {
-  name_prefix          = var.name_prefix
-  tf_state_bucket_name = var.tf_state_bucket_name
+  name_prefix              = var.name_prefix
+  tf_state_bucket_name     = var.tf_state_bucket_name
   tf_state_bucket_location = var.tf_state_bucket_location
-  project              = var.gcp_project
-  inception_sa         = var.inception_sa
-  inception_admins = [for user in var.users : user.id if user.inception]
+  project                  = var.gcp_project
+  inception_sa             = var.inception_sa
+  inception_admins         = [for user in var.users : user.id if user.inception]
 
   platform_admins = [for user in var.users : user.id if user.platform]
 
-  region = var.region
+  region         = var.region
   network_prefix = var.network_prefix
 
-  bastion_zone = "${local.region}-${var.primary_zone}"
+  bastion_zone         = "${local.region}-${var.primary_zone}"
   bastion_machine_type = var.bastion_machine_type
-  bastion_image = var.bastion_image
+  bastion_image        = var.bastion_image
 }
