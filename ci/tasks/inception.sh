@@ -18,4 +18,6 @@ bin/prep-inception.sh
 
 echo yes | GOOGLE_CREDENTIALS=$(cat inception-sa-creds.json) make inception
 
+echo "BASTION IP: $(bastion_ip)"
+
 cleanup_inception_key

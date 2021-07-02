@@ -25,3 +25,7 @@ module "inception" {
 
   users = var.users
 }
+
+output "bastion_ip" {
+  value = module.inception.bastion_ip
+}

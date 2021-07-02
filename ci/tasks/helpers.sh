@@ -76,3 +76,9 @@ function make_commit() {
     git commit -m "$1"
   )
 }
+
+function bastion_ip() {
+  pushd inception
+  terraform output bastion_ip | jq -r
+  popd
+}
