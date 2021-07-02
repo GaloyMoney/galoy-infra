@@ -29,7 +29,6 @@ for i in {1..10}; do
 done
 set -e
 
-export REMOTE_FOLDER="${CI_ROOT_DIR}/repo"
 bin/prep-bastion.sh
 
-ssh ${ADDITIONAL_SSH_OPTS} ${BASTION_USER}@${bastion_ip} "cd ${REMOTE_FOLDER}/examples/gcp; echo yes | make platform"
+ssh ${ADDITIONAL_SSH_OPTS} ${BASTION_USER}@${bastion_ip} "cd repo/examples/gcp; echo yes | make platform"

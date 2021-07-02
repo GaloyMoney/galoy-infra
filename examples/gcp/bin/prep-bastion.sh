@@ -3,7 +3,7 @@
 set -eu
 
 REPO_ROOT=$(git rev-parse --show-toplevel)
-REMOTE_FOLDER="${REMOTE_FOLDER:-${REPO_ROOT##*/}}"
+REPO_ROOT_DIR="${REPO_ROOT##*/}"
 
 pushd bootstrap
 
@@ -39,4 +39,4 @@ popd
 
 echo "Syncing ${REPO_ROOT##*/} to bastion"
 rsync -avr -e "ssh -l ${BASTION_USER} ${ADDITIONAL_SSH_OPTS:-""}" \
-  ${REPO_ROOT}/ ${bastion_ip}:${REMOTE_FOLDER} > /dev/null
+  ${REPO_ROOT}/ ${bastion_ip}:${REPO_ROOT_DIR} > /dev/null
