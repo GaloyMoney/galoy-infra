@@ -15,6 +15,7 @@ popd
 
 pushd inception
 
+cluster_sa=$(terraform output cluster_sa | jq -r)
 bastion_ip="$(terraform output bastion_ip | jq -r)"
 
 popd
@@ -33,12 +34,14 @@ EOF
 cat <<EOF > terraform.tfvars
 gcp_project = "${gcp_project}"
 name_prefix = "${name_prefix}"
+node_service_account = "${cluster_sa}"
 EOF
 
 popd
 
+ADDITIONAL_SSH_OPTS=${ADDITIONAL_SSH_OPTS:-""}
 echo "Syncing ${REPO_ROOT##*/} to bastion"
-rsync -avr -e "ssh -l ${BASTION_USER} ${ADDITIONAL_SSH_OPTS:-""}" \
-  ${REPO_ROOT}/ ${bastion_ip}:${REPO_ROOT_DIR} > /dev/null
+rsync -avr -e "ssh -l ${BASTION_USER} ${ADDITIONAL_SSH_OPTS}" \
+  ${REPO_ROOT}/ ${bastion_ip}:${REPO_ROOT_DIR}
 echo "Running terraform init in platform dir"
-ssh ${ADDITIONAL_SSH_OPTS:-""} ${BASTION_USER}@${bastion_ip} "cd ${REPO_ROOT_DIR}/examples/gcp/platform; terraform init"
+ssh ${ADDITIONAL_SSH_OPTS} ${BASTION_USER}@${bastion_ip} "cd ${REPO_ROOT_DIR}/examples/gcp/platform; terraform init"
