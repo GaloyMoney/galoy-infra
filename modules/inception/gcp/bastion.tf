@@ -62,7 +62,7 @@ data "google_iam_policy" "bastion" {
     members = local.platform_admins
   }
   binding {
-    role   = "roles/compute.admin"
+    role    = "roles/compute.admin"
     members = ["serviceAccount:${var.inception_sa}"]
   }
 }

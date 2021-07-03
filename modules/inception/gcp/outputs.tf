@@ -4,7 +4,7 @@ output "bastion_ip" {
 }
 
 output "bastion_name" {
-  value       = google_compute_address.bastion.name
+  value = google_compute_address.bastion.name
 }
 
 output "bastion_zone" {

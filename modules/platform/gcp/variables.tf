@@ -11,8 +11,10 @@ variable "network_prefix" {
 }
 
 locals {
-  name_prefix              = var.name_prefix
-  project                  = var.gcp_project
-  region         = var.region
-  network_prefix = var.network_prefix
+  name_prefix            = var.name_prefix
+  cluster_name           = "${var.name_prefix}-cluster"
+  master_ipv4_cidr_block = "172.16.0.0/28"
+  project                = var.gcp_project
+  region                 = var.region
+  network_prefix         = var.network_prefix
 }
