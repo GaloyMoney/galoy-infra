@@ -68,6 +68,7 @@ function update_examples_git_ref() {
   echo "Bumping examples to '${MODULES_GIT_REF}'"
   sed -i'' "s/ref=.*\"/ref=${MODULES_GIT_REF}\"/" bootstrap/main.tf
   sed -i'' "s/ref=.*\"/ref=${MODULES_GIT_REF}\"/" inception/main.tf
+  sed -i'' "s/ref=.*\"/ref=${MODULES_GIT_REF}\"/" platform/main.tf
 }
 
 function make_commit() {
