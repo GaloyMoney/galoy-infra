@@ -39,6 +39,7 @@ resource "google_project_iam_custom_role" "platform_make" {
     "compute.routers.create",
     "compute.routers.get",
     "compute.routers.update",
+    "compute.regionOperations.get",
     "compute.sslCertificates.create",
     "compute.sslCertificates.get",
     "compute.subnetworks.get",
