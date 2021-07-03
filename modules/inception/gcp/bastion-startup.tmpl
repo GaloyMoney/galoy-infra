@@ -1,5 +1,10 @@
 #!/bin/bash
 
+curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
+apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+
+apt-get update && apt-get install -y make terraform jq tree
+
 cat <<EOF > /etc/profile.d/aliases.sh
 alias tf="terraform"
 alias k="kubectl"
@@ -11,11 +16,6 @@ alias kauth="gcloud container clusters get-credentials ${cluster_name} --zone ${
 export GALOY_ENVIRONMENT=${project}
 export KUBE_CONFIG_PATH=~/.kube/config
 EOF
-
-curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
-apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
-
-apt-get update && apt-get install -y make jq terraform tree
 
 curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl
 chmod +x ./kubectl

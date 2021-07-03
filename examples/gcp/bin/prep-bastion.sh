@@ -40,3 +40,4 @@ popd
 echo "Syncing ${REPO_ROOT##*/} to bastion"
 rsync -avr -e "ssh -l ${BASTION_USER} ${ADDITIONAL_SSH_OPTS:-""}" \
   ${REPO_ROOT}/ ${bastion_ip}:${REPO_ROOT_DIR} > /dev/null
+ssh -l ${BASTION_USER} ${ADDITIONAL_SSH_OPTS:-""} "cd ${REPO_ROOT_DIR}/examples/gcp/platform; terraform init"
