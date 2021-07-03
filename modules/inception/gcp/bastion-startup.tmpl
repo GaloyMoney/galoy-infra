@@ -3,6 +3,8 @@
 curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
 apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
 
+# Keep make and terraform the first items installed as they are needed
+# for testflight to complete
 apt-get update && apt-get install -y make terraform jq tree
 
 cat <<EOF > /etc/profile.d/aliases.sh

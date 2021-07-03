@@ -22,7 +22,7 @@ export BASTION_USER="sa_$(cat ${CI_ROOT}/gcloud-creds.json  | jq -r '.client_id'
 export ADDITIONAL_SSH_OPTS="-o StrictHostKeyChecking=no -i ${CI_ROOT}/login.ssh"
 
 set +e
-for i in {1..20}; do
+for i in {1..60}; do
   echo "Attempt ${i} to ssh to bastion"
   ssh ${ADDITIONAL_SSH_OPTS} ${BASTION_USER}@${bastion_ip} "which make" && break
   sleep 1
