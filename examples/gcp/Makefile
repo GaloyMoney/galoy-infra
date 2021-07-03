@@ -12,7 +12,6 @@ inception:
 
 platform:
 	cd platform \
-		&& $(TF) init \
 		&& $(TF) apply
 
 destroy-inception:
