@@ -22,7 +22,6 @@ resource "google_project_iam_custom_role" "platform_make" {
   title       = "Create Platform"
   description = "Role for executing platform tf files"
   permissions = [
-    "container.clusters.update",
     "compute.backendBuckets.create",
     "compute.backendBuckets.get",
     "compute.backendBuckets.use",
