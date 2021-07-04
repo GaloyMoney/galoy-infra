@@ -3,7 +3,7 @@ variable "gcp_project" {}
 variable "node_service_account" {}
 
 module "platform" {
-  source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/platform/gcp?ref=8c217a5"
+  source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/platform/gcp?ref=3fed2ac"
   # source = "../../../modules/platform/gcp"
 
   name_prefix          = var.name_prefix
