@@ -48,7 +48,7 @@ resource "google_compute_instance" "bastion" {
 
   metadata_startup_script = templatefile("${path.module}/bastion-startup.tmpl", {
     cluster_name : "${local.name_prefix}-cluster",
-    zone : local.bastion_zone,
+    zone : local.region,
   project : local.project, cfssl_version : local.cfssl_version })
 }
 

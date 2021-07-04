@@ -39,5 +39,5 @@ output "bastion_zone" {
 }
 
 output "cluster_sa" {
-  value       = module.inception.cluster_sa
+  value = module.inception.cluster_sa
 }

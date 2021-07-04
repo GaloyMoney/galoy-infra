@@ -10,31 +10,31 @@ resource "google_service_account_iam_member" "nodes_account_iam" {
   member             = "serviceAccount:${google_service_account.bastion.email}"
 }
 
-resource "google_project_iam_member" "cluster_service_account-log_writer" {
+resource "google_project_iam_member" "cluster_service_account_log_writer" {
   project = local.project
   role    = "roles/logging.logWriter"
   member  = "serviceAccount:${google_service_account.cluster_service_account.email}"
 }
 
-resource "google_project_iam_member" "cluster_service_account-metric_writer" {
+resource "google_project_iam_member" "cluster_service_account_metric_writer" {
   project = local.project
   role    = "roles/monitoring.metricWriter"
   member  = "serviceAccount:${google_service_account.cluster_service_account.email}"
 }
 
-resource "google_project_iam_member" "cluster_service_account-monitoring_viewer" {
+resource "google_project_iam_member" "cluster_service_account_monitoring_viewer" {
   project = local.project
   role    = "roles/monitoring.viewer"
   member  = "serviceAccount:${google_service_account.cluster_service_account.email}"
 }
 
-resource "google_project_iam_member" "cluster_service_account-resourceMetadata-writer" {
+resource "google_project_iam_member" "cluster_service_account_resourceMetadata_writer" {
   project = local.project
   role    = "roles/stackdriver.resourceMetadata.writer"
   member  = "serviceAccount:${google_service_account.cluster_service_account.email}"
 }
 
-resource "google_project_iam_member" "cluster_service_account-gcr" {
+resource "google_project_iam_member" "cluster_service_account_gcr" {
   project = local.project
   role    = "roles/storage.objectViewer"
   member  = "serviceAccount:${google_service_account.cluster_service_account.email}"

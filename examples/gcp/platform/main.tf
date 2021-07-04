@@ -6,7 +6,7 @@ module "platform" {
   source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/platform/gcp?ref=a499e09"
   # source = "../../../modules/platform/gcp"
 
-  name_prefix = var.name_prefix
-  gcp_project = var.gcp_project
+  name_prefix          = var.name_prefix
+  gcp_project          = var.gcp_project
   node_service_account = var.node_service_account
 }

@@ -16,6 +16,7 @@ init_bootstrap
 write_users
 
 bin/prep-inception.sh
+cleanup_inception_key
 
 bastion_ip="$(cd inception && terraform output bastion_ip | jq -r)"
 export BASTION_USER="sa_$(cat ${CI_ROOT}/gcloud-creds.json  | jq -r '.client_id')"

@@ -103,7 +103,7 @@ resource "google_container_node_pool" "default" {
   provider = google-beta
 
   name     = "${local.name_prefix}-default-nodes"
-  project  = local.name_prefix
+  project  = local.project
   version  = google_container_cluster.primary.master_version
   location = google_container_cluster.primary.location
 
