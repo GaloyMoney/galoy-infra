@@ -9,7 +9,6 @@ data "google_compute_network" "vpc" {
 }
 
 resource "google_compute_subnetwork" "cluster" {
-
   name = "${local.name_prefix}-cluster"
 
   project = local.project
