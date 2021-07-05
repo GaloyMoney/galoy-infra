@@ -17,10 +17,10 @@ variable "node_default_machine_type" {
 }
 variable "node_service_account" {}
 variable "min_default_node_count" {
-  value = 2
+  default = 2
 }
 variable "max_default_node_count" {
-  value = 5
+  default = 5
 }
 
 locals {

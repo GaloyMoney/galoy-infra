@@ -42,6 +42,6 @@ popd
 ADDITIONAL_SSH_OPTS=${ADDITIONAL_SSH_OPTS:-""}
 echo "Syncing ${REPO_ROOT##*/} to bastion"
 rsync -avr -e "ssh -l ${BASTION_USER} ${ADDITIONAL_SSH_OPTS}" \
-  ${REPO_ROOT}/ ${bastion_ip}:${REPO_ROOT_DIR}
+  ${REPO_ROOT}/ ${bastion_ip}:${REPO_ROOT_DIR} > /dev/null
 echo "Running terraform init in platform dir"
 ssh ${ADDITIONAL_SSH_OPTS} ${BASTION_USER}@${bastion_ip} "cd ${REPO_ROOT_DIR}/examples/gcp/platform; terraform init"
