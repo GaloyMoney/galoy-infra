@@ -10,10 +10,13 @@ inception:
 	cd inception \
 		&& $(TF) apply
 
+initial-platform:
+	cd platform \
+		&& $(TF) apply -target module.services.helm_release.cert_manager
+
 platform:
 	cd platform \
-		&& $(TF) apply -target module.services.helm_release.cert_manager \
-		&& $(TF) apply --auto-aprove
+		&& $(TF) apply
 
 destroy-inception:
 	cd inception \

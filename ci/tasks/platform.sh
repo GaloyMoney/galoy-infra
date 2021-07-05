@@ -38,4 +38,4 @@ EOF
 
 bin/prep-bastion.sh
 
-ssh ${ADDITIONAL_SSH_OPTS} ${BASTION_USER}@${bastion_ip} "cd repo/examples/gcp; echo yes\nyes | make platform"
+ssh ${ADDITIONAL_SSH_OPTS} ${BASTION_USER}@${bastion_ip} "cd repo/examples/gcp; echo yes | make initial-platform && echo yes | make platform"
