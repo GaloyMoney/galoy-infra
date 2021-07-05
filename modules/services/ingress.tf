@@ -16,7 +16,7 @@ resource "helm_release" "cert_manager" {
   namespace  = kubernetes_namespace.ingress.metadata[0].name
   name       = "cert-manager"
   repository = "https://charts.jetstack.io"
-  version    = cert_manager_version
+  version    = local.cert_manager_version
   chart      = "cert-manager"
 
   set {
