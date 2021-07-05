@@ -22,11 +22,6 @@ curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s http
 chmod +x ./kubectl
 mv ./kubectl /usr/local/bin
 
-wget https://github.com/cloudflare/cfssl/releases/download/v${cfssl_version}/cfssl_${cfssl_version}_linux_amd64
-chmod +x cfss* && mv cfss* /usr/bin/cfssl
-wget https://github.com/cloudflare/cfssl/releases/download/v${cfssl_version}/cfssljson_${cfssl_version}_linux_amd64
-chmod +x cfsslj* && mv cfsslj* /usr/bin/cfssljson
-
 curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
 
 wget -O- https://k14s.io/install.sh | bash
