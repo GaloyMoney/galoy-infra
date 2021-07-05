@@ -7,7 +7,7 @@ variable "node_default_machine_type" {
 variable "letsencrypt_issuer_email" {}
 
 module "platform" {
-  source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/platform/gcp?ref=4a08cac"
+  source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/platform/gcp?ref=b30fcb0"
   # source = "../../../modules/platform/gcp"
 
   name_prefix               = var.name_prefix
@@ -42,7 +42,7 @@ provider "helm" {
 }
 
 module "services" {
-  source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/services?ref=4a08cac"
+  source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/services?ref=b30fcb0"
   # source = "../../../modules/services"
 
   name_prefix              = var.name_prefix
