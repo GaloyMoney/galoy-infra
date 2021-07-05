@@ -17,7 +17,6 @@ data "google_client_config" "default" {
 }
 
 provider "kubernetes" {
-  load_config_file       = false
   host                   = module.platform.master_endpoint
   token                  = data.google_client_config.default.access_token
   cluster_ca_certificate = module.platform.cluster_ca_cert
@@ -26,7 +25,6 @@ provider "kubernetes" {
 
 provider "helm" {
   kubernetes {
-    load_config_file       = false
     host                   = module.platform.master_endpoint
     token                  = data.google_client_config.default.access_token
     cluster_ca_certificate = module.platform.cluster_ca_cert

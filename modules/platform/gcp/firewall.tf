@@ -44,7 +44,7 @@ resource "google_compute_firewall" "webhook_ingress" {
 resource "google_compute_firewall" "dmz_nodes_ingress" {
   name        = "${var.name_prefix}-bastion-nodes-ingress"
   description = "Allow ${var.name_prefix}-bastion to reach nodes"
-  project     = var.project
+  project     = local.project
   network     = data.google_compute_network.vpc.self_link
   priority    = 1000
   direction   = "INGRESS"
