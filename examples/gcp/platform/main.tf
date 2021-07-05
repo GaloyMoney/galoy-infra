@@ -47,8 +47,4 @@ module "services" {
 
   name_prefix              = var.name_prefix
   letsencrypt_issuer_email = var.letsencrypt_issuer_email
-
-  depends_on = [
-    module.platform
-  ]
 }
