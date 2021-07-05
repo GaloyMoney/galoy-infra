@@ -24,3 +24,30 @@ resource "helm_release" "cert_manager" {
     value = "true"
   }
 }
+
+# resource "kubernetes_manifest" "issuer" {
+#   provider = kubernetes-alpha
+
+#   manifest = {
+#     apiVersion = "cert-manager.io/v1"
+#     kind       = "ClusterIssuer"
+#     metadata = {
+#       name = "letsencrypt-issuer"
+#     }
+#     spec = {
+#       acme = {
+#         server = "https://acme-v02.api.letsencrypt.org/directory"
+#         email  = var.ca_email
+#         privateKeySecretRef = {
+#           name = "letsencrypt-issuer"
+#         }
+#         "solvers" = [
+#           { http01 = {
+#             ingress = {
+#     class = "nginx" } } }] } }
+#   }
+
+#   depends_on = [
+#     helm_release.cert_manager,
+#   ]
+# }

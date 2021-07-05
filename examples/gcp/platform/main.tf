@@ -34,7 +34,7 @@ provider "helm" {
 }
 
 module "services" {
-  source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/services/gcp?ref=3fed2ac"
+  source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/services?ref=3fed2ac"
   # source = "../../../modules/platform/gcp"
 
   name_prefix          = var.name_prefix
