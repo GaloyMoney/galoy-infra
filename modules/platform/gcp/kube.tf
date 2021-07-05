@@ -110,7 +110,10 @@ resource "google_container_node_pool" "default" {
   cluster = google_container_cluster.primary.name
 
   max_pods_per_node = local.max_pods_per_node
-  node_count        = 3
+  autoscaling {
+    min_node_count = local.min_default_node_count
+    max_node_count = local.max_default_node_count
+  }
 
   management {
     auto_repair  = true
