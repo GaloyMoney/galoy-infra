@@ -30,11 +30,12 @@ for i in {1..60}; do
 done
 set -e
 
-bin/prep-bastion.sh
 
 cat <<EOF > platform/additional.auto.tfvars
 letsencrypt_issuer_email  = "bot@galoy.io"
 node_default_machine_type = "f1-micro"
 EOF
+
+bin/prep-bastion.sh
 
 ssh ${ADDITIONAL_SSH_OPTS} ${BASTION_USER}@${bastion_ip} "cd repo/examples/gcp; echo yes\nyes | make platform"
