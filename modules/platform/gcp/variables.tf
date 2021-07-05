@@ -10,14 +10,14 @@ variable "network_prefix" {
   default = "10.1"
 }
 variable "kube_version" {
-  default = "1.19.10-gke.1600"
+  default = "1.19.9-gke.1900"
 }
 variable "node_default_machine_type" {
   default = "e2-standard-4"
 }
 variable "node_service_account" {}
 variable "min_default_node_count" {
-  default = 2
+  default = 1
 }
 variable "max_default_node_count" {
   default = 5
