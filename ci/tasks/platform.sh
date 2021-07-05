@@ -33,7 +33,7 @@ set -e
 
 cat <<EOF > platform/additional.auto.tfvars
 letsencrypt_issuer_email  = "bot@galoy.io"
-node_default_machine_type = "f1-micro"
+node_default_machine_type = "e2-small"
 EOF
 
 bin/prep-bastion.sh
