@@ -32,4 +32,9 @@ set -e
 
 bin/prep-bastion.sh
 
-ssh ${ADDITIONAL_SSH_OPTS} ${BASTION_USER}@${bastion_ip} "cd repo/examples/gcp; echo yes | make platform"
+cat <<EOF > platform/additional.auto.tfvars
+letsencrypt_issuer_email  = "bot@galoy.io"
+node_default_machine_type = "f1-micro"
+EOF
+
+ssh ${ADDITIONAL_SSH_OPTS} ${BASTION_USER}@${bastion_ip} "cd repo/examples/gcp; echo yes\nyes | make platform"
