@@ -19,7 +19,7 @@ resource "google_compute_instance" "bastion" {
   project      = local.project
   name         = "${local.name_prefix}-bastion"
   machine_type = local.bastion_machine_type
-  zone         = local.bastion_zone
+  zone         = local.cluster_zone
 
   service_account {
     email  = google_service_account.bastion.email
@@ -48,7 +48,7 @@ resource "google_compute_instance" "bastion" {
 
   metadata_startup_script = templatefile("${path.module}/bastion-startup.tmpl", {
     cluster_name : "${local.name_prefix}-cluster",
-    zone : local.region,
+    zone : local.cluster_zone,
   project : local.project, cfssl_version : local.cfssl_version })
 }
 

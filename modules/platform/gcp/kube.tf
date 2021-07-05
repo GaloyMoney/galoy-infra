@@ -16,7 +16,7 @@ resource "google_container_cluster" "primary" {
   description        = "Cluster hosting the ${local.name_prefix} apps"
   project            = local.project
 
-  location = local.region
+  location = local.cluster_zone
   network  = data.google_compute_network.vpc.self_link
 
   release_channel {

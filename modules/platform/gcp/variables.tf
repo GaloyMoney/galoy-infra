@@ -35,4 +35,5 @@ locals {
   nodes_service_account     = var.node_service_account
   min_default_node_count    = var.min_default_node_count
   max_default_node_count    = var.max_default_node_count
+  cluster_zone              = "${local.region}-${var.primary_zone}"
 }
