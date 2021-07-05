@@ -3,7 +3,7 @@ variable "gcp_project" {}
 variable "node_service_account" {}
 
 module "platform" {
-  source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/platform/gcp?ref=e05defc"
+  source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/platform/gcp?ref=4a08cac"
   # source = "../../../modules/platform/gcp"
 
   name_prefix          = var.name_prefix
@@ -32,7 +32,7 @@ provider "helm" {
 }
 
 module "services" {
-  source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/services?ref=e05defc"
+  source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/services?ref=4a08cac"
   # source = "../../../modules/platform/gcp"
 
   name_prefix          = var.name_prefix
