@@ -12,6 +12,7 @@ inception:
 
 platform:
 	cd platform \
+		&& $(TF) apply -target module.services.helm_release.cert_manager \
 		&& $(TF) apply
 
 destroy-inception:

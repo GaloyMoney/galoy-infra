@@ -1,6 +1,7 @@
 variable "name_prefix" {}
 variable "gcp_project" {}
 variable "node_service_account" {}
+variable "letsencrypt_issuer_email" {}
 
 module "platform" {
   source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/platform/gcp?ref=4a08cac"
@@ -22,6 +23,11 @@ provider "kubernetes" {
   cluster_ca_certificate = module.platform.cluster_ca_cert
 }
 
+provider "kubernetes-alpha" {
+  host                   = module.platform.master_endpoint
+  token                  = data.google_client_config.default.access_token
+  cluster_ca_certificate = module.platform.cluster_ca_cert
+}
 
 provider "helm" {
   kubernetes {
@@ -33,9 +39,10 @@ provider "helm" {
 
 module "services" {
   source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/services?ref=4a08cac"
-  # source = "../../../modules/platform/gcp"
+  # source = "../../../modules/services"
 
-  name_prefix          = var.name_prefix
+  name_prefix              = var.name_prefix
+  letsencrypt_issuer_email = var.letsencrypt_issuer_email
 
   depends_on = [
     module.platform
