@@ -40,3 +40,25 @@ resource "google_compute_firewall" "webhook_ingress" {
     ports    = [8443, 443]
   }
 }
+
+resource "google_compute_firewall" "dmz_nodes_ingress" {
+  name        = "${var.name_prefix}-bastion-nodes-ingress"
+  description = "Allow ${var.name_prefix}-bastion to reach nodes"
+  project     = var.project
+  network     = data.google_compute_network.vpc.self_link
+  priority    = 1000
+  direction   = "INGRESS"
+
+  target_tags = [local.cluster_name]
+  source_ranges = [
+    data.google_compute_subnetwork.dmz.ip_cidr_range,
+  ]
+
+  # Allow all possible protocols
+  allow { protocol = "tcp" }
+  allow { protocol = "udp" }
+  allow { protocol = "icmp" }
+  allow { protocol = "sctp" }
+  allow { protocol = "esp" }
+  allow { protocol = "ah" }
+}
