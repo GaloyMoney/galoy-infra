@@ -30,6 +30,7 @@ resource "google_project_iam_custom_role" "platform_make" {
     "compute.globalAddresses.use",
     "compute.globalForwardingRules.create",
     "compute.globalForwardingRules.get",
+    "compute.globalOperations.get",
     "compute.firewalls.create",
     "compute.firewalls.get",
     "compute.firewalls.update",
