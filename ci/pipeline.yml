@@ -189,7 +189,7 @@ jobs:
   - put: staging-lock
     params: { claim: gcp-staging }
   - in_parallel:
-    - { get: modules, passed: [bump-repos], trigger: true}
+    - { get: repo, passed: [bump-repos], trigger: true}
     - { get: galoy-staging, trigger: true }
     - { get: pipeline-tasks }
 
@@ -198,7 +198,7 @@ jobs:
   plan:
   - { get: staging-lock, passed: [staging-inception]}
   - in_parallel:
-    - { get: modules, passed: [staging-inception], trigger: true}
+    - { get: repo, passed: [staging-inception], trigger: true}
     - { get: galoy-staging, trigger: true, passed: [staging-inception] }
     - { get: pipeline-tasks }
   - put: staging-lock
