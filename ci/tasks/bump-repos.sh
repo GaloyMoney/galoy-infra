@@ -1,4 +1,4 @@
-!/bin/bash
+#!/bin/bash
 
 set -eu
 
@@ -8,6 +8,6 @@ update_examples_git_ref
 make_commit "Bump modules to '${MODULES_GIT_REF}' in examples"
 popd
 
-pushd galoy-deployments/gcp/staging
+pushd galoy-staging/gcp/staging
 update_examples_git_ref
 make_commit "Bump modules to '${MODULES_GIT_REF}' in deployments-staging"
