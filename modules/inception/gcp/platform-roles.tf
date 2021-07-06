@@ -20,7 +20,7 @@ resource "google_project_iam_custom_role" "platform_make" {
   project     = local.project
   role_id     = replace("${local.name_prefix}-platform-make", "-", "_")
   title       = "Create Platform"
-  description = "Role for executing platform tf files"
+  description = "Role for executing platform tf files for ${local.name_prefix}"
   permissions = [
     "compute.backendBuckets.create",
     "compute.backendBuckets.get",
@@ -63,7 +63,7 @@ resource "google_project_iam_custom_role" "platform_destroy" {
   project     = local.project
   role_id     = replace("${local.name_prefix}-platform-destroy", "-", "_")
   title       = "Create Platform"
-  description = "Role for destroying the platform"
+  description = "Role for destroying the platform ${local.name_prefix}"
   permissions = [
     "compute.backendBuckets.delete",
     "compute.globalAddresses.delete",

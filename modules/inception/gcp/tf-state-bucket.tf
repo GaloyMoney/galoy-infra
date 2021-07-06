@@ -12,7 +12,7 @@ resource "google_project_iam_custom_role" "list_objects" {
   project     = local.project
   role_id     = replace("${local.name_prefix}-objects-list", "-", "_")
   title       = "List bucket Objects"
-  description = "Role to _only_ list objects (not get them)"
+  description = "Role to _only_ list objects (not get them) from ${local.name_prefix}"
   permissions = [
     "storage.objects.list",
   ]
@@ -27,7 +27,7 @@ data "google_iam_policy" "tf_state_access" {
   binding {
     role = google_project_iam_custom_role.list_objects.id
     members = [
-      "serviceAccount:${var.inception_sa}",
+      "serviceAccount:${local.inception_sa}",
       "serviceAccount:${google_service_account.bastion.email}",
     ]
   }
@@ -35,7 +35,7 @@ data "google_iam_policy" "tf_state_access" {
   binding {
     role = "roles/storage.objectAdmin"
     members = [
-      "serviceAccount:${var.inception_sa}",
+      "serviceAccount:${local.inception_sa}",
     ]
 
     condition {

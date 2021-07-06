@@ -2,7 +2,7 @@ resource "google_project_iam_custom_role" "inception_make" {
   project     = local.project
   role_id     = replace("${local.name_prefix}-inception-make", "-", "_")
   title       = "Create Inception"
-  description = "Role for executing inception tf files"
+  description = "Role for executing inception tf files for ${local.name_prefix}"
   permissions = [
     "compute.addresses.create",
     "compute.addresses.get",
@@ -45,7 +45,7 @@ resource "google_project_iam_custom_role" "inception_destroy" {
   project     = local.project
   role_id     = replace("${local.name_prefix}-inception-destroy", "-", "_")
   title       = "Destroy Inception"
-  description = "Role for destroying inception environment"
+  description = "Role for destroying inception environment for ${local.name_prefix}"
   permissions = [
     "compute.addresses.delete",
     "compute.firewalls.delete",

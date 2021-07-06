@@ -6,7 +6,7 @@ resource "google_service_account" "inception" {
   project      = local.project
   account_id   = local.inception_sa_name
   display_name = local.inception_sa_name
-  description  = "Account for running inception phase for ${local.project}"
+  description  = "Account for running inception phase for ${local.name_prefix}"
 }
 
 resource "google_project_iam_custom_role" "bootstrap" {
