@@ -9,17 +9,6 @@ gcloud compute os-login ssh-keys add --key-file=${CI_ROOT}/login.ssh.pub
 
 pushd repo/gcp/staging
 
-pushd platform
-cat <<EOF > terraform.tf
-terraform {
-  backend "gcs" {
-    bucket = "${BUCKET}"
-    prefix = "galoy-staging/platform"
-  }
-}
-EOF
-popd
-
 pushd inception
 cat <<EOF > terraform.tf
 terraform {
