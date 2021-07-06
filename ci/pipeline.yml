@@ -133,7 +133,6 @@ jobs:
   plan:
   - { get: testflight-lock, passed: [testflight-platform] }
   - in_parallel:
-    - { get: galoy-staging }
     - { get: modules, passed: [testflight-platform], trigger: true}
     - { get: repo, trigger: true, passed: [testflight-platform] }
     - { get: pipeline-tasks }
@@ -142,7 +141,6 @@ jobs:
       platform: linux
       image_resource: #@ task_image_config()
       inputs:
-      - name: galoy-staging
       - name: pipeline-tasks
       - name: repo
       - name: modules
@@ -151,17 +149,8 @@ jobs:
       params: #@ testflight_task_params()
       run:
         path: pipeline-tasks/ci/tasks/teardown.sh
-  - in_parallel:
-    - put: repo
-      params:
-        repository: repo
-        rebase: true
-    - put: galoy-staging
-      params:
-        repository: galoy-staging
-        rebase: true
-    - put: testflight-lock
-      params: { release: testflight-lock }
+  - put: testflight-lock
+    params: { release: testflight-lock }
 
 - name: bump-repos
   plan:
