@@ -6,8 +6,8 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update \
   && apt-get install -y \
   tzdata curl make git build-essential lsb-release \
-  apt-transport-https ca-certificates gnupg \
-  software-properties-common \
+  apt-transport-https ca-certificates \
+  gnupg software-properties-common \
   vim jq rsync \
   && apt-get clean all
 
