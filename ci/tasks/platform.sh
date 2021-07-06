@@ -22,6 +22,8 @@ bastion_ip="$(cd inception && terraform output bastion_ip | jq -r)"
 export BASTION_USER="sa_$(cat ${CI_ROOT}/gcloud-creds.json  | jq -r '.client_id')"
 export ADDITIONAL_SSH_OPTS="-o StrictHostKeyChecking=no -i ${CI_ROOT}/login.ssh"
 
+gcloud compute os-login ssh-keys add --key-file=${CI_ROOT}/login.ssh.pub
+
 set +e
 for i in {1..60}; do
   echo "Attempt ${i} to find make on bastion"

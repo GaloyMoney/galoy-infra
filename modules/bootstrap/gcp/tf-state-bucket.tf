@@ -5,7 +5,6 @@ resource "google_storage_bucket" "tf_state" {
   versioning {
     enabled = true
   }
-
   force_destroy = local.tf_state_bucket_force_destroy
 }
 
