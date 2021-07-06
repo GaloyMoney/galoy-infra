@@ -172,6 +172,7 @@ resources:
 - name: galoy-deployments
   type: git
   source:
+    paths: [gcp/staging/*]
     uri: #@ data.values.deployments_git_uri
     branch: #@ data.values.git_branch
     private_key: #@ data.values.github_private_key
