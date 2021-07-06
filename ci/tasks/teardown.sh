@@ -25,9 +25,3 @@ ssh ${ADDITIONAL_SSH_OPTS} ${BASTION_USER}@${bastion_ip} "cd repo/examples/gcp; 
 echo yes | GOOGLE_CREDENTIALS=$(cat inception-sa-creds.json) make destroy-inception
 echo yes | TF_VAR_tf_state_bucket_force_destroy=true make destroy-bootstrap
 
-make_commit "Bump modules to '${MODULES_GIT_REF}' in examples"
-popd
-
-pushd galoy-deployments/gcp/staging
-update_examples_git_ref
-make_commit "Bump modules to '${MODULES_GIT_REF}' in deployments-staging"
