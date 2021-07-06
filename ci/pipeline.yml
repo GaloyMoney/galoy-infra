@@ -192,6 +192,9 @@ jobs:
     - { get: repo, passed: [bump-repos], trigger: true}
     - { get: galoy-staging, trigger: true }
     - { get: pipeline-tasks }
+  - put: tf-staging-inception
+    params:
+      terraform_source: galoy-staging/gcp/staging/inception
 
 - name: staging-platform
   serial_groups: [staging]
@@ -264,3 +267,22 @@ resources:
     branch: main
     pool: staging
     private_key: #@ data.values.github_private_key
+
+- name: tf-staging-inception
+  type: terraform
+  source:
+    env_name: default
+    backend_type: gcs
+    backend_config:
+      bucket: #@ data.values.staging_state_bucket
+      prefix: galoy-staging/inception
+      credentials: #@ data.values.staging_inception_creds
+    env:
+      GOOGLE_CREDENTIALS: #@ data.values.staging_inception_creds
+
+resource_types:
+- name: terraform
+  type: docker-image
+  source:
+    repository: ljfranklin/terraform-resource
+    tag: latest
