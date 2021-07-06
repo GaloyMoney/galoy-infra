@@ -168,6 +168,9 @@ jobs:
       - name: pipeline-tasks
       - name: modules
       - name: repo
+      outputs:
+      - name: repo
+      - name: galoy-staging
       params:
         BRANCH: #@ data.values.git_branch
       run:
@@ -191,7 +194,6 @@ jobs:
   - in_parallel:
     - { get: repo, passed: [bump-repos], trigger: true}
     - { get: galoy-staging, trigger: true }
-    - { get: pipeline-tasks }
   - put: tf-staging-inception
     params:
       terraform_source: galoy-staging/gcp/staging/inception
