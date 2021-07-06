@@ -14,8 +14,8 @@ source:
 
 #@ def testflight_task_params():
 GOOGLE_CREDENTIALS: #@ data.values.testflight_gcp_creds
-TESTFLIGHT_SSH_PRIVATE_KEY: #@ data.values.testflight_ssh_private_key
-TESTFLIGHT_SSH_PUB_KEY: #@ data.values.testflight_ssh_pub_key
+SSH_PRIVATE_KEY: #@ data.values.testflight_ssh_private_key
+SSH_PUB_KEY: #@ data.values.testflight_ssh_pub_key
 TESTFLIGHT_ADMINS: #@ data.values.testflight_admins
 KUBE_HOST: #@ data.values.concourse_tf_kube_host
 KUBE_CA_CERT: #@ data.values.concourse_tf_kube_ca_cert
@@ -213,11 +213,14 @@ jobs:
       inputs:
       - name: pipeline-tasks
       - name: galoy-staging
+        path: repo
       params:
         BUCKET: #@ data.values.staging_state_bucket
         GOOGLE_CREDENTIALS: #@ data.values.staging_inception_creds
+        STFLIGHT_SSH_PRIVATE_KEY: #@ data.values.staging_ssh_private_key
+        SSH_PUB_KEY: #@ data.values.staging_ssh_pub_key
       run:
-        path: pipeline-tasks/ci/tasks/platform.sh
+        path: pipeline-tasks/ci/tasks/staging-platform.sh
   - put: staging-lock
     params: { release: staging-lock }
 

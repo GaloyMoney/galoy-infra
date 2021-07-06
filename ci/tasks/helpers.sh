@@ -9,11 +9,11 @@ function init_gcloud() {
 ${GOOGLE_CREDENTIALS}
 EOF
   cat <<EOF > ${CI_ROOT}/login.ssh
-${TESTFLIGHT_SSH_PRIVATE_KEY}
+${SSH_PRIVATE_KEY}
 EOF
   chmod 600 ${CI_ROOT}/login.ssh
   cat <<EOF > ${CI_ROOT}/login.ssh.pub
-${TESTFLIGHT_SSH_PUB_KEY}
+${SSH_PUB_KEY}
 EOF
   gcloud auth activate-service-account --key-file ${CI_ROOT}/gcloud-creds.json
   gcloud config set project "${TF_VAR_gcp_project}"
