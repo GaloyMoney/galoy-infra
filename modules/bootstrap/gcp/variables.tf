@@ -1,7 +1,7 @@
 variable "name_prefix" {}
 variable "gcp_project" {}
 variable "tf_state_bucket_location" {
-  default = "US"
+  default = "US-EAST1"
 }
 variable "tf_state_bucket_force_destroy" {
   default = false
