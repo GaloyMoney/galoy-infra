@@ -3,9 +3,6 @@ variable "gcp_project" {}
 variable "region" {
   default = "us-east1"
 }
-variable "primary_zone" {
-  default = "b"
-}
 variable "network_prefix" {
   default = "10.1"
 }
@@ -35,5 +32,5 @@ locals {
   nodes_service_account     = var.node_service_account
   min_default_node_count    = var.min_default_node_count
   max_default_node_count    = var.max_default_node_count
-  cluster_zone              = "${local.region}-${var.primary_zone}"
+  cluster_location          = local.region
 }

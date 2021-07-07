@@ -39,7 +39,7 @@ locals {
   region         = var.region
   network_prefix = var.network_prefix
 
-  cluster_zone         = "${local.region}-${var.primary_zone}"
+  bastion_zone         = "${local.region}-${var.primary_zone}"
   bastion_machine_type = var.bastion_machine_type
   bastion_image        = var.bastion_image
 }
