@@ -21,27 +21,14 @@ resource "google_project_iam_custom_role" "list_objects" {
 data "google_iam_policy" "tf_state_access" {
   binding {
     role    = "roles/storage.admin"
-    members = local.inception_admins
+    members = concat(local.inception_admins, ["serviceAccount:${local.inception_sa}"])
   }
 
   binding {
     role = google_project_iam_custom_role.list_objects.id
     members = [
-      "serviceAccount:${local.inception_sa}",
       "serviceAccount:${google_service_account.bastion.email}",
     ]
-  }
-
-  binding {
-    role = "roles/storage.objectAdmin"
-    members = [
-      "serviceAccount:${local.inception_sa}",
-    ]
-
-    condition {
-      title      = "${local.name_prefix}/inception"
-      expression = "resource.name.startsWith(\"projects/_/buckets/${google_storage_bucket.tf_state.name}/objects/${local.name_prefix}/inception\")"
-    }
   }
 
   binding {
