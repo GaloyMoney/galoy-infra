@@ -69,3 +69,21 @@ resource "google_project_iam_member" "inception_destroy" {
   role    = google_project_iam_custom_role.inception_destroy.id
   member  = "serviceAccount:${var.inception_sa}"
 }
+
+resource "google_project_iam_member" "inception_platform_make" {
+  project = local.project
+  role    = google_project_iam_custom_role.platform_make.id
+  member  = "serviceAccount:${local.inception_sa}"
+}
+
+resource "google_project_iam_member" "inception_platform_destroy" {
+  project = local.project
+  role    = google_project_iam_custom_role.platform_destroy.id
+  member  = "serviceAccount:${local.inception_sa}"
+}
+
+resource "google_project_iam_member" "inception_container_admin" {
+  project = local.project
+  role    = "roles/container.admin"
+  member  = "serviceAccount:${local.inception_sa}"
+}
