@@ -193,7 +193,7 @@ jobs:
     params: { claim: gcp-staging }
   - in_parallel:
     - { get: repo, passed: [bump-repos], trigger: true}
-    - { get: galoy-staging, trigger: true }
+    - { get: galoy-staging }
   - put: tf-staging-inception
     params:
       terraform_source: galoy-staging/gcp/staging/inception
