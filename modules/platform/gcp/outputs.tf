@@ -5,3 +5,11 @@ output "cluster_ca_cert" {
 output "master_endpoint" {
   value = "https://${google_container_cluster.primary.private_cluster_config.0.private_endpoint}"
 }
+
+output "cluster_name" {
+  value = google_container_cluster.primary.name
+}
+
+output "cluster_location" {
+  value = google_container_cluster.primary.location
+}
