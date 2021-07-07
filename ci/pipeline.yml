@@ -205,22 +205,9 @@ jobs:
   - in_parallel:
     - { get: repo, passed: [staging-inception], trigger: true}
     - { get: galoy-staging, trigger: true, passed: [staging-inception] }
-    - { get: pipeline-tasks }
-  - task: platform
-    config:
-      platform: linux
-      image_resource: #@ task_image_config()
-      inputs:
-      - name: pipeline-tasks
-      - name: galoy-staging
-        path: repo
-      params:
-        BUCKET: #@ data.values.staging_state_bucket
-        GOOGLE_CREDENTIALS: #@ data.values.staging_inception_creds
-        STFLIGHT_SSH_PRIVATE_KEY: #@ data.values.staging_ssh_private_key
-        SSH_PUB_KEY: #@ data.values.staging_ssh_pub_key
-      run:
-        path: pipeline-tasks/ci/tasks/staging-platform.sh
+  - put: tf-staging-platform
+    params:
+      terraform_source: galoy-staging/gcp/staging/platform
   - put: staging-lock
     params: { release: staging-lock }
 
@@ -293,6 +280,18 @@ resources:
     backend_config:
       bucket: #@ data.values.staging_state_bucket
       prefix: galoy-staging/inception
+      credentials: #@ data.values.staging_inception_creds
+    env:
+      GOOGLE_CREDENTIALS: #@ data.values.staging_inception_creds
+
+- name: tf-staging-platform
+  type: terraform
+  source:
+    env_name: default
+    backend_type: gcs
+    backend_config:
+      bucket: #@ data.values.staging_state_bucket
+      prefix: galoy-staging/platform
       credentials: #@ data.values.staging_inception_creds
     env:
       GOOGLE_CREDENTIALS: #@ data.values.staging_inception_creds
