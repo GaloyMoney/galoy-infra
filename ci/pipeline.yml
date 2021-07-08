@@ -316,7 +316,7 @@ resources:
     backend_type: gcs
     backend_config:
       bucket: #@ data.values.staging_state_bucket
-      prefix: galoy-staging/services
+      prefix: galoy-staging/services/base
       credentials: #@ data.values.staging_inception_creds
     env:
       GOOGLE_CREDENTIALS: #@ data.values.staging_inception_creds
