@@ -39,6 +39,7 @@ groups:
   - bump-repos
   - staging-inception
   - staging-platform
+  - staging-services
 - name: image
   jobs: [ build-pipeline-image ]
 
@@ -208,6 +209,18 @@ jobs:
   - put: tf-staging-platform
     params:
       terraform_source: galoy-staging/gcp/staging/platform
+
+- name: staging-services
+  serial_groups: [staging]
+  plan:
+  - { get: staging-lock, passed: [staging-platform]}
+  - in_parallel:
+    - { get: repo, passed: [staging-platform], trigger: true}
+    - { get: galoy-staging, trigger: true, passed: [staging-platform] }
+  - put: tf-staging-services
+    tags: ["staging"]
+    params:
+      terraform_source: galoy-staging/gcp/staging/services
   - put: staging-lock
     params: { release: staging-lock }
 
@@ -292,6 +305,18 @@ resources:
     backend_config:
       bucket: #@ data.values.staging_state_bucket
       prefix: galoy-staging/platform
+      credentials: #@ data.values.staging_inception_creds
+    env:
+      GOOGLE_CREDENTIALS: #@ data.values.staging_inception_creds
+
+- name: tf-staging-services
+  type: terraform
+  source:
+    env_name: default
+    backend_type: gcs
+    backend_config:
+      bucket: #@ data.values.staging_state_bucket
+      prefix: galoy-staging/services
       credentials: #@ data.values.staging_inception_creds
     env:
       GOOGLE_CREDENTIALS: #@ data.values.staging_inception_creds
