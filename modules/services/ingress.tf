@@ -41,10 +41,11 @@ resource "kubernetes_manifest" "issuer" {
         privateKeySecretRef = {
           name = "letsencrypt-issuer"
         }
-        "solvers" = [
-          { http01 = {
-            ingress = {
-    class = "nginx" } } }] } }
+        solvers = [
+          { http01 = { ingress = { class = "nginx" } } }
+        ]
+      }
+    }
   }
 
   depends_on = [
