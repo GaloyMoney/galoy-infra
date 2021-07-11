@@ -54,6 +54,11 @@ resource "google_container_cluster" "primary" {
     services_secondary_range_name = local.svc_range_name
   }
 
+  network_policy {
+    enabled  = true
+    provider = "CALICO"
+  }
+
   maintenance_policy {
     daily_maintenance_window {
       start_time = "05:00"
