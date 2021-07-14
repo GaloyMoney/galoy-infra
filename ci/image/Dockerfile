@@ -19,10 +19,6 @@ RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s 
             && chmod +x ./kubectl \
             && mv ./kubectl /usr/local/bin
 
-RUN git clone https://github.com/bats-core/bats-core.git \
-            && cd bats-core \
-            && ./install.sh /usr/local
-
 RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.cloud.google.com/apt cloud-sdk main" | \
   tee -a /etc/apt/sources.list.d/google-cloud-sdk.list \
   && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg \

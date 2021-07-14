@@ -10,8 +10,6 @@ fi
 target="${FLY_TARGET:-galoy}"
 team=dev
 
-REPO_ROOT_DIR="$(dirname $( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd ))"
-
 TMPDIR=""¬
 TMPDIR=$(mktemp -d -t repipe.XXXXXX)
 trap "rm -rf ${TMPDIR}" INT TERM QUIT EXIT
