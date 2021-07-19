@@ -5,7 +5,7 @@ apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_re
 
 # Keep make and terraform the first items installed as they are needed
 # for testflight to complete
-apt-get update && apt-get install -y make terraform jq tree
+apt-get update && apt-get install -y make terraform jq tree wget
 
 cat <<EOF > /etc/profile.d/aliases.sh
 alias tf="terraform"
@@ -25,3 +25,8 @@ mv ./kubectl /usr/local/bin
 curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
 
 wget -O- https://k14s.io/install.sh | bash
+
+BITCOIN_VERSION=0.21.1
+wget https://bitcoin.org/bin/bitcoin-core-${BITCOIN_VERSION}/bitcoin-${BITCOIN_VERSION}-x86_64-linux-gnu.tar.gz \
+  && tar -xvf bitcoin-${BITCOIN_VERSION}-x86_64-linux-gnu.tar.gz \
+  && mv bitcoin-${BITCOIN_VERSION}/bin/* /usr/local/bin
