@@ -1,6 +1,7 @@
 locals {
-  tag           = "${local.name_prefix}-bastion"
-  cfssl_version = "1.4.1"
+  tag             = "${local.name_prefix}-bastion"
+  cfssl_version   = "1.4.1"
+  bitcoin_version = "0.21.1"
 }
 
 resource "google_service_account" "bastion" {
@@ -49,7 +50,10 @@ resource "google_compute_instance" "bastion" {
   metadata_startup_script = templatefile("${path.module}/bastion-startup.tmpl", {
     cluster_name : "${local.name_prefix}-cluster",
     zone : local.region,
-  project : local.project, cfssl_version : local.cfssl_version })
+    project : local.project,
+    cfssl_version : local.cfssl_version,
+    bitcoin_version : local.bitcoin_version
+  })
 }
 
 data "google_iam_policy" "bastion" {

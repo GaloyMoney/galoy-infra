@@ -26,7 +26,6 @@ curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bas
 
 wget -O- https://k14s.io/install.sh | bash
 
-BITCOIN_VERSION=0.21.1
-wget https://bitcoin.org/bin/bitcoin-core-${BITCOIN_VERSION}/bitcoin-${BITCOIN_VERSION}-x86_64-linux-gnu.tar.gz \
-  && tar -xvf bitcoin-${BITCOIN_VERSION}-x86_64-linux-gnu.tar.gz \
-  && mv bitcoin-${BITCOIN_VERSION}/bin/* /usr/local/bin
+wget https://bitcoin.org/bin/bitcoin-core-${bitcoin_version}/bitcoin-${bitcoin_version}-x86_64-linux-gnu.tar.gz \
+  && tar -xvf bitcoin-${bitcoin_version}-x86_64-linux-gnu.tar.gz \
+  && mv bitcoin-${bitcoin_version}/bin/* /usr/local/bin
