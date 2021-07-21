@@ -14,7 +14,7 @@ variable "users" {
 }
 
 module "inception" {
-  source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/inception/gcp?ref=b19456b"
+  source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/inception/gcp?ref=e909d20"
   # source = "../../../modules/inception/gcp"
 
   name_prefix              = var.name_prefix
