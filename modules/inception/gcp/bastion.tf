@@ -8,6 +8,7 @@ resource "google_service_account" "bastion" {
   project      = local.project
   account_id   = "${local.name_prefix}-bastion"
   display_name = "Bastion account for ${local.name_prefix}"
+
 }
 
 resource "google_compute_address" "bastion" {
