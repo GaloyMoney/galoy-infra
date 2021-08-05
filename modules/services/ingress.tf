@@ -1,6 +1,9 @@
 resource "kubernetes_namespace" "ingress" {
   metadata {
     name = local.ingress_namespace
+    labels = {
+      type = "ingress-nginx"
+    }
   }
 }
 
