@@ -27,6 +27,12 @@ provider "kubernetes" {
   cluster_ca_certificate = module.platform.cluster_ca_cert
 }
 
+provider "kubernetes-alpha" {
+  host                   = module.platform.master_endpoint
+  token                  = data.google_client_config.default.access_token
+  cluster_ca_certificate = module.platform.cluster_ca_cert
+}
+
 provider "helm" {
   kubernetes {
     host                   = module.platform.master_endpoint
