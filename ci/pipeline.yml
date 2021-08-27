@@ -20,7 +20,7 @@ TESTFLIGHT_ADMINS: #@ data.values.testflight_admins
 KUBE_HOST: #@ data.values.concourse_tf_kube_host
 KUBE_CA_CERT: #@ data.values.concourse_tf_kube_ca_cert
 KUBE_TOKEN: #@ data.values.concourse_tf_kube_token
-TF_VAR_name_prefix: new-testflight
+TF_VAR_name_prefix: testflight-a
 TF_VAR_gcp_project: galoy-infra-testflight
 TF_VAR_enable_services: false
 BRANCH: #@ data.values.git_branch
