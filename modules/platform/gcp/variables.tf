@@ -17,7 +17,7 @@ variable "min_default_node_count" {
   default = 1
 }
 variable "max_default_node_count" {
-  default = 5
+  default = 3
 }
 
 locals {
