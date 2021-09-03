@@ -8,12 +8,12 @@ update_examples_git_ref
 make_commit "Bump modules to '${MODULES_GIT_REF}' in examples"
 popd
 
-pushd galoy-staging/gcp/staging
+pushd galoy-staging/modules
 
 echo "Bumping refs for galoy-staging"
-sed -i'' "s/ref=.*\"/ref=${MODULES_GIT_REF}\"/" bootstrap/main.tf
-sed -i'' "s/ref=.*\"/ref=${MODULES_GIT_REF}\"/" inception/main.tf
-sed -i'' "s/ref=.*\"/ref=${MODULES_GIT_REF}\"/" platform/main.tf
-sed -i'' "s/ref=.*\"/ref=${MODULES_GIT_REF}\"/" services/main.tf
+sed -i'' "s/ref=.*\"/ref=${MODULES_GIT_REF}\"/" gcp/bootstrap/main.tf
+sed -i'' "s/ref=.*\"/ref=${MODULES_GIT_REF}\"/" gcp/inception/main.tf
+sed -i'' "s/ref=.*\"/ref=${MODULES_GIT_REF}\"/" gcp/platform/main.tf
+sed -i'' "s/ref=.*\"/ref=${MODULES_GIT_REF}\"/" services/base/main.tf
 
-make_commit "Bump modules to '${MODULES_GIT_REF}' in gcp/staging"
+make_commit "Bump galoy-infra modules to '${MODULES_GIT_REF}'"
