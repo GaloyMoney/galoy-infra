@@ -249,7 +249,12 @@ resources:
 - name: galoy-staging
   type: git
   source:
-    paths: [gcp/staging/*]
+    paths:
+    - gcp/staging/*
+    - modules/gcp/platform
+    - module/gcp/bootstrap
+    - module/gcp/inception
+    - module/services/base
     uri: #@ data.values.deployments_git_uri
     branch: #@ data.values.git_branch
     private_key: #@ data.values.github_private_key
