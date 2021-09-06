@@ -29,8 +29,6 @@ resource "helm_release" "cert_manager" {
 }
 
 resource "kubernetes_manifest" "issuer" {
-  provider = kubernetes-alpha
-
   manifest = {
     apiVersion = "cert-manager.io/v1"
     kind       = "ClusterIssuer"
