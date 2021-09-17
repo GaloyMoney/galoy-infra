@@ -36,3 +36,8 @@ RUN wget https://github.com/bodymindarts/cepler/releases/download/v0.6.5/cepler-
   && mv cepler-x86_64-unknown-linux-musl-0.6.5/cepler /usr/local/bin \
   && chmod +x /usr/local/bin/cepler \
   && rm -rf ./cepler-*
+
+RUN mkdir ghcli && cd ghcli \
+  && wget https://github.com/cli/cli/releases/download/v2.0.0/gh_2.0.0_linux_386.tar.gz -O ghcli.tar.gz \
+  && tar --strip-components=1 -xf ghcli.tar.gz \
+  && mv bin/gh /usr/local/bin && cd ../ && rm -rf ./ghcli
