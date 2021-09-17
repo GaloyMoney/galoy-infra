@@ -221,8 +221,11 @@ jobs:
     tags: ["staging"]
     params:
       terraform_source: galoy-staging/gcp/staging/services
-  - put: staging-lock
-    params: { release: staging-lock }
+  - in_parallel:
+    - put: staging-lock
+      params: { release: staging-lock }
+    - put: cepler-out
+      params: { repository: galoy-staging }
 
 resources:
 - name: repo
@@ -255,6 +258,7 @@ resources:
     - module/gcp/bootstrap
     - module/gcp/inception
     - module/services/base
+    - cepler.yml
     uri: #@ data.values.deployments_git_uri
     branch: #@ data.values.git_branch
     private_key: #@ data.values.github_private_key
@@ -326,9 +330,24 @@ resources:
     env:
       GOOGLE_CREDENTIALS: #@ data.values.staging_inception_creds
 
+- name: cepler-out
+  type: cepler-out
+  source:
+    uri: #@ data.values.deployments_git_uri
+    branch: #@ data.values.git_branch
+    private_key: #@ data.values.github_private_key
+    environment: gcp-staging-infra
+    config: cepler.yml
+
 resource_types:
 - name: terraform
   type: docker-image
   source:
     repository: ljfranklin/terraform-resource
     tag: latest
+
+- name: cepler-out
+  type: registry-image
+  source:
+    repository: cepler/cepler-concourse-resource
+    tag: 0.6.5
