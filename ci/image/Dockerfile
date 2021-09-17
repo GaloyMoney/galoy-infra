@@ -5,7 +5,7 @@ RUN wget -O- https://carvel.dev/install.sh | bash
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update \
   && apt-get install -y \
-  tzdata curl make git build-essential lsb-release \
+  tzdata wget curl make git build-essential lsb-release \
   apt-transport-https ca-certificates \
   gnupg software-properties-common \
   vim jq rsync \
