@@ -27,6 +27,16 @@ BRANCH: #@ data.values.git_branch
 #@ end
 
 groups:
+- name: all
+  jobs:
+  - testflight-bootstrap
+  - testflight-inception
+  - testflight-platform
+  - testflight-cleanup
+  - bump-repos
+  - staging-inception
+  - staging-platform
+  - staging-services
 - name: testflight
   jobs:
   - testflight-bootstrap
@@ -36,7 +46,6 @@ groups:
   - bump-repos
 - name: staging
   jobs:
-  - bump-repos
   - staging-inception
   - staging-platform
   - staging-services
@@ -193,39 +202,36 @@ jobs:
   - put: staging-lock
     params: { claim: gcp-staging }
   - in_parallel:
-    - { get: repo, passed: [bump-repos], trigger: true}
-    - { get: galoy-staging }
+    - { get: cepler-galoy-staging, trigger: true }
   - put: tf-staging-inception
     params:
-      terraform_source: galoy-staging/gcp/staging/inception
+      terraform_source: cepler-galoy-staging/gcp/staging/inception
 
 - name: staging-platform
   serial_groups: [staging]
   plan:
   - { get: staging-lock, passed: [staging-inception]}
   - in_parallel:
-    - { get: repo, passed: [staging-inception], trigger: true}
-    - { get: galoy-staging, trigger: true, passed: [staging-inception] }
+    - { get: cepler-galoy-staging, trigger: true, passed: [staging-inception] }
   - put: tf-staging-platform
     params:
-      terraform_source: galoy-staging/gcp/staging/platform
+      terraform_source: cepler-galoy-staging/gcp/staging/platform
 
 - name: staging-services
   serial_groups: [staging]
   plan:
   - { get: staging-lock, passed: [staging-platform]}
   - in_parallel:
-    - { get: repo, passed: [staging-platform], trigger: true}
-    - { get: galoy-staging, trigger: true, passed: [staging-platform] }
+    - { get: cepler-galoy-staging, trigger: true, passed: [staging-platform] }
   - put: tf-staging-services
     tags: ["staging"]
     params:
-      terraform_source: galoy-staging/gcp/staging/services
+      terraform_source: cepler-galoy-staging/gcp/staging/services
   - in_parallel:
     - put: staging-lock
       params: { release: staging-lock }
     - put: cepler-out
-      params: { repository: galoy-staging }
+      params: { repository: cepler-galoy-staging }
 
 resources:
 - name: repo
@@ -336,8 +342,21 @@ resources:
     uri: #@ data.values.deployments_git_uri
     branch: #@ data.values.git_branch
     private_key: #@ data.values.github_private_key
-    environment: gcp-staging-infra
-    config: cepler.yml
+    environment: gcp-staging
+    config: cepler/infra.yml
+    gates_branch: #@ data.values.cepler_gates_branch
+    gates_file: #@ data.values.cepler_gates_file
+
+- name: cepler-galoy-staging
+  type: cepler-in
+  source:
+    uri: #@ data.values.deployments_git_uri
+    branch: #@ data.values.git_branch
+    private_key: #@ data.values.github_private_key
+    environment: gcp-staging
+    config: cepler/infra.yml
+    gates_branch: #@ data.values.cepler_gates_branch
+    gates_file: #@ data.values.cepler_gates_file
 
 resource_types:
 - name: terraform
@@ -346,8 +365,14 @@ resource_types:
     repository: ljfranklin/terraform-resource
     tag: latest
 
+- name: cepler-in
+  type: registry-image
+  source:
+    repository: cepler/cepler-concourse-resource
+    tag: 0.7.0
+
 - name: cepler-out
   type: registry-image
   source:
     repository: cepler/cepler-concourse-resource
-    tag: 0.6.5
+    tag: 0.7.0
