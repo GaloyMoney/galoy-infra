@@ -31,9 +31,9 @@ RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | g
   | tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
   && apt update && apt install gh
 
-RUN wget https://github.com/bodymindarts/cepler/releases/download/v0.6.5/cepler-x86_64-unknown-linux-musl-0.6.5.tar.gz \
-  && tar -zxvf cepler-x86_64-unknown-linux-musl-0.6.5.tar.gz \
-  && mv cepler-x86_64-unknown-linux-musl-0.6.5/cepler /usr/local/bin \
+RUN wget https://github.com/bodymindarts/cepler/releases/download/v0.7.0/cepler-x86_64-unknown-linux-musl-0.7.0.tar.gz \
+  && tar -zxvf cepler-x86_64-unknown-linux-musl-0.7.0.tar.gz \
+  && mv cepler-x86_64-unknown-linux-musl-0.7.0/cepler /usr/local/bin \
   && chmod +x /usr/local/bin/cepler \
   && rm -rf ./cepler-*
 
