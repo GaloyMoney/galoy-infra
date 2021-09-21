@@ -26,6 +26,12 @@ curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bas
 
 wget -O- https://k14s.io/install.sh | bash
 
+wget https://github.com/bodymindarts/cepler/releases/download/v${cepler_version}/cepler-x86_64-unknown-linux-musl-${cepler_version}.tar.gz \
+  && tar -zxvf cepler-x86_64-unknown-linux-musl-${cepler_version}.tar.gz \
+  && mv cepler-x86_64-unknown-linux-musl-${cepler_version}/cepler /usr/local/bin \
+  && chmod +x /usr/local/bin/cepler \
+  && rm -rf ./cepler-*
+
 wget https://bitcoin.org/bin/bitcoin-core-${bitcoin_version}/bitcoin-${bitcoin_version}-x86_64-linux-gnu.tar.gz \
   && tar -xvf bitcoin-${bitcoin_version}-x86_64-linux-gnu.tar.gz \
   && mv bitcoin-${bitcoin_version}/bin/* /usr/local/bin
