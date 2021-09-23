@@ -21,7 +21,7 @@ locals {
   letsencrypt_issuer_email = var.letsencrypt_issuer_email
 }
 
-output "smoketest_kubeconf" {
+output "smoketest_kubeconfig" {
   value = base64encode(templatefile("${path.module}/kubeconfig.tmpl.yml",
     { name : "smoketest",
       cert : local.cluster_ca_cert,
