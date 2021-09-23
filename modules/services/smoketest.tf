@@ -31,19 +31,6 @@ data "kubernetes_secret" "smoketest_token" {
   }
 }
 
-resource "kubernetes_secret" "testflight_kube_config" {
-  metadata {
-    name      = "misthos-network.testflight-kube-config"
-    namespace = local.concourse_namespace
-  }
-
-  data = {
-    host    = module.platform.master_endpoint
-    token   = data.kubernetes_secret.testflight_token.data.token
-    ca_cert = module.platform.cluster_ca_cert
-  }
-}
-
 resource "kubernetes_role_binding" "smoketest" {
   metadata {
     name      = local.smoketest_name
