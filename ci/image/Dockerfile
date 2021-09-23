@@ -1,7 +1,5 @@
 FROM ubuntu
 
-RUN wget -O- https://carvel.dev/install.sh | bash
-
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update \
   && apt-get install -y \
@@ -41,3 +39,5 @@ RUN mkdir ghcli && cd ghcli \
   && wget https://github.com/cli/cli/releases/download/v2.0.0/gh_2.0.0_linux_386.tar.gz -O ghcli.tar.gz \
   && tar --strip-components=1 -xf ghcli.tar.gz \
   && mv bin/gh /usr/local/bin && cd ../ && rm -rf ./ghcli
+
+RUN wget -O- https://carvel.dev/install.sh | bash
