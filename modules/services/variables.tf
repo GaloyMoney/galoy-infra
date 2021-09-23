@@ -3,10 +3,10 @@ variable "cluster_endpoint" {}
 variable "cluster_ca_cert" {}
 
 variable "ingress_nginx_version" {
-  default = "3.34.0"
+  default = "3.37.0"
 }
 variable "cert_manager_version" {
-  default = "v1.4.0"
+  default = "v1.5.3"
 }
 variable "letsencrypt_issuer_email" {}
 
