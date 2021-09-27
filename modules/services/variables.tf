@@ -30,3 +30,7 @@ output "smoketest_kubeconfig" {
       token = data.kubernetes_secret.smoketest_token.data.token
   }))
 }
+
+output "ingress_ip" {
+  value = data.kubernetes_service.nginx_ingress.spec.external_ips[0]
+}
