@@ -15,13 +15,6 @@ resource "helm_release" "ingress_nginx" {
   chart      = "ingress-nginx"
 }
 
-data "kubernetes_service" "nginx_ingress" {
-  metadata {
-    name      = "${helm_release.ingress_nginx.name}-controller"
-    namespace = kubernetes_namespace.ingress.metadata[0].name
-  }
-}
-
 resource "helm_release" "cert_manager" {
   namespace  = helm_release.ingress_nginx.namespace
   name       = "cert-manager"
