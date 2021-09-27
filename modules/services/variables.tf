@@ -32,5 +32,5 @@ output "smoketest_kubeconfig" {
 }
 
 output "ingress_ip" {
-  value = data.kubernetes_service.nginx_ingress.spec.external_ips[0]
+  value = data.kubernetes_service.nginx_ingress.spec.0.external_ips[0]
 }
