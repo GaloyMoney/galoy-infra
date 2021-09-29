@@ -2,7 +2,7 @@ locals {
   tag             = "${local.name_prefix}-bastion"
   cfssl_version   = "1.6.0"
   bitcoin_version = "0.22.0"
-  cepler_version  = "0.7.1"
+  cepler_version  = "0.7.2"
 }
 
 resource "google_service_account" "bastion" {
