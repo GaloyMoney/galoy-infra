@@ -15,3 +15,8 @@ output "cluster_sa" {
   description = "Service Account for cluster nodes."
   value       = google_service_account.cluster_service_account.email
 }
+
+output "grafana_sa" {
+  description = "Service Account for grafana."
+  value       = google_service_account.grafana_service_account.email
+}
