@@ -54,6 +54,18 @@ data "google_iam_policy" "tf_state_access" {
       expression = "resource.name.startsWith(\"projects/_/buckets/${google_storage_bucket.tf_state.name}/objects/${local.name_prefix}/services\")"
     }
   }
+
+  binding {
+    role = "roles/storage.objectAdmin"
+    members = [
+      "serviceAccount:${google_service_account.bastion.email}",
+    ]
+
+    condition {
+      title      = "${local.name_prefix}/galoy"
+      expression = "resource.name.startsWith(\"projects/_/buckets/${google_storage_bucket.tf_state.name}/objects/${local.name_prefix}/galoy\")"
+    }
+  }
 }
 
 resource "google_storage_bucket_iam_policy" "policy" {
