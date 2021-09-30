@@ -1,6 +1,6 @@
 variable "name_prefix" {}
 variable "tf_state_bucket_name" {}
-variable "tf_state_bucket_location" {
+variable "buckets_location" {
   default = "US"
 }
 variable "gcp_project" {}
