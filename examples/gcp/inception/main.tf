@@ -1,7 +1,7 @@
 variable "name_prefix" {}
 variable "tf_state_bucket_name" {}
 variable "buckets_location" {
-  default = "US"
+  default = "US-EAST1"
 }
 variable "gcp_project" {}
 variable "inception_sa" {}
