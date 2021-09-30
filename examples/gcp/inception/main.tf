@@ -17,11 +17,11 @@ module "inception" {
   source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/inception/gcp?ref=b5d513d"
   # source = "../../../modules/inception/gcp"
 
-  name_prefix              = var.name_prefix
-  gcp_project              = var.gcp_project
-  inception_sa             = var.inception_sa
-  tf_state_bucket_name     = var.tf_state_bucket_name
-  tf_state_bucket_location = var.tf_state_bucket_location
+  name_prefix          = var.name_prefix
+  gcp_project          = var.gcp_project
+  inception_sa         = var.inception_sa
+  tf_state_bucket_name = var.tf_state_bucket_name
+  buckets_location     = var.buckets_location
 
   users = var.users
 }
