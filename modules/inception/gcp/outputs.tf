@@ -20,3 +20,13 @@ output "grafana_sa" {
   description = "Service Account for grafana."
   value       = google_service_account.grafana_service_account.email
 }
+
+output "backups_bucket_name" {
+  description = "The name of the bucket where backups shall be stored"
+  value = google_storage_bucket.backups.name
+}
+
+output "backups_sa" {
+  description = "Service Account for for the backups bucket."
+  value       = google_service_account.backups.email
+}
