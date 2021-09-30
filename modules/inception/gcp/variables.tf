@@ -30,8 +30,8 @@ locals {
   name_prefix              = var.name_prefix
   tf_state_bucket_name     = var.tf_state_bucket_name
   tf_state_bucket_location = var.buckets_location
-  backups_bucket_name       = "${local.name_prefix}-backups"
-  backups_bucket_location   = var.buckets_location
+  backups_bucket_name      = "${local.name_prefix}-backups"
+  backups_bucket_location  = var.buckets_location
   project                  = var.gcp_project
   inception_sa             = var.inception_sa
   inception_admins         = [for user in var.users : user.id if user.inception]

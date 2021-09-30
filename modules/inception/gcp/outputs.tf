@@ -23,7 +23,7 @@ output "grafana_sa" {
 
 output "backups_bucket_name" {
   description = "The name of the bucket where backups shall be stored"
-  value = google_storage_bucket.backups.name
+  value       = google_storage_bucket.backups.name
 }
 
 output "backups_sa" {
