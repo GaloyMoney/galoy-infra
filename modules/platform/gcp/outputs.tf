@@ -13,3 +13,11 @@ output "cluster_name" {
 output "cluster_location" {
   value = google_container_cluster.primary.location
 }
+
+output "lnd1_ip" {
+  value = google_compute_address.lnd1.address
+}
+
+output "lnd2_ip" {
+  value = google_compute_address.lnd2.address
+}
