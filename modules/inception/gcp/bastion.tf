@@ -3,6 +3,7 @@ locals {
   cfssl_version   = "1.6.1"
   bitcoin_version = "0.22.0"
   cepler_version  = "0.7.2"
+  kubectl_version  = "1.19.13"
 }
 
 resource "google_service_account" "bastion" {
@@ -56,6 +57,7 @@ resource "google_compute_instance" "bastion" {
     cfssl_version : local.cfssl_version,
     bitcoin_version : local.bitcoin_version
     cepler_version : local.cepler_version
+    kubectl_version : local.kubectl_version
   })
 }
 
