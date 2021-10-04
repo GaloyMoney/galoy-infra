@@ -35,6 +35,7 @@ resource "kubernetes_manifest" "issuer" {
     metadata = {
       name = "letsencrypt-issuer"
     }
+
     spec = {
       acme = {
         server = "https://acme-v02.api.letsencrypt.org/directory"
