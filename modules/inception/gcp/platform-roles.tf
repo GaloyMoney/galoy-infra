@@ -25,6 +25,8 @@ resource "google_project_iam_custom_role" "platform_make" {
     "compute.backendBuckets.create",
     "compute.backendBuckets.get",
     "compute.backendBuckets.use",
+    "compute.addresses.create",
+    "compute.addresses.get",
     "compute.globalAddresses.create",
     "compute.globalAddresses.get",
     "compute.globalAddresses.use",
@@ -66,6 +68,7 @@ resource "google_project_iam_custom_role" "platform_destroy" {
   description = "Role for destroying the platform ${local.name_prefix}"
   permissions = [
     "compute.backendBuckets.delete",
+    "compute.addresses.delete",
     "compute.globalAddresses.delete",
     "compute.globalForwardingRules.delete",
     "compute.firewalls.delete",
