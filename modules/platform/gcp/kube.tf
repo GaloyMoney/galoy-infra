@@ -162,7 +162,7 @@ resource "google_container_node_pool" "default" {
     ]
 
     workload_metadata_config {
-      node_metadata = "GKE_METADATA_SERVER"
+      mode = "GKE_METADATA"
     }
 
     shielded_instance_config {
