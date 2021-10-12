@@ -54,6 +54,8 @@ jobs:
 - name: testflight-bootstrap
   serial_groups: [testflight]
   plan:
+  - put: testflight-lock
+    params: { claim: gcp-testflight }
   - in_parallel:
     - { get: modules, trigger: true}
     - { get: repo }
@@ -73,6 +75,7 @@ jobs:
 - name: testflight-inception
   serial_groups: [testflight]
   plan:
+  - { get: testflight-lock, passed: [testflight-bootstrap] }
   - in_parallel:
     - { get: modules, trigger: true, passed: [testflight-bootstrap]}
     - { get: repo, trigger: true, passed: [testflight-bootstrap] }
@@ -92,6 +95,7 @@ jobs:
 - name: testflight-platform
   serial_groups: [testflight]
   plan:
+  - { get: testflight-lock, passed: [testflight-inception] }
   - in_parallel:
     - { get: modules, trigger: true, passed: [testflight-inception]}
     - { get: repo, trigger: true, passed: [testflight-inception] }
@@ -111,6 +115,7 @@ jobs:
 - name: testflight-cleanup
   serial_groups: [testflight]
   plan:
+  - { get: testflight-lock, passed: [testflight-platform] }
   - in_parallel:
     - { get: modules, passed: [testflight-platform], trigger: true}
     - { get: repo, trigger: true, passed: [testflight-platform] }
@@ -128,6 +133,8 @@ jobs:
       params: #@ testflight_task_params()
       run:
         path: pipeline-tasks/ci/tasks/teardown.sh
+  - put: testflight-lock
+    params: { release: testflight-lock }
 
 - name: bump-repos
   plan:
@@ -220,6 +227,14 @@ resources:
   source:
     uri: #@ data.values.deployments_git_uri
     branch: #@ data.values.git_branch
+    private_key: #@ data.values.github_private_key
+
+- name: testflight-lock
+  type: pool
+  source:
+    uri: git@github.com:GaloyMoney/concourse-locks.git
+    branch: main
+    pool: infra-testflight
     private_key: #@ data.values.github_private_key
 
 - name: tf-staging-inception
