@@ -52,7 +52,6 @@ groups:
 
 jobs:
 - name: testflight-bootstrap
-  serial_groups: [testflight]
   plan:
   - put: testflight-lock
     params: { claim: gcp-testflight }
@@ -73,7 +72,6 @@ jobs:
         path: pipeline-tasks/ci/tasks/bootstrap.sh
 
 - name: testflight-inception
-  serial_groups: [testflight]
   plan:
   - { get: testflight-lock, passed: [testflight-bootstrap] }
   - in_parallel:
@@ -93,7 +91,6 @@ jobs:
         path: pipeline-tasks/ci/tasks/inception.sh
 
 - name: testflight-platform
-  serial_groups: [testflight]
   plan:
   - { get: testflight-lock, passed: [testflight-inception] }
   - in_parallel:
@@ -113,7 +110,6 @@ jobs:
         path: pipeline-tasks/ci/tasks/platform.sh
 
 - name: testflight-cleanup
-  serial_groups: [testflight]
   plan:
   - { get: testflight-lock, passed: [testflight-platform] }
   - in_parallel:
