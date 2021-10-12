@@ -10,7 +10,7 @@ variable "kube_version" {
   default = "1.21.3-gke.2001"
 }
 variable "node_default_machine_type" {
-  default = "n2-standard-2"
+  default = "n2-standard-4"
 }
 variable "node_service_account" {}
 variable "min_default_node_count" {
