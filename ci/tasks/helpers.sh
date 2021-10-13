@@ -49,7 +49,7 @@ EOF
 function write_users() {
    echo ${TESTFLIGHT_ADMINS} | \
      jq --arg sa "$(cat ${CI_ROOT}/gcloud-creds.json | jq -r '.client_email')" \
-     '{ users: [ .[] | { id: ., inception: true, platform: true }, { id: "serviceAccount:\($sa)", inception: true, platform: true, logs: true } ]}' > inception/users.auto.tfvars.json
+     '{ users: [ .[] | { id: ., inception: true, platform: true, logs: true }, { id: "serviceAccount:\($sa)", inception: true, platform: true, logs: true } ]}' > inception/users.auto.tfvars.json
 }
 
 function cleanup_inception_key() {
