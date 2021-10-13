@@ -23,6 +23,7 @@ variable "users" {
     id        = string
     inception = bool
     platform  = bool
+    logs      = bool
   }))
 }
 
@@ -34,6 +35,7 @@ locals {
   backups_bucket_location  = var.buckets_location
   project                  = var.gcp_project
   inception_sa             = var.inception_sa
+  log_viewers              = [for user in var.users : user.id if user.logs]
   inception_admins         = [for user in var.users : user.id if user.inception]
 
   platform_admins = concat([for user in var.users : user.id if user.platform], ["serviceAccount:${var.inception_sa}"])

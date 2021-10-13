@@ -10,6 +10,7 @@ variable "users" {
     id        = string
     inception = bool
     platform  = bool
+    logs      = bool
   }))
 }
 
