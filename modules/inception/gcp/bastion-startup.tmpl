@@ -41,7 +41,7 @@ wget -qO - https://www.mongodb.org/static/pgp/server-5.0.asc | apt-key add - \
   && apt-get update \
   && apt-get install -y mongodb-org-tools
 
- wget lnd-linux-amd64-v${lnd_version}-beta.tar.gz \
+wget https://github.com/lightningnetwork/lnd/releases/download/v${lnd_version}-beta/lnd-linux-amd64-v${lnd_version}-beta.tar.gz \
    && tar -xvfz lnd-linux-amd64-v${lnd_version}-beta.tar.gz \
    && mv lnd-linux-amd64-v${lnd_version}-beta/lncli /usr/local/bin \
    && rm -rf lnd-linux-amd64-v${lnd_version}-*
