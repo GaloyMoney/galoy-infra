@@ -49,6 +49,7 @@ resource "google_compute_instance" "bastion" {
 
   metadata = {
     enable-oslogin = "TRUE"
+    enable-oslogin-2fa = "TRUE"
   }
 
   metadata_startup_script = templatefile("${path.module}/bastion-startup.tmpl", {
