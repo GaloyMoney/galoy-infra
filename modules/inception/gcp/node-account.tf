@@ -4,12 +4,6 @@ resource "google_service_account" "cluster_service_account" {
   display_name = "${local.name_prefix} Cluster"
 }
 
-resource "google_service_account_iam_member" "nodes_account_iam" {
-  service_account_id = google_service_account.cluster_service_account.name
-  role               = "roles/iam.serviceAccountUser"
-  member             = "serviceAccount:${google_service_account.bastion.email}"
-}
-
 resource "google_project_iam_member" "cluster_service_account_log_writer" {
   project = local.project
   role    = "roles/logging.logWriter"

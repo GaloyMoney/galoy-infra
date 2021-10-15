@@ -24,46 +24,56 @@ data "google_iam_policy" "tf_state_access" {
     members = concat(local.inception_admins, ["serviceAccount:${local.inception_sa}"])
   }
 
-  binding {
-    role = google_project_iam_custom_role.list_objects.id
-    members = [
-      "serviceAccount:${google_service_account.bastion.email}",
-    ]
-  }
-
-  binding {
-    role = "roles/storage.objectAdmin"
-    members = [
-      "serviceAccount:${google_service_account.bastion.email}",
-    ]
-
-    condition {
-      title      = "${local.name_prefix}/platform"
-      expression = "resource.name.startsWith(\"projects/_/buckets/${google_storage_bucket.tf_state.name}/objects/${local.name_prefix}/platform\")"
+  dynamic "binding" {
+    for_each = toset(local.platform_admins)
+    content {
+      role = google_project_iam_custom_role.list_objects.id
+      members = [
+        each.key
+      ]
     }
   }
 
-  binding {
-    role = "roles/storage.objectAdmin"
-    members = [
-      "serviceAccount:${google_service_account.bastion.email}",
-    ]
+  dynamic "binding" {
+    for_each = toset(local.platform_admins)
+    content {
+      role = "roles/storage.objectAdmin"
+      members = [
+        "serviceAccount:${google_service_account.bastion.email}",
+      ]
 
-    condition {
-      title      = "${local.name_prefix}/services"
-      expression = "resource.name.startsWith(\"projects/_/buckets/${google_storage_bucket.tf_state.name}/objects/${local.name_prefix}/services\")"
+      condition {
+        title      = "${local.name_prefix}/platform"
+        expression = "resource.name.startsWith(\"projects/_/buckets/${google_storage_bucket.tf_state.name}/objects/${local.name_prefix}/platform\")"
+      }
     }
   }
+  dynamic "binding" {
+    for_each = toset(local.platform_admins)
+    content {
+      role = "roles/storage.objectAdmin"
+      members = [
+        "serviceAccount:${google_service_account.bastion.email}",
+      ]
 
-  binding {
-    role = "roles/storage.objectAdmin"
-    members = [
-      "serviceAccount:${google_service_account.bastion.email}",
-    ]
+      condition {
+        title      = "${local.name_prefix}/services"
+        expression = "resource.name.startsWith(\"projects/_/buckets/${google_storage_bucket.tf_state.name}/objects/${local.name_prefix}/services\")"
+      }
+    }
+  }
+  dynamic "binding" {
+    for_each = toset(local.platform_admins)
+    content {
+      role = "roles/storage.objectAdmin"
+      members = [
+        "serviceAccount:${google_service_account.bastion.email}",
+      ]
 
-    condition {
-      title      = "${local.name_prefix}/galoy"
-      expression = "resource.name.startsWith(\"projects/_/buckets/${google_storage_bucket.tf_state.name}/objects/${local.name_prefix}/galoy\")"
+      condition {
+        title      = "${local.name_prefix}/galoy"
+        expression = "resource.name.startsWith(\"projects/_/buckets/${google_storage_bucket.tf_state.name}/objects/${local.name_prefix}/galoy\")"
+      }
     }
   }
 }

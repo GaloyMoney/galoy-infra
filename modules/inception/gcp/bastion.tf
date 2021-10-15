@@ -48,7 +48,7 @@ resource "google_compute_instance" "bastion" {
   }
 
   metadata = {
-    enable-oslogin = "TRUE"
+    enable-oslogin     = "TRUE"
     enable-oslogin-2fa = "TRUE"
   }
 

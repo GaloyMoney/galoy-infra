@@ -1,20 +1,3 @@
-resource "google_project_iam_member" "bastion_platform_make" {
-  project = local.project
-  role    = google_project_iam_custom_role.platform_make.id
-  member  = "serviceAccount:${google_service_account.bastion.email}"
-}
-
-resource "google_project_iam_member" "bastion_platform_destroy" {
-  project = local.project
-  role    = google_project_iam_custom_role.platform_destroy.id
-  member  = "serviceAccount:${google_service_account.bastion.email}"
-}
-
-resource "google_project_iam_member" "bastion_container_admin" {
-  project = local.project
-  role    = "roles/container.admin"
-  member  = "serviceAccount:${google_service_account.bastion.email}"
-}
 
 resource "google_project_iam_custom_role" "platform_make" {
   project     = local.project
