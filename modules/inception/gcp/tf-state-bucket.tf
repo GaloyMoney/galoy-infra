@@ -29,7 +29,7 @@ data "google_iam_policy" "tf_state_access" {
     content {
       role = google_project_iam_custom_role.list_objects.id
       members = [
-        each.key
+        binding.key
       ]
     }
   }
@@ -39,7 +39,7 @@ data "google_iam_policy" "tf_state_access" {
     content {
       role = "roles/storage.objectAdmin"
       members = [
-        "serviceAccount:${google_service_account.bastion.email}",
+        binding.key
       ]
 
       condition {
@@ -53,7 +53,7 @@ data "google_iam_policy" "tf_state_access" {
     content {
       role = "roles/storage.objectAdmin"
       members = [
-        "serviceAccount:${google_service_account.bastion.email}",
+        binding.key
       ]
 
       condition {
@@ -67,7 +67,7 @@ data "google_iam_policy" "tf_state_access" {
     content {
       role = "roles/storage.objectAdmin"
       members = [
-        "serviceAccount:${google_service_account.bastion.email}",
+        binding.key
       ]
 
       condition {
