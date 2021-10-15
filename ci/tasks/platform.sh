@@ -38,6 +38,8 @@ letsencrypt_issuer_email  = "bot@galoy.io"
 node_default_machine_type = "e2-small"
 EOF
 
+cp ${CI_ROOT}/gcloud-cerds.json ./
+
 bin/prep-bastion.sh
 
-ssh ${ADDITIONAL_SSH_OPTS} ${BASTION_USER}@${bastion_ip} "cd repo/examples/gcp; echo yes | make initial-platform && echo yes | make platform"
+ssh ${ADDITIONAL_SSH_OPTS} ${BASTION_USER}@${bastion_ip} "cd repo/examples/gcp; gcloud auth activate-service-account --key-file ./gcloud-creds.json; echo yes | make initial-platform && echo yes | make platform"
