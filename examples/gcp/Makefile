@@ -12,6 +12,7 @@ inception:
 
 initial-platform:
 	cd platform \
+		&& $(TF) init \
 		&& $(TF) apply -target module.services.helm_release.cert_manager
 
 platform:
