@@ -1,6 +1,6 @@
 #!/bin/bash
 
-sed -i'' 's/UMASK.*022/UMASK 077/' /etc/login.defs # Make all files private by default
+sed -i'' 's/pam_mkhomedir.so$/pam_mkhomedir.so umask=0077/' /etc/pam.d/sshd # Make all files private by default
 
 curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add -
 apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
