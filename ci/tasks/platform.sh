@@ -27,7 +27,7 @@ gcloud compute os-login ssh-keys add --key-file=${CI_ROOT}/login.ssh.pub
 set +e
 for i in {1..60}; do
   echo "Attempt ${i} to find make on bastion"
-  ssh ${ADDITIONAL_SSH_OPTS} ${BASTION_USER}@${bastion_ip} "which make; mkdir ~/.kube; touch ~/.kube/config" && break
+  ssh ${ADDITIONAL_SSH_OPTS} ${BASTION_USER}@${bastion_ip} "which make" && break
   sleep 2
 done
 set -e
