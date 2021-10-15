@@ -2,6 +2,7 @@ resource "google_project_iam_member" "platform_make" {
   for_each = toset(local.platform_admins)
   project  = local.project
   role     = google_project_iam_custom_role.platform_make.id
+  member   = each.key
 }
 
 resource "google_project_iam_member" "platform_destroy" {
