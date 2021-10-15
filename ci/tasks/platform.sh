@@ -38,7 +38,7 @@ letsencrypt_issuer_email  = "bot@galoy.io"
 node_default_machine_type = "e2-small"
 EOF
 
-cp ${CI_ROOT}/gcloud-cerds.json ./
+cp ${CI_ROOT}/gcloud-creds.json ./
 
 bin/prep-bastion.sh
 
