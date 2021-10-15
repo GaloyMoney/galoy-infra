@@ -42,4 +42,4 @@ cp ${CI_ROOT}/gcloud-creds.json ./
 
 bin/prep-bastion.sh
 
-ssh ${ADDITIONAL_SSH_OPTS} ${BASTION_USER}@${bastion_ip} "cd repo/examples/gcp; gcloud auth activate-service-account --key-file ./gcloud-creds.json; echo yes | make initial-platform && echo yes | make platform"
+ssh ${ADDITIONAL_SSH_OPTS} ${BASTION_USER}@${bastion_ip} "cd repo/examples/gcp; export GOOGLE_APPLICATION_CREDENTIALS=\$(pwd)/gcloud-creds.json; echo yes | make initial-platform && echo yes | make platform"
