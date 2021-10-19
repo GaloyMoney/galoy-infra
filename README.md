@@ -1,6 +1,6 @@
 # galoy-infra
 
-This repository contains terraform definitions to bring up a robust infrastructure implementation suitable for running the [galoy](https://github.com/GaloyMoney/galoy) stack.
+This repository contains [terraform](https://www.terraform.io) definitions to bring up a robust infrastructure implementation suitable for running the [galoy](https://github.com/GaloyMoney/galoy) stack.
 It is production ready by default.
 
 The infrastructure is organized into 4 modules that must be executed in sequence.
