@@ -15,7 +15,9 @@ resource "helm_release" "ingress_nginx" {
   chart      = "ingress-nginx"
 
   values = [
-    file("${path.module}/ingress-values.yml")
+    templatefile("${path.module}/ingress-values.yml.tmpl", {
+      service_type = local.local_deploy ? "NodePort" : "LoadBalancer"
+    })
   ]
 }
 

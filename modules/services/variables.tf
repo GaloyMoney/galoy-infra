@@ -9,8 +9,10 @@ variable "cert_manager_version" {
   default = "v1.5.3"
 }
 variable "letsencrypt_issuer_email" {}
+variable "local_deploy" { default = false }
 
 locals {
+  local_deploy             = var.local_deploy
   smoketest_namespace      = "${var.name_prefix}-smoketest"
   smoketest_name           = "smoketest"
   cluster_endpoint         = var.cluster_endpoint
