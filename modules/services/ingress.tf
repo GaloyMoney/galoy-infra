@@ -17,6 +17,7 @@ resource "helm_release" "ingress_nginx" {
   values = [
     templatefile("${path.module}/ingress-values.yml.tmpl", {
       service_type = local.local_deploy ? "NodePort" : "LoadBalancer"
+      jaeger_host  = "opentelemetry-collector.${local.monitoring_namespace}.svc.cluster.local"
     })
   ]
 }
