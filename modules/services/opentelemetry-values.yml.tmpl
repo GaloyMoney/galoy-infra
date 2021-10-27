@@ -2,12 +2,6 @@ agentCollector:
   enabled: false
 standaloneCollector:
   enabled: true
-%{ if small_footprint }
-  resources:
-    requests:
-      cpu: 256m
-      memory: 512Mi
-%{ endif }
 extraEnvs:
 - name: HONEYCOMB_API_KEY
   valueFrom:
