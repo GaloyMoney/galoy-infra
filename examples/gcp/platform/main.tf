@@ -2,9 +2,11 @@ variable "name_prefix" {}
 variable "gcp_project" {}
 variable "node_service_account" {}
 variable "node_default_machine_type" {
-  default = "e2-standard-2"
+  default = "e2-medium"
 }
-variable "letsencrypt_issuer_email" {}
+variable "letsencrypt_issuer_email" {
+  default = "bot@galoy.io"
+}
 
 module "platform" {
   source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/platform/gcp?ref=1ab1257"
