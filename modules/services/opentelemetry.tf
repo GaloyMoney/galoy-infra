@@ -23,7 +23,10 @@ resource "helm_release" "otel" {
   namespace  = kubernetes_namespace.telemetry.metadata[0].name
 
   values = [
-    file("${path.module}/opentelemetry-values.yml")
+    templatefile("${path.module}/opentelemetry-values.yml.tmpl",
+    {
+      small_footprint = local.small_footprint
+    })
   ]
 
   depends_on = [

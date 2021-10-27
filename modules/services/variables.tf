@@ -11,6 +11,7 @@ variable "cert_manager_version" {
 }
 variable "letsencrypt_issuer_email" {}
 variable "local_deploy" { default = false }
+variable "small_footprint" { default = false }
 
 locals {
   local_deploy             = var.local_deploy
@@ -26,6 +27,7 @@ locals {
   letsencrypt_issuer_email = var.letsencrypt_issuer_email
   jaeger_host              = "opentelemetry-collector.${local.telemetry_namespace}.svc.cluster.local"
   honeycomb_api_key        = var.honeycomb_api_key
+  small_footprint          = var.small_footprint
 }
 
 output "smoketest_kubeconfig" {
