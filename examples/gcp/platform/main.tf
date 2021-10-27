@@ -47,6 +47,7 @@ module "services" {
   letsencrypt_issuer_email = var.letsencrypt_issuer_email
   cluster_endpoint         = module.platform.master_endpoint
   cluster_ca_cert          = module.platform.cluster_ca_cert
+  honeycomb_api_key        = "dummy"
 
   depends_on = [
     module.platform

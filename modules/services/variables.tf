@@ -1,6 +1,7 @@
 variable "name_prefix" {}
 variable "cluster_endpoint" {}
 variable "cluster_ca_cert" {}
+variable "honeycomb_api_key" {}
 
 variable "ingress_nginx_version" {
   default = "4.0.6"
@@ -13,16 +14,18 @@ variable "local_deploy" { default = false }
 
 locals {
   local_deploy             = var.local_deploy
-  smoketest_namespace      = "${var.name_prefix}-smoketest"
-  monitoring_namespace     = "${var.name_prefix}-monitoring"
+  name_prefix              = var.name_prefix
+  smoketest_namespace      = "${local.name_prefix}-smoketest"
+  telemetry_namespace      = "${local.name_prefix}-otel"
   smoketest_name           = "smoketest"
   cluster_endpoint         = var.cluster_endpoint
   cluster_ca_cert          = var.cluster_ca_cert
-  ingress_namespace        = "${var.name_prefix}-ingress"
+  ingress_namespace        = "${local.name_prefix}-ingress"
   ingress_nginx_version    = var.ingress_nginx_version
   cert_manager_version     = var.cert_manager_version
   letsencrypt_issuer_email = var.letsencrypt_issuer_email
-  jaeger_host              = "opentelemetry-collector.${local.monitoring_namespace}.svc.cluster.local"
+  jaeger_host              = "opentelemetry-collector.${local.telemetry_namespace}.svc.cluster.local"
+  honeycomb_api_key        = var.honeycomb_api_key
 }
 
 output "smoketest_kubeconfig" {
