@@ -17,7 +17,7 @@ locals {
   local_deploy             = var.local_deploy
   name_prefix              = var.name_prefix
   smoketest_namespace      = "${local.name_prefix}-smoketest"
-  telemetry_namespace      = "${local.name_prefix}-otel"
+  otel_namespace           = "${local.name_prefix}-otel"
   smoketest_name           = "smoketest"
   cluster_endpoint         = var.cluster_endpoint
   cluster_ca_cert          = var.cluster_ca_cert
@@ -25,7 +25,7 @@ locals {
   ingress_nginx_version    = var.ingress_nginx_version
   cert_manager_version     = var.cert_manager_version
   letsencrypt_issuer_email = var.letsencrypt_issuer_email
-  jaeger_host              = "opentelemetry-collector.${local.telemetry_namespace}.svc.cluster.local"
+  jaeger_host              = "opentelemetry-collector.${local.otel_namespace}.svc.cluster.local"
   honeycomb_api_key        = var.honeycomb_api_key
   small_footprint          = var.small_footprint
 }

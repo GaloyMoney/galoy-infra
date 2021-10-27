@@ -1,13 +1,13 @@
-resource "kubernetes_namespace" "telemetry" {
+resource "kubernetes_namespace" "otel" {
   metadata {
-    name = local.telemetry_namespace
+    name = local.otel_namespace
   }
 }
 
 resource "kubernetes_secret" "honeycomb" {
   metadata {
     name      = "honeycomb-creds"
-    namespace = local.telemetry_namespace
+    namespace = kubernetes_namespace.otel.metadata[0].name
   }
   data = {
     api_key = local.honeycomb_api_key
@@ -20,7 +20,7 @@ resource "helm_release" "otel" {
   repository = "https://open-telemetry.github.io/opentelemetry-helm-charts"
   chart      = "opentelemetry-collector"
   version    = "0.6.0"
-  namespace  = kubernetes_namespace.telemetry.metadata[0].name
+  namespace  = kubernetes_namespace.otel.metadata[0].name
 
   values = [
     file("${path.module}/opentelemetry-values.yml"),
