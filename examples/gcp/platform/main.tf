@@ -9,7 +9,7 @@ variable "letsencrypt_issuer_email" {
 }
 
 module "platform" {
-  source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/platform/gcp?ref=42d5fe7"
+  source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/platform/gcp?ref=2390d3c"
   # source = "../../../modules/platform/gcp"
 
   name_prefix               = var.name_prefix
@@ -42,7 +42,7 @@ provider "helm" {
 }
 
 module "services" {
-  source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/services?ref=42d5fe7"
+  source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/services?ref=2390d3c"
   # source = "../../../modules/services"
 
   name_prefix              = var.name_prefix
