@@ -166,42 +166,53 @@ jobs:
         repository: galoy-staging
         rebase: true
 
-
 - name: staging-inception
   serial_groups: [staging]
   plan:
   - in_parallel:
-    - { get: cepler-galoy-staging, trigger: true }
-  - put: tf-staging-inception
-    params:
-      terraform_source: cepler-galoy-staging/gcp/staging/inception
-  - put: tf-staging-inception
-    params:
-      terraform_source: cepler-galoy-staging/gcp/staging/inception
+    - put: staging-honeymarker
+      params:
+        message: "galoy-staging-infra/inception"
+    - do:
+      - { get: cepler-galoy-staging, trigger: true }
+      - put: tf-staging-inception
+        params:
+          terraform_source: cepler-galoy-staging/gcp/staging/inception
+      - put: tf-staging-inception
+        params:
+          terraform_source: cepler-galoy-staging/gcp/staging/inception
 
 - name: staging-platform
   serial_groups: [staging]
   plan:
   - in_parallel:
-    - { get: cepler-galoy-staging, trigger: true, passed: [staging-inception] }
-  - put: tf-staging-platform
-    params:
-      terraform_source: cepler-galoy-staging/gcp/staging/platform
-  - put: tf-staging-platform
-    params:
-      terraform_source: cepler-galoy-staging/gcp/staging/platform
+    - put: staging-honeymarker
+      params:
+        message: "galoy-staging-infra/platform"
+    - do:
+      - { get: cepler-galoy-staging, trigger: true, passed: [staging-inception] }
+      - put: tf-staging-platform
+        params:
+          terraform_source: cepler-galoy-staging/gcp/staging/platform
+      - put: tf-staging-platform
+        params:
+          terraform_source: cepler-galoy-staging/gcp/staging/platform
 
 - name: staging-services
   serial_groups: [staging]
   plan:
   - in_parallel:
-    - { get: cepler-galoy-staging, trigger: true, passed: [staging-platform] }
-  - put: tf-staging-services
-    tags: ["staging"]
-    params:
-      terraform_source: cepler-galoy-staging/gcp/staging/services
-      vars:
-        honeycomb_api_key: #@ data.values.staging_honeycomb_api_key
+    - put: staging-honeymarker
+      params:
+        message: "galoy-staging-infra/platform"
+    - do:
+      - { get: cepler-galoy-staging, trigger: true, passed: [staging-platform] }
+      - put: tf-staging-services
+        tags: ["staging"]
+        params:
+          terraform_source: cepler-galoy-staging/gcp/staging/services
+          vars:
+            honeycomb_api_key: #@ data.values.staging_honeycomb_api_key
   - put: cepler-out
     params: { repository: cepler-galoy-staging }
 
@@ -300,6 +311,12 @@ resources:
     gates_branch: #@ data.values.cepler_gates_branch
     gates_file: #@ data.values.cepler_gates_file
 
+- name: staging-honeymarker
+  type: honeymarker
+  source:
+    api_key: #@ data.values.staging_honeycomb_api_key
+    dataset: galoy-staging
+
 resource_types:
 - name: terraform
   type: docker-image
@@ -318,3 +335,9 @@ resource_types:
   source:
     repository: cepler/cepler-concourse-resource
     tag: latest
+
+- name: honeymarker
+  type: docker-image
+  source:
+    repository: #@ data.values.docker_registry + "/honeymarker-resource"
+    tag: edge
