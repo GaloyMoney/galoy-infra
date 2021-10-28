@@ -24,10 +24,7 @@ resource "helm_release" "otel" {
 
   values = [
     file("${path.module}/opentelemetry-values.yml"),
-    templatefile("${path.module}/opentelemetry-small-footprint.yml.tmpl",
-      {
-        small_footprint = local.small_footprint
-    })
+    local.small_footprint ? file("${path.module}/opentelemetry-small-footprint.yml.tmpl") : ""
   ]
 
   depends_on = [
