@@ -204,7 +204,7 @@ jobs:
   - in_parallel:
     - put: staging-honeymarker
       params:
-        message: "galoy-staging-infra/platform"
+        message: "galoy-staging-infra/services"
     - do:
       - { get: cepler-galoy-staging, trigger: true, passed: [staging-platform] }
       - put: tf-staging-services
