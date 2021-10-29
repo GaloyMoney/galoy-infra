@@ -27,6 +27,12 @@ config:
     batch: {}
     # If set to null, will be overridden with values based on k8s resource limits
     memory_limiter: null
+    resourcedetection:
+        detectors: [env, gke]
+        timeout: 5s
+        override: false
+    k8sattributes:
+      passthrough: true
   receivers:
     jaeger:
       protocols:
@@ -77,9 +83,7 @@ config:
         exporters:
           - logging
           - otlp
-        processors:
-          - memory_limiter
-          - batch
+        processors: [memory_limiter, resourcedetection, k8sattributes, batch]
         receivers:
           - jaeger
           - otlp
