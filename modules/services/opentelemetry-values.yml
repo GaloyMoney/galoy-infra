@@ -25,6 +25,11 @@ config:
     health_check: {}
   processors:
     batch: {}
+    attributes:
+      actions:
+      - key: graphql.variables.input.code
+        action: update
+        value: "<redacted>"
     # If set to null, will be overridden with values based on k8s resource limits
     memory_limiter: null
     resourcedetection:
@@ -83,7 +88,12 @@ config:
         exporters:
           - logging
           - otlp
-        processors: [memory_limiter, resourcedetection, k8sattributes, batch]
+        processors:
+        - memory_limiter
+        - resourcedetection
+        - attributes
+        - k8sattributes
+        - batch
         receivers:
           - jaeger
           - otlp
