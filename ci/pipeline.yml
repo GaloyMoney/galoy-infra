@@ -171,8 +171,6 @@ jobs:
   plan:
   - in_parallel:
     - put: staging-honeymarker
-      params:
-        message: "galoy-staging-infra/inception"
     - do:
       - { get: cepler-galoy-staging, trigger: true }
       - put: tf-staging-inception
@@ -187,8 +185,6 @@ jobs:
   plan:
   - in_parallel:
     - put: staging-honeymarker
-      params:
-        message: "galoy-staging-infra/platform"
     - do:
       - { get: cepler-galoy-staging, trigger: true, passed: [staging-inception] }
       - put: tf-staging-platform
@@ -203,8 +199,6 @@ jobs:
   plan:
   - in_parallel:
     - put: staging-honeymarker
-      params:
-        message: "galoy-staging-infra/services"
     - do:
       - { get: cepler-galoy-staging, trigger: true, passed: [staging-platform] }
       - put: tf-staging-services
