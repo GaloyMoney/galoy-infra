@@ -19,3 +19,7 @@ testflight_ssh_pub_key: ((testflight-ssh.ssh_public_key))
 staging_honeycomb_api_key: ((staging-honeycomb.api_key))
 staging_state_bucket: ((staging-gcp-creds.bucket_name))
 staging_inception_creds: ((staging-gcp-creds.creds_json))
+
+slack_channel: galoy-infra-notifications
+slack_username: concourse
+slack_webhook_url: ((galoy-infra-slack.api_url))
