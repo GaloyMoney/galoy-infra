@@ -37,7 +37,7 @@ locals {
   inception_sa             = var.inception_sa
   log_viewers              = [for user in var.users : user.id if user.logs]
   inception_admins         = [for user in var.users : user.id if user.inception]
-  platform_admins = concat([for user in var.users : user.id if user.platform], ["serviceAccount:${var.inception_sa}"])
+  platform_admins          = concat([for user in var.users : user.id if user.platform], ["serviceAccount:${var.inception_sa}"])
 
   region         = var.region
   network_prefix = var.network_prefix
