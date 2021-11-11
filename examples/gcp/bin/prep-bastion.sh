@@ -41,5 +41,5 @@ popd
 
 ADDITIONAL_SSH_OPTS=${ADDITIONAL_SSH_OPTS:-""}
 echo "Syncing ${REPO_ROOT##*/} to bastion"
-rsync -avr -e "ssh -l ${BASTION_USER} ${ADDITIONAL_SSH_OPTS}" \
-  ${REPO_ROOT}/ ${bastion_ip}:${REPO_ROOT_DIR} > /dev/null
+rsync --exclude '**/.terraform/**' --exclude '**.terrafor*' -avr -e "ssh -l ${BASTION_USER} ${ADDITIONAL_SSH_OPTS}" \
+  ${REPO_ROOT}/ ${bastion_ip}:${REPO_ROOT_DIR}
