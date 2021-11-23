@@ -21,7 +21,7 @@ KUBE_HOST: #@ data.values.concourse_tf_kube_host
 KUBE_CA_CERT: #@ data.values.concourse_tf_kube_ca_cert
 KUBE_TOKEN: #@ data.values.concourse_tf_kube_token
 TF_VAR_honeycomb_api_key: #@ data.values.staging_honeycomb_api_key
-TF_VAR_name_prefix: testflight-b
+TF_VAR_name_prefix: testflight-c
 TF_VAR_gcp_project: galoy-infra-testflight
 TF_VAR_enable_services: false
 BRANCH: #@ data.values.git_branch
