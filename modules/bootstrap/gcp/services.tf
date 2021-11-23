@@ -6,6 +6,7 @@ locals {
     "container.googleapis.com",
     "monitoring.googleapis.com",
     "stackdriver.googleapis.com",
+    "servicenetworking.googleapis.com",
   ]
 }
 
