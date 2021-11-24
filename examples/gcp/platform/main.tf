@@ -9,8 +9,8 @@ variable "letsencrypt_issuer_email" {
 }
 
 module "platform" {
-  source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/platform/gcp?ref=435a0ce"
-  # source = "../../../modules/platform/gcp"
+  # source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/platform/gcp?ref=435a0ce"
+  source = "../../../modules/platform/gcp"
 
   name_prefix               = var.name_prefix
   gcp_project               = var.gcp_project
@@ -41,18 +41,18 @@ provider "helm" {
   }
 }
 
-module "services" {
-  source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/services?ref=435a0ce"
-  # source = "../../../modules/services"
+# module "services" {
+#   source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/services?ref=435a0ce"
+#   # source = "../../../modules/services"
 
-  name_prefix              = var.name_prefix
-  letsencrypt_issuer_email = var.letsencrypt_issuer_email
-  cluster_endpoint         = module.platform.master_endpoint
-  cluster_ca_cert          = module.platform.cluster_ca_cert
-  honeycomb_api_key        = "dummy"
-  small_footprint          = true
+#   name_prefix              = var.name_prefix
+#   letsencrypt_issuer_email = var.letsencrypt_issuer_email
+#   cluster_endpoint         = module.platform.master_endpoint
+#   cluster_ca_cert          = module.platform.cluster_ca_cert
+#   honeycomb_api_key        = "dummy"
+#   small_footprint          = true
 
-  depends_on = [
-    module.platform
-  ]
-}
+#   depends_on = [
+#     module.platform
+#   ]
+# }
