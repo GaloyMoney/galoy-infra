@@ -1,5 +1,5 @@
 variable "prefix" {}
-varialbe "owner" {}
+variable "owner" {}
 
 locals {
   prefix = var.prefix
