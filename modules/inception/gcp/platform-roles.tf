@@ -49,6 +49,10 @@ resource "google_project_iam_custom_role" "platform_make" {
     "compute.zones.list",
     "servicenetworking.services.addPeering",
     "servicenetworking.services.get",
+    "cloudsql.instances.create",
+    "cloudsql.instances.get",
+    "cloudsql.users.create",
+    "cloudsql.users.get",
   ]
 }
 
@@ -70,5 +74,7 @@ resource "google_project_iam_custom_role" "platform_destroy" {
     "compute.targetHttpsProxies.delete",
     "compute.targetHttpProxies.delete",
     "compute.urlMaps.delete",
+    "cloudsql.instances.delete",
+    "cloudsql.users.delete",
   ]
 }
