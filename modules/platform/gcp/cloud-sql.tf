@@ -1,12 +1,3 @@
-terraform {
-  required_providers {
-    postgresql = {
-      source  = "cyrilgdn/postgresql"
-      version = "1.14.0"
-    }
-  }
-}
-
 resource "google_compute_global_address" "postgres" {
   provider = google-beta
 

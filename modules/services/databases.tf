@@ -1,3 +1,12 @@
+terraform {
+  required_providers {
+    postgresql = {
+      source  = "cyrilgdn/postgresql"
+      version = "1.14.0"
+    }
+  }
+}
+
 data "google_sql_database_instance" "postgres" {
   name = local.postgres_instance_name
 }
