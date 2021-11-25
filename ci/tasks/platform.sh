@@ -36,4 +36,13 @@ cp ${CI_ROOT}/gcloud-creds.json ./
 
 bin/prep-bastion.sh
 
+pushd platform
+
+# Postgres destroyable in CI
+cat <<EOF >> terraform.tfvars
+destroyable_postgres = true
+EOF
+
+popd
+
 ssh ${ADDITIONAL_SSH_OPTS} ${BASTION_USER}@${bastion_ip} "cd repo/examples/gcp; export GOOGLE_APPLICATION_CREDENTIALS=\$(pwd)/gcloud-creds.json; echo yes | make initial-platform && echo yes | make platform"

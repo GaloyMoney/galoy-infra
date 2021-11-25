@@ -24,7 +24,6 @@ TF_VAR_honeycomb_api_key: #@ data.values.staging_honeycomb_api_key
 TF_VAR_name_prefix: testflight-c
 TF_VAR_gcp_project: galoy-infra-testflight
 TF_VAR_enable_services: false
-TF_VAR_destroyable_postgres: true
 BRANCH: #@ data.values.git_branch
 #@ end
 
