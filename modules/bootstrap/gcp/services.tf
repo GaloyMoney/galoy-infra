@@ -7,6 +7,7 @@ locals {
     "monitoring.googleapis.com",
     "stackdriver.googleapis.com",
     "servicenetworking.googleapis.com",
+    "sqladmin.googleapis.com",
   ]
 }
 
