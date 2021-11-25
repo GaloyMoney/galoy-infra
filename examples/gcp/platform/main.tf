@@ -22,7 +22,6 @@ module "platform" {
   destroyable_postgres      = var.destroyable_postgres
 }
 
-
 data "google_client_config" "default" {
   provider = google-beta
 }
