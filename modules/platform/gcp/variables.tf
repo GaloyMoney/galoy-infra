@@ -12,6 +12,12 @@ variable "kube_version" {
 variable "node_default_machine_type" {
   default = "n2-standard-4"
 }
+variable "postgres_tier" {
+  default = "db-f1-micro"
+}
+variable "destroyable_postgres" {
+  default = false
+}
 variable "node_service_account" {}
 variable "min_default_node_count" {
   default = 1
@@ -33,4 +39,6 @@ locals {
   min_default_node_count    = var.min_default_node_count
   max_default_node_count    = var.max_default_node_count
   cluster_location          = local.region
+  postgres_tier             = var.postgres_tier
+  destroyable_postgres      = var.destroyable_postgres
 }

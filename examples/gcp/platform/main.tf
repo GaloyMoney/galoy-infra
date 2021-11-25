@@ -7,6 +7,9 @@ variable "node_default_machine_type" {
 variable "letsencrypt_issuer_email" {
   default = "bot@galoy.io"
 }
+variable "destroyable_postgres" {
+  default = false
+}
 
 module "platform" {
   source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/platform/gcp?ref=094e04f"
@@ -16,6 +19,7 @@ module "platform" {
   gcp_project               = var.gcp_project
   node_service_account      = var.node_service_account
   node_default_machine_type = var.node_default_machine_type
+  destroyable_postgres      = var.destroyable_postgres
 }
 
 
@@ -51,6 +55,7 @@ module "services" {
   cluster_ca_cert          = module.platform.cluster_ca_cert
   honeycomb_api_key        = "dummy"
   small_footprint          = true
+  postgres_instance_name   = module.platform.postgres_instance_name
 
   depends_on = [
     module.platform
