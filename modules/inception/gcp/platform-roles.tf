@@ -47,6 +47,8 @@ resource "google_project_iam_custom_role" "platform_make" {
     "compute.urlMaps.use",
     "compute.zones.get",
     "compute.zones.list",
+    "servicenetworking.services.addPeering",
+    "servicenetworking.services.get",
   ]
 }
 
