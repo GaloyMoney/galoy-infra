@@ -50,6 +50,7 @@ module "services" {
   # source = "../../../modules/services"
 
   name_prefix              = var.name_prefix
+  gcp_project              = var.gcp_project
   letsencrypt_issuer_email = var.letsencrypt_issuer_email
   cluster_endpoint         = module.platform.master_endpoint
   cluster_ca_cert          = module.platform.cluster_ca_cert

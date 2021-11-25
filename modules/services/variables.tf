@@ -1,4 +1,5 @@
 variable "name_prefix" {}
+variable "gcp_project" {}
 variable "cluster_endpoint" {}
 variable "cluster_ca_cert" {}
 variable "honeycomb_api_key" {}
@@ -17,6 +18,7 @@ variable "postgres_instance_name" {}
 locals {
   local_deploy             = var.local_deploy
   name_prefix              = var.name_prefix
+  gcp_project              = var.gcp_project
   smoketest_namespace      = "${local.name_prefix}-smoketest"
   otel_namespace           = "${local.name_prefix}-otel"
   smoketest_name           = "smoketest"

@@ -1,6 +1,6 @@
 data "google_sql_database_instance" "postgres" {
   name    = local.postgres_instance_name
-  project = local.project
+  project = local.gcp_project
 }
 
 resource "random_password" "sql_root_user_password" {
