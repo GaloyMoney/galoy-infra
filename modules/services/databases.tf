@@ -21,9 +21,9 @@ resource "kubernetes_namespace" "pg_access" {
 module "dealer_db" {
   source = "./database"
 
-  prefix = "dealer"
-  owner  = google_sql_user.root_user.name
-  pg_host = data.google_sql_database_instance.postgres.private_ip_address
+  prefix      = "dealer"
+  owner       = google_sql_user.root_user.name
+  pg_host     = data.google_sql_database_instance.postgres.private_ip_address
   pg_username = google_sql_user.master_user.name
   pg_password = google_sql_user.master_user.password
 }
