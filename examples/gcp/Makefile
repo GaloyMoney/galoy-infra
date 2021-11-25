@@ -13,7 +13,8 @@ inception:
 initial-platform:
 	cd platform \
 		&& $(TF) init \
-		&& $(TF) apply -target module.services.helm_release.cert_manager
+		&& $(TF) apply -target module.services.helm_release.cert_manager \
+		  -target module.platform.google_sql_database_instance.postgres
 
 platform:
 	cd platform \

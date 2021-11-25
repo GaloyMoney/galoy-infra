@@ -9,6 +9,18 @@ terraform {
 
 variable "prefix" {}
 variable "owner" {}
+variable "pg_host" {}
+variable "pg_username" {}
+variable "pg_password" {}
+
+provider "postgresql" {
+  host     = var.pg_host
+  username = var.pg_username
+  password = var.pg_password
+
+  # GCP doesn't let you run on Superuser mode https://cloud.google.com/sql/docs/postgres/users#superuser_restrictions
+  superuser = false
+}
 
 locals {
   prefix = var.prefix

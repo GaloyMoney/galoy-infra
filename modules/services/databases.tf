@@ -1,12 +1,3 @@
-terraform {
-  required_providers {
-    postgresql = {
-      source  = "cyrilgdn/postgresql"
-      version = "1.14.0"
-    }
-  }
-}
-
 data "google_sql_database_instance" "postgres" {
   name = local.postgres_instance_name
 }
@@ -27,21 +18,14 @@ resource "kubernetes_namespace" "pg_access" {
   }
 }
 
-provider "postgresql" {
-  scheme   = "gcppostgres"
-  host     = google_sql_database_instance.postgres.connection_name
-  username = google_sql_user.master_user.name
-  password = google_sql_user.master_user.password
-
-  # GCP doesn't let you run on Superuser mode https://cloud.google.com/sql/docs/postgres/users#superuser_restrictions
-  superuser = false
-}
-
 module "dealer_db" {
   source = "./database"
 
   prefix = "dealer"
   owner  = google_sql_user.root_user.name
+  pg_host = data.google_sql_database_instance.postgres.private_ip_address
+  pg_username = google_sql_user.master_user.name
+  pg_password = google_sql_user.master_user.password
 }
 
 resource "kubernetes_secret" "dealer_db_credentials" {
