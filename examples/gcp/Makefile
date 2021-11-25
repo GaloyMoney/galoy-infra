@@ -13,8 +13,8 @@ inception:
 initial-platform:
 	cd platform \
 		&& $(TF) init \
-		&& $(TF) apply -target module.platform.google_compute_router_nat.main -auto-approve \
-		&& $(TF) apply -target module.platform.google_sql_database_instance.postgres \
+		&& $(TF) apply -target module.platform \
+			-target module.platform.google_sql_database_instance.postgres \
 			-target module.services.helm_release.cert_manager
 
 platform:
