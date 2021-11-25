@@ -12,6 +12,7 @@ resource "google_sql_user" "root_user" {
   name     = "root_user"
   instance = data.google_sql_database_instance.postgres.name
   password = random_password.sql_root_user_password.result
+  project  = local.gcp_project
 }
 
 resource "kubernetes_namespace" "pg_access" {
