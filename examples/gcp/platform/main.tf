@@ -53,7 +53,7 @@ module "services" {
   letsencrypt_issuer_email = var.letsencrypt_issuer_email
   cluster_endpoint         = module.platform.master_endpoint
   cluster_ca_cert          = module.platform.cluster_ca_cert
-  honeycomb_api_key        = "dummy"
+  honeycomb_api_key        = module.platform.cluster_name
   small_footprint          = true
   postgres_instance_name   = module.platform.postgres_instance_name
 }
