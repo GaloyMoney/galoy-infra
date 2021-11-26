@@ -23,14 +23,14 @@ output "lnd2_ip" {
 }
 
 output "shared_pg_host" {
-  value = google_sql_database_instance.shared.private_ip_address
+  value = local.deploy_shared_pg ? google_sql_database_instance.shared.0.private_ip_address : ""
 }
 
 output "shared_pg_admin_username" {
-  value = google_sql_user.shared.name
+  value = local.deploy_shared_pg ? google_sql_user.shared.0.name : ""
 }
 
 output "shared_pg_admin_password" {
-  value     = google_sql_user.shared.password
+  value     = local.deploy_shared_pg ? google_sql_user.shared.0.password : ""
   sensitive = true
 }
