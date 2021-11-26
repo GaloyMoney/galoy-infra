@@ -37,4 +37,5 @@ name_prefix = "${name_prefix}"
 node_service_account = "${cluster_sa}"
 EOF
 
+terraform init
 popd
