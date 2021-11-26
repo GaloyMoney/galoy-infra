@@ -76,6 +76,7 @@ resource "google_project_iam_custom_role" "platform_destroy" {
     "compute.targetHttpProxies.delete",
     "compute.urlMaps.delete",
     "compute.networks.removePeering",
+    "compute.globalAddresses.deleteInternal",
     "cloudsql.instances.delete",
     "cloudsql.users.delete",
   ]
