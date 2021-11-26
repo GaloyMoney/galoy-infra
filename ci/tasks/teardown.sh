@@ -17,7 +17,7 @@ write_users
 bin/prep-inception.sh
 
 bin/prep-platform.sh
-make destroy-platform
+echo yes | make destroy-platform
 
 # bastion_ip="$(cd inception && terraform output bastion_ip | jq -r)"
 # export BASTION_USER="sa_$(cat ${CI_ROOT}/gcloud-creds.json  | jq -r '.client_id')"

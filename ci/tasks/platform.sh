@@ -19,4 +19,4 @@ bin/prep-inception.sh
 cleanup_inception_key
 
 bin/prep-platform.sh
-make platform
+echo yes | make platform
