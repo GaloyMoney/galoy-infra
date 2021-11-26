@@ -24,6 +24,7 @@ bastion_ip="$(cd inception && terraform output bastion_ip | jq -r)"
 export BASTION_USER="sa_$(cat ${CI_ROOT}/gcloud-creds.json  | jq -r '.client_id')"
 export ADDITIONAL_SSH_OPTS="-o StrictHostKeyChecking=no -i ${CI_ROOT}/login.ssh"
 
+cp ${CI_ROOT}/gcloud-creds.json ./
 bin/prep-services.sh
 
 gcloud compute os-login ssh-keys add --key-file=${CI_ROOT}/login.ssh.pub
@@ -35,7 +36,5 @@ for i in {1..60}; do
   sleep 2
 done
 set -e
-
-cp ${CI_ROOT}/gcloud-creds.json ./
 
 ssh ${ADDITIONAL_SSH_OPTS} ${BASTION_USER}@${bastion_ip} "cd repo/examples/gcp; export GOOGLE_APPLICATION_CREDENTIALS=\$(pwd)/gcloud-creds.json; echo yes | make initial-services && echo yes | make services"
