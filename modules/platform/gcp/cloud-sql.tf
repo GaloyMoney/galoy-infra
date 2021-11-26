@@ -45,3 +45,15 @@ resource "google_sql_database_instance" "shared" {
     }
   }
 }
+
+resource "random_password" "shared" {
+  length  = 20
+  special = false
+}
+
+resource "google_sql_user" "shared" {
+  name     = "admin"
+  instance = data.google_sql_database_instance.shared.name
+  password = random_password.shared.result
+  project  = local.gcp_project
+}
