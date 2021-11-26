@@ -22,7 +22,7 @@ popd
 
 pushd platform
 
-cluster_endpoint=$(terraform output master_endpoint | jq -r)
+cluster_endpoint=$(terraform output cluster_endpoint | jq -r)
 cluster_ca_cert="$(terraform output cluster_ca_cert | jq -r)"
 
 popd

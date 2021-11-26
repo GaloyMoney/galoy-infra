@@ -21,3 +21,11 @@ module "platform" {
   node_default_machine_type = var.node_default_machine_type
   destroyable_postgres      = var.destroyable_postgres
 }
+
+output "cluster_endpoint" {
+  value = module.platform.master_endpoint
+}
+
+output "cluster_ca_cert" {
+  value = module.platform.cluster_ca_cert
+}

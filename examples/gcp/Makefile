@@ -42,7 +42,4 @@ destroy-bootstrap:
 	cd bootstrap \
 		&& $(TF) destroy
 
-prep-bastion:
-	bin/prep-bastion.sh
-
 .PHONY: bootstrap inception platform

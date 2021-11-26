@@ -15,11 +15,11 @@
 #   project  = local.gcp_project
 # }
 
-resource "kubernetes_namespace" "pg_access" {
-  metadata {
-    name = "${local.name_prefix}-pg-access"
-  }
-}
+# resource "kubernetes_namespace" "pg_access" {
+#   metadata {
+#     name = "${local.name_prefix}-pg-access"
+#   }
+# }
 
 # module "dealer_db" {
 #   source = "./database"
