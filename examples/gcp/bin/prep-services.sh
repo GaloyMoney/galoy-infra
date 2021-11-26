@@ -20,6 +20,13 @@ bastion_ip="$(terraform output bastion_ip | jq -r)"
 
 popd
 
+pushd inception
+
+cluster_endpoint=$(terraform output master_endpoint | jq -r)
+cluster_ca_cert="$(terraform output cluster_ca_cert | jq -r)"
+
+popd
+
 pushd services
 
 cat <<EOF > terraform.tf
@@ -34,7 +41,8 @@ EOF
 cat <<EOF >> terraform.tfvars
 gcp_project = "${gcp_project}"
 name_prefix = "${name_prefix}"
-node_service_account = "${cluster_sa}"
+cluster_endpoint = "${cluster_endpoint}"
+cluster_ca_cert = "${cluster_ca_cert}"
 EOF
 
 popd

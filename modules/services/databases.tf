@@ -1,19 +1,19 @@
-data "google_sql_database_instance" "postgres" {
-  name    = local.postgres_instance_name
-  project = local.gcp_project
-}
+# data "google_sql_database_instance" "postgres" {
+#   name    = local.postgres_instance_name
+#   project = local.gcp_project
+# }
 
-resource "random_password" "sql_root_user_password" {
-  length  = 20
-  special = false
-}
+# resource "random_password" "sql_root_user_password" {
+#   length  = 20
+#   special = false
+# }
 
-resource "google_sql_user" "root_user" {
-  name     = "root_user"
-  instance = data.google_sql_database_instance.postgres.name
-  password = random_password.sql_root_user_password.result
-  project  = local.gcp_project
-}
+# resource "google_sql_user" "root_user" {
+#   name     = "root_user"
+#   instance = data.google_sql_database_instance.postgres.name
+#   password = random_password.sql_root_user_password.result
+#   project  = local.gcp_project
+# }
 
 resource "kubernetes_namespace" "pg_access" {
   metadata {

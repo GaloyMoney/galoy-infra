@@ -13,7 +13,7 @@ variable "cert_manager_version" {
 variable "letsencrypt_issuer_email" {}
 variable "local_deploy" { default = false }
 variable "small_footprint" { default = false }
-variable "postgres_instance_name" {}
+# variable "postgres_instance_name" {}
 
 locals {
   local_deploy             = var.local_deploy
@@ -31,7 +31,7 @@ locals {
   jaeger_host              = "opentelemetry-collector.${local.otel_namespace}.svc.cluster.local"
   honeycomb_api_key        = var.honeycomb_api_key
   small_footprint          = var.small_footprint
-  postgres_instance_name   = var.postgres_instance_name
+  # postgres_instance_name   = var.postgres_instance_name
 }
 
 output "smoketest_kubeconfig" {
