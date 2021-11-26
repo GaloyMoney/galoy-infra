@@ -9,7 +9,6 @@ pushd bootstrap
 
 tf_state_bucket_name=$(terraform output tf_state_bucket_name | jq -r)
 name_prefix=$(terraform output name_prefix | jq -r)
-gcp_project=$(terraform output gcp_project | jq -r)
 
 popd
 
@@ -39,7 +38,6 @@ terraform {
 EOF
 
 cat <<EOF >> terraform.tfvars
-gcp_project = "${gcp_project}"
 name_prefix = "${name_prefix}"
 cluster_endpoint = "${cluster_endpoint}"
 cluster_ca_cert = <<-EOT

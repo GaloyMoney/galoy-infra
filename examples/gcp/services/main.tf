@@ -1,5 +1,4 @@
 variable "name_prefix" {}
-variable "gcp_project" {}
 variable "cluster_endpoint" {}
 variable "cluster_ca_cert" {}
 variable "letsencrypt_issuer_email" {
@@ -33,7 +32,6 @@ module "services" {
   # source = "../../../modules/services"
 
   name_prefix              = var.name_prefix
-  gcp_project              = var.gcp_project
   letsencrypt_issuer_email = var.letsencrypt_issuer_email
   cluster_endpoint         = var.cluster_endpoint
   cluster_ca_cert          = var.cluster_ca_cert
