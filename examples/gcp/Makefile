@@ -10,12 +10,10 @@ inception:
 	cd inception \
 		&& $(TF) apply
 
-initial-platform:
-	cd platform \
+initial-services:
+	cd services \
 		&& $(TF) init \
-		&& $(TF) apply -target module.platform \
-			-target module.platform.google_sql_database_instance.postgres \
-			-target module.services.helm_release.cert_manager
+		&& $(TF) apply -target module.services.helm_release.cert_manager
 
 platform:
 	cd platform \

@@ -24,6 +24,7 @@ TF_VAR_honeycomb_api_key: #@ data.values.staging_honeycomb_api_key
 TF_VAR_name_prefix: testflight-c
 TF_VAR_gcp_project: galoy-infra-testflight
 TF_VAR_enable_services: false
+TF_VAR_destroyable_postgres: true
 BRANCH: #@ data.values.git_branch
 #@ end
 
@@ -53,6 +54,7 @@ groups:
   - testflight-bootstrap
   - testflight-inception
   - testflight-platform
+  - testflight-services
   - testflight-cleanup
   - bump-repos
   - staging-inception
@@ -63,6 +65,7 @@ groups:
   - testflight-bootstrap
   - testflight-inception
   - testflight-platform
+  - testflight-services
   - testflight-cleanup
   - bump-repos
 - name: staging
@@ -136,12 +139,33 @@ jobs:
   - #@ slack_success_notification()
   on_failure: #@ slack_failure_notification()
 
-- name: testflight-cleanup
+- name: testflight-services
   plan:
   - { get: testflight-lock, passed: [testflight-platform] }
   - in_parallel:
-    - { get: modules, passed: [testflight-platform], trigger: true}
+    - { get: modules, trigger: true, passed: [testflight-platform]}
     - { get: repo, trigger: true, passed: [testflight-platform] }
+    - { get: pipeline-tasks }
+  - task: services
+    config:
+      platform: linux
+      image_resource: #@ task_image_config()
+      inputs:
+      - name: pipeline-tasks
+      - name: repo
+      - name: modules
+      params: #@ testflight_task_params()
+      run:
+        path: pipeline-tasks/ci/tasks/services.sh
+  - #@ slack_success_notification()
+  on_failure: #@ slack_failure_notification()
+
+- name: testflight-cleanup
+  plan:
+  - { get: testflight-lock, passed: [testflight-services] }
+  - in_parallel:
+    - { get: modules, passed: [testflight-services], trigger: true}
+    - { get: repo, trigger: true, passed: [testflight-services] }
     - { get: pipeline-tasks }
   - task: teardown
     config:
