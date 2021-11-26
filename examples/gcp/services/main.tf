@@ -2,6 +2,9 @@ variable "name_prefix" {}
 variable "gcp_project" {}
 variable "cluster_endpoint" {}
 variable "cluster_ca_cert" {}
+variable "letsencrypt_issuer_email" {
+  default = "bot@galoy.io"
+}
 
 data "google_client_config" "default" {
   provider = google-beta
