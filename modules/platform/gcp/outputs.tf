@@ -7,7 +7,7 @@ output "master_endpoint" {
 }
 
 output "cluster_name" {
-  value = google_container_node_pool.default.cluster
+  value = google_container_cluster.primary.name
 }
 
 output "cluster_location" {

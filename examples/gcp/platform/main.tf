@@ -56,4 +56,8 @@ module "services" {
   honeycomb_api_key        = module.platform.cluster_name
   small_footprint          = true
   postgres_instance_name   = module.platform.postgres_instance_name
+
+  depends_on = [
+    module.platform
+  ]
 }

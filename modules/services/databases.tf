@@ -21,25 +21,25 @@ resource "kubernetes_namespace" "pg_access" {
   }
 }
 
-module "dealer_db" {
-  source = "./database"
+# module "dealer_db" {
+#   source = "./database"
 
-  prefix      = "dealer"
-  owner       = google_sql_user.root_user.name
-  pg_host     = data.google_sql_database_instance.postgres.private_ip_address
-  pg_username = google_sql_user.root_user.name
-  pg_password = google_sql_user.root_user.password
-}
+#   prefix      = "dealer"
+#   owner       = google_sql_user.root_user.name
+#   pg_host     = data.google_sql_database_instance.postgres.private_ip_address
+#   pg_username = google_sql_user.root_user.name
+#   pg_password = google_sql_user.root_user.password
+# }
 
-resource "kubernetes_secret" "dealer_db_credentials" {
-  metadata {
-    name      = "dealer-db-credentials"
-    namespace = kubernetes_namespace.pg_access.metadata.0.name
-  }
+# resource "kubernetes_secret" "dealer_db_credentials" {
+#   metadata {
+#     name      = "dealer-db-credentials"
+#     namespace = kubernetes_namespace.pg_access.metadata.0.name
+#   }
 
-  data = {
-    username = module.dealer_db.username
-    password = module.dealer_db.password
-    host     = data.google_sql_database_instance.postgres.private_ip_address
-  }
-}
+#   data = {
+#     username = module.dealer_db.username
+#     password = module.dealer_db.password
+#     host     = data.google_sql_database_instance.postgres.private_ip_address
+#   }
+# }
