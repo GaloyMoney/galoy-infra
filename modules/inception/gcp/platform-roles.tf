@@ -28,7 +28,6 @@ resource "google_project_iam_custom_role" "platform_make" {
     "compute.networks.get",
     "compute.networks.use",
     "compute.networks.updatePolicy",
-    "compute.networks.removePeering",
     "compute.routers.create",
     "compute.routers.get",
     "compute.routers.update",
@@ -75,6 +74,7 @@ resource "google_project_iam_custom_role" "platform_destroy" {
     "compute.targetHttpsProxies.delete",
     "compute.targetHttpProxies.delete",
     "compute.urlMaps.delete",
+    "compute.networks.removePeering",
     "cloudsql.instances.delete",
     "cloudsql.users.delete",
   ]
