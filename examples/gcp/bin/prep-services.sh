@@ -20,7 +20,7 @@ bastion_ip="$(terraform output bastion_ip | jq -r)"
 
 popd
 
-pushd inception
+pushd platform
 
 cluster_endpoint=$(terraform output master_endpoint | jq -r)
 cluster_ca_cert="$(terraform output cluster_ca_cert | jq -r)"
