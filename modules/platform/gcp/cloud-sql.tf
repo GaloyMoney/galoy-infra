@@ -2,7 +2,7 @@ resource "google_compute_global_address" "shared" {
   provider = google-beta
 
   project       = local.project
-  name          = "${local.name_prefix}-pg-shared-private-ip"
+  name          = "${local.name_prefix}-shared-pg-private-ip"
   purpose       = "VPC_PEERING"
   address_type  = "INTERNAL"
   prefix_length = 16
