@@ -42,7 +42,9 @@ cat <<EOF >> terraform.tfvars
 gcp_project = "${gcp_project}"
 name_prefix = "${name_prefix}"
 cluster_endpoint = "${cluster_endpoint}"
-cluster_ca_cert = "${cluster_ca_cert}"
+cluster_ca_cert = <<-EOT
+${cluster_ca_cert}
+EOT
 EOF
 
 popd
