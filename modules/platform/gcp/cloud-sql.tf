@@ -52,7 +52,7 @@ resource "random_password" "shared" {
 }
 
 resource "google_sql_user" "shared" {
-  name     = "admin"
+  name     = "shared_admin"
   instance = google_sql_database_instance.shared.name
   password = random_password.shared.result
   project  = local.project

@@ -21,3 +21,16 @@ output "lnd1_ip" {
 output "lnd2_ip" {
   value = google_compute_address.lnd2.address
 }
+
+output "shared_pg_host" {
+  value = google_sql_database_instance.shared.private_ip_address
+}
+
+output "shared_pg_admin_username" {
+  value = google_sql_user.shared.name
+}
+
+output "shared_pg_admin_password" {
+  value     = google_sql_user.shared.password
+  sensitive = true
+}
