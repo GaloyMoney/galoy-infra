@@ -31,7 +31,7 @@ terraform {
 }
 EOF
 
-cat <<EOF > terraform.tfvars
+cat <<EOF >> terraform.tfvars
 gcp_project = "${gcp_project}"
 name_prefix = "${name_prefix}"
 node_service_account = "${cluster_sa}"
