@@ -49,11 +49,9 @@ resource "google_sql_user" "admin" {
 output "admin_username" {
   value = google_sql_user.admin.name
 }
-
 output "admin_password" {
   value = random_password.admin.result
 }
-
 output "private_ip" {
   value = google_sql_database_instance.instance.private_ip_address
 }
