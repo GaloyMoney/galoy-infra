@@ -53,6 +53,7 @@ resource "google_project_iam_custom_role" "platform_make" {
     "cloudsql.instances.get",
     "cloudsql.users.create",
     "cloudsql.users.list",
+    "cloudsql.instances.list",
   ]
 }
 
