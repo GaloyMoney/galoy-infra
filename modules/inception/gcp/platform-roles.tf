@@ -28,6 +28,7 @@ resource "google_project_iam_custom_role" "platform_make" {
     "compute.networks.get",
     "compute.networks.use",
     "compute.networks.updatePolicy",
+    "compute.networks.removePeering",
     "compute.routers.create",
     "compute.routers.get",
     "compute.routers.update",
