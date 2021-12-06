@@ -1,0 +1,16 @@
+config:
+  dryRun: ${dryRun}
+  runHour: ${runHour}
+  startHour: ${startHour}
+  endHour: ${endHour}
+  timeZone: ${timeZone}
+  whitelistedNamespaces:
+%{ for ns in whitelistedNamespaces ~}
+  - ${ns}
+%{ endfor ~}
+  notifications:
+    enabled: true
+    attacks: |
+      endpoint = "${notificationUrl}"
+      message = '{"text":"Attacked `{$name}` of `{$namespace}` on {$date} at {$time}. {$error}"}'
+      headers = ["Content-Type:application/json"]
