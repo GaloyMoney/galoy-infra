@@ -1,9 +1,3 @@
-variable "dry_run" { default = true }
-variable "run_hour" { default = 0 }
-variable "start_hour" { default = 3 }
-variable "end_hour" { default = 5 }
-variable "time_zone" { default = "Etc/UTC" }
-
 locals {
   whitelisted_namespaces = [
     "${var.name_prefix}-galoy",
@@ -21,11 +15,7 @@ resource "helm_release" "kube_monkey" {
 
   values = [
     templatefile("${path.module}/kubemonkey-values.yml.tmpl", {
-      dryRun : var.dry_run
-      runHour : var.run_hour
-      startHour : var.start_hour
-      endHour : var.end_hour
-      timeZone : var.time_zone
+      timeZone : local.kubemonkey_time_zone
       whitelistedNamespaces : local.whitelisted_namespaces
       notificationUrl : local.kubemonkey_notification_url
     })
