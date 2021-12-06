@@ -1,7 +1,7 @@
 variable "name_prefix" {}
 variable "cluster_endpoint" {}
 variable "cluster_ca_cert" {}
-variable "secrets" {}
+variable "secrets" { sensitive = true }
 
 variable "ingress_nginx_version" {
   default = "4.0.6"
