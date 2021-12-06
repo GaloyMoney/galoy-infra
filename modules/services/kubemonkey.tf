@@ -3,7 +3,6 @@ variable "run_hour" { default = 0 }
 variable "start_hour" { default = 3 }
 variable "end_hour" { default = 5 }
 variable "time_zone" { default = "Etc/UTC" }
-variable "kubemonkey_notification_url" { sensitive = true }
 
 locals {
   whitelisted_namespaces = [
@@ -28,7 +27,7 @@ resource "helm_release" "kube_monkey" {
       endHour : var.end_hour
       timeZone : var.time_zone
       whitelistedNamespaces : local.whitelisted_namespaces
-      notificationUrl : var.kubemonkey_notification_url
+      notificationUrl : local.kubemonkey_notification_url
     })
   ]
 }

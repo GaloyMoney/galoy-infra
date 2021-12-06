@@ -1,7 +1,7 @@
 variable "name_prefix" {}
 variable "cluster_endpoint" {}
 variable "cluster_ca_cert" {}
-variable "honeycomb_api_key" {}
+variable "secrets" {}
 
 variable "ingress_nginx_version" {
   default = "4.0.6"
@@ -14,20 +14,21 @@ variable "local_deploy" { default = false }
 variable "small_footprint" { default = false }
 
 locals {
-  local_deploy             = var.local_deploy
-  name_prefix              = var.name_prefix
-  smoketest_namespace      = "${local.name_prefix}-smoketest"
-  otel_namespace           = "${local.name_prefix}-otel"
-  smoketest_name           = "smoketest"
-  cluster_endpoint         = var.cluster_endpoint
-  cluster_ca_cert          = var.cluster_ca_cert
-  ingress_namespace        = "${local.name_prefix}-ingress"
-  ingress_nginx_version    = var.ingress_nginx_version
-  cert_manager_version     = var.cert_manager_version
-  letsencrypt_issuer_email = var.letsencrypt_issuer_email
-  jaeger_host              = "opentelemetry-collector.${local.otel_namespace}.svc.cluster.local"
-  honeycomb_api_key        = var.honeycomb_api_key
-  small_footprint          = var.small_footprint
+  local_deploy                = var.local_deploy
+  name_prefix                 = var.name_prefix
+  smoketest_namespace         = "${local.name_prefix}-smoketest"
+  otel_namespace              = "${local.name_prefix}-otel"
+  smoketest_name              = "smoketest"
+  cluster_endpoint            = var.cluster_endpoint
+  cluster_ca_cert             = var.cluster_ca_cert
+  ingress_namespace           = "${local.name_prefix}-ingress"
+  ingress_nginx_version       = var.ingress_nginx_version
+  cert_manager_version        = var.cert_manager_version
+  letsencrypt_issuer_email    = var.letsencrypt_issuer_email
+  jaeger_host                 = "opentelemetry-collector.${local.otel_namespace}.svc.cluster.local"
+  small_footprint             = var.small_footprint
+  honeycomb_api_key           = jsondecode(var.secrets).honeycomb_api_key
+  kubemonkey_notification_url = jsondecode(var.secrets).kubemonkey_notification_url
 }
 
 output "smoketest_kubeconfig" {
