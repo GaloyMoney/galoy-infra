@@ -8,6 +8,7 @@ locals {
 }
 
 resource "helm_release" "kube_monkey" {
+  count      = local.kubemonkey_enabled ? 1 : 0
   name       = "kubemonkey"
   chart      = "kube-monkey"
   repository = "https://asobti.github.io/kube-monkey/charts/repo"

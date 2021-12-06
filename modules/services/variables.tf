@@ -12,6 +12,7 @@ variable "cert_manager_version" {
 variable "letsencrypt_issuer_email" {}
 variable "local_deploy" { default = false }
 variable "small_footprint" { default = false }
+variable "kubemonkey_enabled" { default = false }
 variable "kubemonkey_time_zone" { default = "Etc/UTC" }
 
 locals {
@@ -29,6 +30,7 @@ locals {
   jaeger_host                 = "opentelemetry-collector.${local.otel_namespace}.svc.cluster.local"
   small_footprint             = var.small_footprint
   honeycomb_api_key           = jsondecode(var.secrets).honeycomb_api_key
+  kubemonkey_enabled          = var.kubemonkey_enabled
   kubemonkey_time_zone        = var.kubemonkey_time_zone
   kubemonkey_notification_url = jsondecode(var.secrets).kubemonkey_notification_url
 }
