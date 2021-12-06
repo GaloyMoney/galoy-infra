@@ -260,7 +260,7 @@ jobs:
         params:
           terraform_source: cepler-galoy-staging/gcp/staging/services
           vars:
-            honeycomb_api_key: #@ data.values.staging_honeycomb_api_key
+            secrets: #@ data.values.staging_services_secrets
   - put: cepler-out
     params: { repository: cepler-galoy-staging }
   - #@ slack_success_notification()
