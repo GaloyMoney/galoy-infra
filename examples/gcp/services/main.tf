@@ -35,6 +35,9 @@ module "services" {
   letsencrypt_issuer_email = var.letsencrypt_issuer_email
   cluster_endpoint         = var.cluster_endpoint
   cluster_ca_cert          = var.cluster_ca_cert
-  honeycomb_api_key        = "dummy"
   small_footprint          = true
+  secrets = jsonencode({
+    honeycomb_api_key           = "dummy",
+    kubemonkey_notification_url = "dummy"
+  })
 }
