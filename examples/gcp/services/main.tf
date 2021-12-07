@@ -36,6 +36,7 @@ module "services" {
   cluster_endpoint         = var.cluster_endpoint
   cluster_ca_cert          = var.cluster_ca_cert
   small_footprint          = true
+  kubemonkey_enabled       = true
   secrets = jsonencode({
     honeycomb_api_key           = "dummy",
     kubemonkey_notification_url = "dummy"
