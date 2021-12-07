@@ -10,7 +10,7 @@ resource "helm_release" "kubemonkey" {
   name       = "kubemonkey"
   chart      = "kube-monkey"
   repository = "https://asobti.github.io/kube-monkey/charts/repo"
-  namespace  = kubernetes_namespace.kubemonkey[0].name
+  namespace  = kubernetes_namespace.kubemonkey[0].metadata[0].name
 
   values = [
     templatefile("${path.module}/kubemonkey-values.yml.tmpl", {
