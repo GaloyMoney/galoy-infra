@@ -33,6 +33,12 @@ locals {
   kubemonkey_enabled          = var.kubemonkey_enabled
   kubemonkey_time_zone        = var.kubemonkey_time_zone
   kubemonkey_notification_url = jsondecode(var.secrets).kubemonkey_notification_url
+  kubemonkey_whitelisted_namespaces = [
+    "${var.name_prefix}-galoy",
+    "${var.name_prefix}-bitcoin",
+    "${var.name_prefix}-monitoring",
+    "${var.name_prefix}-addons",
+  ]
 }
 
 output "smoketest_kubeconfig" {

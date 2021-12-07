@@ -1,12 +1,3 @@
-locals {
-  whitelisted_namespaces = [
-    "${var.name_prefix}-galoy",
-    "${var.name_prefix}-bitcoin",
-    "${var.name_prefix}-monitoring",
-    "${var.name_prefix}-addons",
-  ]
-}
-
 resource "helm_release" "kube_monkey" {
   count      = local.kubemonkey_enabled ? 1 : 0
   name       = "kubemonkey"
@@ -17,7 +8,7 @@ resource "helm_release" "kube_monkey" {
   values = [
     templatefile("${path.module}/kubemonkey-values.yml.tmpl", {
       timeZone : local.kubemonkey_time_zone
-      whitelistedNamespaces : local.whitelisted_namespaces
+      whitelistedNamespaces : local.kubemonkey_whitelisted_namespaces
       notificationUrl : local.kubemonkey_notification_url
     })
   ]
