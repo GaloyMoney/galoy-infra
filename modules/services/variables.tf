@@ -20,6 +20,7 @@ locals {
   name_prefix                 = var.name_prefix
   smoketest_namespace         = "${local.name_prefix}-smoketest"
   otel_namespace              = "${local.name_prefix}-otel"
+  kubemonkey_namespace        = "${local.name_prefix}-kubemonkey"
   smoketest_name              = "smoketest"
   cluster_endpoint            = var.cluster_endpoint
   cluster_ca_cert             = var.cluster_ca_cert
