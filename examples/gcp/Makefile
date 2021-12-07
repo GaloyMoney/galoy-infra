@@ -42,4 +42,4 @@ destroy-bootstrap:
 	cd bootstrap \
 		&& $(TF) destroy
 
-.PHONY: bootstrap inception platform
+.PHONY: bootstrap inception platform services
