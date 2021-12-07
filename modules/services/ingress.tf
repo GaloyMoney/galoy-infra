@@ -22,7 +22,8 @@ resource "helm_release" "ingress_nginx" {
   ]
 
   depends_on = [
-    helm_release.otel
+    helm_release.otel,
+    helm_release.kubemonkey,
   ]
 }
 
