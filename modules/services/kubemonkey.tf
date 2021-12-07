@@ -5,7 +5,7 @@ resource "kubernetes_namespace" "kubemonkey" {
   }
 }
 
-resource "helm_release" "kube_monkey" {
+resource "helm_release" "kubemonkey" {
   count      = local.kubemonkey_enabled ? 1 : 0
   name       = "kubemonkey"
   chart      = "kube-monkey"
