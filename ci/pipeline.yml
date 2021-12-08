@@ -256,7 +256,7 @@ jobs:
     - do:
       - { get: cepler-galoy-staging, trigger: true, passed: [staging-platform] }
       - put: tf-staging-services
-        tags: ["staging"]
+        tags: ["galoy-staging"]
         params:
           terraform_source: cepler-galoy-staging/gcp/galoy-staging/services
           vars:
