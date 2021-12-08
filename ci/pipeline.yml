@@ -225,10 +225,10 @@ jobs:
       - { get: cepler-galoy-staging, trigger: true }
       - put: tf-staging-inception
         params:
-          terraform_source: cepler-galoy-staging/gcp/staging/inception
+          terraform_source: cepler-galoy-staging/gcp/galoy-staging/inception
       - put: tf-staging-inception
         params:
-          terraform_source: cepler-galoy-staging/gcp/staging/inception
+          terraform_source: cepler-galoy-staging/gcp/galoy-staging/inception
   - #@ slack_success_notification()
   on_failure: #@ slack_failure_notification()
 
@@ -241,10 +241,10 @@ jobs:
       - { get: cepler-galoy-staging, trigger: true, passed: [staging-inception] }
       - put: tf-staging-platform
         params:
-          terraform_source: cepler-galoy-staging/gcp/staging/platform
+          terraform_source: cepler-galoy-staging/gcp/galoy-staging/platform
       - put: tf-staging-platform
         params:
-          terraform_source: cepler-galoy-staging/gcp/staging/platform
+          terraform_source: cepler-galoy-staging/gcp/galoy-staging/platform
   - #@ slack_success_notification()
   on_failure: #@ slack_failure_notification()
 
@@ -258,7 +258,7 @@ jobs:
       - put: tf-staging-services
         tags: ["staging"]
         params:
-          terraform_source: cepler-galoy-staging/gcp/staging/services
+          terraform_source: cepler-galoy-staging/gcp/galoy-staging/services
           vars:
             secrets: #@ data.values.staging_services_secrets
   - put: cepler-out
@@ -345,7 +345,7 @@ resources:
     uri: #@ data.values.deployments_git_uri
     branch: #@ data.values.git_branch
     private_key: #@ data.values.github_private_key
-    environment: gcp-staging
+    environment: gcp-galoy-staging
     config: cepler/infra.yml
     gates_branch: #@ data.values.cepler_gates_branch
     gates_file: #@ data.values.cepler_gates_file
@@ -356,7 +356,7 @@ resources:
     uri: #@ data.values.deployments_git_uri
     branch: #@ data.values.git_branch
     private_key: #@ data.values.github_private_key
-    environment: gcp-staging
+    environment: gcp-galoy-staging
     config: cepler/infra.yml
     gates_branch: #@ data.values.cepler_gates_branch
     gates_file: #@ data.values.cepler_gates_file
