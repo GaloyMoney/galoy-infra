@@ -17,7 +17,6 @@ resource "helm_release" "kubemonkey" {
       timeZone : local.kubemonkey_time_zone
       whitelistedNamespaces : local.kubemonkey_whitelisted_namespaces
       notificationUrl : local.kubemonkey_notification_url
-      name_prefix : local.name_prefix
     })
   ]
 }

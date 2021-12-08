@@ -12,5 +12,5 @@ config:
     enabled: true
     attacks: |
       endpoint = "${notificationUrl}"
-      message = '{"text":"`[{$name_prefix}]` Attacked `{$name}` of `{$namespace}` on {$date} at {$time}. {$error}"}'
+      message = '{"text":"Attacked `{$name}` of `{$namespace}` on {$date} at {$time}. {$error}"}'
       headers = ["Content-Type:application/json"]
