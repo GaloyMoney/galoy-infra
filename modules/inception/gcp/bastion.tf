@@ -1,10 +1,11 @@
 locals {
-  tag             = "${local.name_prefix}-bastion"
-  cfssl_version   = "1.6.1"
-  bitcoin_version = "0.22.0"
-  cepler_version  = "0.7.3"
-  lnd_version     = "0.13.3"
-  kubectl_version = "1.21.3"
+  tag               = "${local.name_prefix}-bastion"
+  cfssl_version     = "1.6.1"
+  bitcoin_version   = "0.22.0"
+  cepler_version    = "0.7.3"
+  lnd_version       = "0.13.3"
+  kubectl_version   = "1.21.3"
+  terraform_version = "1.0.11"
 }
 
 resource "google_service_account" "bastion" {
@@ -61,6 +62,7 @@ resource "google_compute_instance" "bastion" {
     cepler_version : local.cepler_version
     kubectl_version : local.kubectl_version
     lnd_version : local.lnd_version
+    terraform_version : local.terraform_version
   })
 }
 
