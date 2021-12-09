@@ -17,7 +17,6 @@ resource "google_service_networking_connection" "cloud_sql" {
 }
 
 module "shared_pg" {
-  count  = local.deploy_shared_pg ? 1 : 0
   source = "./cloud-sql"
 
   project              = local.project

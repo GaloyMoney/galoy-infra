@@ -18,9 +18,6 @@ variable "postgres_tier" {
 variable "destroyable_postgres" {
   default = false
 }
-variable "deploy_shared_pg" {
-  default = true
-}
 variable "node_service_account" {}
 variable "min_default_node_count" {
   default = 1
@@ -44,5 +41,4 @@ locals {
   cluster_location          = local.region
   postgres_tier             = var.postgres_tier
   destroyable_postgres      = var.destroyable_postgres
-  deploy_shared_pg          = var.deploy_shared_pg
 }
