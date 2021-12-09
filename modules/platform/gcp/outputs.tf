@@ -23,14 +23,14 @@ output "lnd2_ip" {
 }
 
 output "shared_pg_host" {
-  value = module.shared_pg.private_ip
+  value = local.deploy_shared_pg ? module.shared_pg.0.private_ip : ""
 }
 
 output "shared_pg_admin_username" {
-  value = module.shared_pg.admin_username
+  value = local.deploy_shared_pg ? module.shared_pg.0.admin_username : ""
 }
 
 output "shared_pg_admin_password" {
-  value     = module.shared_pg.admin_password
+  value     = local.deploy_shared_pg ? module.shared_pg.0.admin_password : ""
   sensitive = true
 }
