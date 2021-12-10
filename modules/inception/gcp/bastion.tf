@@ -70,6 +70,10 @@ data "google_iam_policy" "bastion" {
     members = local.platform_admins
   }
   binding {
+    role    = "roles/compute.osLoginExternalUser"
+    members = local.platform_admins
+  }
+  binding {
     role    = "roles/compute.viewer"
     members = local.platform_admins
   }
