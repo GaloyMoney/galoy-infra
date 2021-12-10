@@ -2,7 +2,7 @@ locals {
   tag             = "${local.name_prefix}-bastion"
   cfssl_version   = "1.6.1"
   bitcoin_version = "22.0"
-  cepler_version  = "0.7.3"
+  cepler_version  = "0.7.5"
   lnd_version     = "0.13.3"
   kubectl_version = "1.21.3"
 }
