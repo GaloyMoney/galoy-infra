@@ -1,7 +1,19 @@
 variable "name_prefix" {}
 variable "cluster_endpoint" {}
 variable "cluster_ca_cert" {}
-variable "secrets" { sensitive = true }
+variable "secrets" {
+  description = "Optionally you can inject all secrets as a JSON blob"
+  default     = ""
+  sensitive   = true
+}
+variable "honeycomb_api_key" {
+  default   = ""
+  sensitive = true
+}
+variable "kubemonkey_notification_url" {
+  default   = ""
+  sensitive = true
+}
 
 variable "ingress_nginx_version" {
   default = "4.0.6"
@@ -30,10 +42,10 @@ locals {
   letsencrypt_issuer_email    = var.letsencrypt_issuer_email
   jaeger_host                 = "opentelemetry-collector.${local.otel_namespace}.svc.cluster.local"
   small_footprint             = var.small_footprint
-  honeycomb_api_key           = jsondecode(var.secrets).honeycomb_api_key
+  honeycomb_api_key           = var.honeycomb_api_key != "" ? var.honeycomb_api_key : jsondecode(var.secrets).honeycomb_api_key
   kubemonkey_enabled          = var.kubemonkey_enabled
   kubemonkey_time_zone        = var.kubemonkey_time_zone
-  kubemonkey_notification_url = jsondecode(var.secrets).kubemonkey_notification_url
+  kubemonkey_notification_url = var.kubemonkey_notification_url != "" ? var.kubemonkey_notification_url : jsondecode(var.secrets).kubemonkey_notification_url
   kubemonkey_whitelisted_namespaces = [
     "${var.name_prefix}-galoy",
     "${var.name_prefix}-bitcoin",
