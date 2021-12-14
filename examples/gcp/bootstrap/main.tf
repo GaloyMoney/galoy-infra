@@ -1,5 +1,6 @@
 variable "name_prefix" {}
 variable "gcp_project" {}
+variable "organization_id" {}
 variable "enable_services" {
   default = true
 }
@@ -13,6 +14,7 @@ module "bootstrap" {
 
   name_prefix                   = var.name_prefix
   gcp_project                   = var.gcp_project
+  organization_id               = var.organization_id
   enable_services               = var.enable_services
   tf_state_bucket_force_destroy = var.tf_state_bucket_force_destroy
 }

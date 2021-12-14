@@ -48,3 +48,17 @@ resource "google_project_iam_member" "inception_boostrap" {
   role    = google_project_iam_custom_role.bootstrap.id
   member  = "serviceAccount:${google_service_account.inception.email}"
 }
+
+resource "google_organization_iam_custom_role" "inception_oslogin_external" {
+  role_id     = replace("${local.name_prefix}-inception-oslogin-external", "-", "_")
+  org_id      = local.organization_id
+  title       = "Inception External User OSLogin Grant"
+  description = "Allows ${local.name_prefix} inception user to enable SSH for users external to the organization"
+  permissions = ["compute.oslogin.updateExternalUser"]
+}
+
+resource "google_organization_iam_member" "inception_oslogin_external" {
+  org_id = local.organization_id
+  role   = google_organization_iam_custom_role.inception_oslogin_external.id
+  member = "serviceAccount:${google_service_account.inception.email}"
+}
