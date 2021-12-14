@@ -26,6 +26,7 @@ variable "local_deploy" { default = false }
 variable "small_footprint" { default = false }
 variable "kubemonkey_enabled" { default = false }
 variable "kubemonkey_time_zone" { default = "Etc/UTC" }
+variable "smoketest_cronjob" { default = false }
 
 locals {
   local_deploy                = var.local_deploy
@@ -33,7 +34,13 @@ locals {
   smoketest_namespace         = "${local.name_prefix}-smoketest"
   otel_namespace              = "${local.name_prefix}-otel"
   kubemonkey_namespace        = "${local.name_prefix}-kubemonkey"
+  galoy_namespace             = "${local.name_prefix}-galoy"
+  bitcoin_namespace           = "${var.name_prefix}-bitcoin"
+  monitoring_namespace        = "${var.name_prefix}-monitoring"
+  addons_namespace            = "${var.name_prefix}-addons"
+  smoketest_cronjob           = var.smoketest_cronjob
   smoketest_name              = "smoketest"
+  smoketest_cronjob_name      = "${local.smoketest_name}-cronjob"
   cluster_endpoint            = var.cluster_endpoint
   cluster_ca_cert             = var.cluster_ca_cert
   ingress_namespace           = "${local.name_prefix}-ingress"
@@ -47,10 +54,10 @@ locals {
   kubemonkey_time_zone        = var.kubemonkey_time_zone
   kubemonkey_notification_url = var.kubemonkey_notification_url != "" ? var.kubemonkey_notification_url : jsondecode(var.secrets).kubemonkey_notification_url
   kubemonkey_whitelisted_namespaces = [
-    "${var.name_prefix}-galoy",
-    "${var.name_prefix}-bitcoin",
-    "${var.name_prefix}-monitoring",
-    "${var.name_prefix}-addons",
+    local.galoy_namespace,
+    local.bitcoin_namespace,
+    local.monitoring_namespace,
+    local.addons_namespace,
   ]
 }
 
