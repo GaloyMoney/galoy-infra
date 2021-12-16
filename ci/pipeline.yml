@@ -20,7 +20,6 @@ TESTFLIGHT_ADMINS: #@ data.values.testflight_admins
 KUBE_HOST: #@ data.values.concourse_tf_kube_host
 KUBE_CA_CERT: #@ data.values.concourse_tf_kube_ca_cert
 KUBE_TOKEN: #@ data.values.concourse_tf_kube_token
-TF_VAR_honeycomb_api_key: #@ data.values.staging_honeycomb_api_key
 TF_VAR_name_prefix: testflight-d
 TF_VAR_gcp_project: galoy-infra-testflight
 TF_VAR_enable_services: false
@@ -49,17 +48,6 @@ params:
 #@ end
 
 groups:
-- name: all
-  jobs:
-  - testflight-bootstrap
-  - testflight-inception
-  - testflight-platform
-  - testflight-services
-  - testflight-cleanup
-  - bump-repos
-  - staging-inception
-  - staging-platform
-  - staging-services
 - name: testflight
   jobs:
   - testflight-bootstrap
@@ -68,11 +56,6 @@ groups:
   - testflight-services
   - testflight-cleanup
   - bump-repos
-- name: staging
-  jobs:
-  - staging-inception
-  - staging-platform
-  - staging-services
 
 jobs:
 - name: testflight-bootstrap
@@ -216,56 +199,6 @@ jobs:
         repository: galoy-staging
         rebase: true
 
-- name: staging-inception
-  serial_groups: [staging]
-  plan:
-  - in_parallel:
-    - put: staging-honeymarker
-    - do:
-      - { get: cepler-galoy-staging, trigger: true }
-      - put: tf-staging-inception
-        params:
-          terraform_source: cepler-galoy-staging/gcp/galoy-staging/inception
-      - put: tf-staging-inception
-        params:
-          terraform_source: cepler-galoy-staging/gcp/galoy-staging/inception
-  - #@ slack_success_notification()
-  on_failure: #@ slack_failure_notification()
-
-- name: staging-platform
-  serial_groups: [staging]
-  plan:
-  - in_parallel:
-    - put: staging-honeymarker
-    - do:
-      - { get: cepler-galoy-staging, trigger: true, passed: [staging-inception] }
-      - put: tf-staging-platform
-        params:
-          terraform_source: cepler-galoy-staging/gcp/galoy-staging/platform
-      - put: tf-staging-platform
-        params:
-          terraform_source: cepler-galoy-staging/gcp/galoy-staging/platform
-  - #@ slack_success_notification()
-  on_failure: #@ slack_failure_notification()
-
-- name: staging-services
-  serial_groups: [staging]
-  plan:
-  - in_parallel:
-    - put: staging-honeymarker
-    - do:
-      - { get: cepler-galoy-staging, trigger: true, passed: [staging-platform] }
-      - put: tf-staging-services
-        tags: ["galoy-staging"]
-        params:
-          terraform_source: cepler-galoy-staging/gcp/galoy-staging/services
-          vars:
-            secrets: #@ data.values.staging_services_secrets
-  - put: cepler-out
-    params: { repository: cepler-galoy-staging }
-  - #@ slack_success_notification()
-  on_failure: #@ slack_failure_notification()
-
 resources:
 - name: repo
   type: git
@@ -302,70 +235,6 @@ resources:
     branch: main
     pool: infra-testflight
     private_key: #@ data.values.github_private_key
-
-- name: tf-staging-inception
-  type: terraform
-  source:
-    env_name: default
-    backend_type: gcs
-    backend_config:
-      bucket: #@ data.values.staging_state_bucket
-      prefix: galoy-staging/inception
-      credentials: #@ data.values.staging_inception_creds
-    env:
-      GOOGLE_CREDENTIALS: #@ data.values.staging_inception_creds
-
-- name: tf-staging-platform
-  type: terraform
-  source:
-    env_name: default
-    backend_type: gcs
-    backend_config:
-      bucket: #@ data.values.staging_state_bucket
-      prefix: galoy-staging/platform
-      credentials: #@ data.values.staging_inception_creds
-    env:
-      GOOGLE_CREDENTIALS: #@ data.values.staging_inception_creds
-
-- name: tf-staging-services
-  type: terraform
-  source:
-    env_name: default
-    backend_type: gcs
-    backend_config:
-      bucket: #@ data.values.staging_state_bucket
-      prefix: galoy-staging/services/base
-      credentials: #@ data.values.staging_inception_creds
-    env:
-      GOOGLE_CREDENTIALS: #@ data.values.staging_inception_creds
-
-- name: cepler-out
-  type: cepler-out
-  source:
-    uri: #@ data.values.deployments_git_uri
-    branch: #@ data.values.git_branch
-    private_key: #@ data.values.github_private_key
-    environment: gcp-galoy-staging
-    config: cepler/infra.yml
-    gates_branch: #@ data.values.cepler_gates_branch
-    gates_file: #@ data.values.cepler_gates_file
-
-- name: cepler-galoy-staging
-  type: cepler-in
-  source:
-    uri: #@ data.values.deployments_git_uri
-    branch: #@ data.values.git_branch
-    private_key: #@ data.values.github_private_key
-    environment: gcp-galoy-staging
-    config: cepler/infra.yml
-    gates_branch: #@ data.values.cepler_gates_branch
-    gates_file: #@ data.values.cepler_gates_file
-
-- name: staging-honeymarker
-  type: honeymarker
-  source:
-    api_key: #@ data.values.staging_honeycomb_api_key
-    dataset: galoy-staging
 
 - name: slack
   type: slack-notification
