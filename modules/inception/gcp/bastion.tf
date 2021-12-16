@@ -48,8 +48,8 @@ resource "google_compute_instance" "bastion" {
   }
 
   metadata = {
-    enable-oslogin     = "TRUE"
-    enable-oslogin-2fa = "TRUE"
+    enable-oslogin = "TRUE"
+    # enable-oslogin-2fa = "TRUE"
   }
 
   metadata_startup_script = templatefile("${path.module}/bastion-startup.tmpl", {
@@ -110,3 +110,19 @@ resource "google_service_account_iam_member" "bastion_account_iam" {
   role               = "roles/iam.serviceAccountUser"
   member             = each.key
 }
+
+# resource "google_organization_iam_member" "external_users" {
+#   for_each = toset(local.platform_admins)
+
+#   org_id = "709919307712"
+#   role   = "roles/compute.osLoginExternalUser"
+#   member = each.key
+# }
+
+# resource "google_organization_iam_member" "external_users" {
+#   for_each = toset(local.platform_admins)
+
+#   org_id = "709919307712"
+#   role   = replace("${local.name_prefix}-inception-oslogin-external", "-", "_")
+#   member = each.key
+# }
