@@ -5,7 +5,7 @@ resource "google_storage_bucket" "backups" {
   uniform_bucket_level_access = true
 
   retention_policy {
-    locked  = true
+    is_locked        = true
     retention_period = 2592000
   }
 }
