@@ -7,10 +7,6 @@ resource "google_storage_bucket" "backups" {
   versioning {
     enabled = true
   }
-
-  retention_policy {
-    retention_period = 2592000
-  }
 }
 
 resource "google_service_account" "backups" {
