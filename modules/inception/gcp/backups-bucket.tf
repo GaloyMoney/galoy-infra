@@ -4,10 +4,10 @@ resource "google_storage_bucket" "backups" {
   location                    = local.tf_state_bucket_location
   uniform_bucket_level_access = true
 
-  retention_policy {
-    is_locked        = true
-    retention_period = 2592000
-  }
+  # retention_policy {
+  #   is_locked        = true
+  #   retention_period = 2592000
+  # }
 }
 
 resource "google_service_account" "backups" {
