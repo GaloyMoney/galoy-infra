@@ -37,7 +37,8 @@ function init_bootstrap() {
 terraform {
   backend "kubernetes" {
     secret_suffix = "testflight"
-    namespace = "concourse-tf"
+    namespace     = "concourse-tf"
+    config_path   = "/root/.kube/config"
   }
 }
 EOF
