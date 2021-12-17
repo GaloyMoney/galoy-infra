@@ -59,6 +59,7 @@ groups:
 
 jobs:
 - name: testflight-bootstrap
+  serial: true
   plan:
   - put: testflight-lock
     params: { claim: gcp-testflight }
@@ -81,6 +82,7 @@ jobs:
   on_failure: #@ slack_failure_notification()
 
 - name: testflight-inception
+  serial: true
   plan:
   - { get: testflight-lock, passed: [testflight-bootstrap] }
   - in_parallel:
@@ -102,6 +104,7 @@ jobs:
   on_failure: #@ slack_failure_notification()
 
 - name: testflight-platform
+  serial: true
   plan:
   - { get: testflight-lock, passed: [testflight-inception] }
   - in_parallel:
@@ -123,6 +126,7 @@ jobs:
   on_failure: #@ slack_failure_notification()
 
 - name: testflight-services
+  serial: true
   plan:
   - { get: testflight-lock, passed: [testflight-platform] }
   - in_parallel:
