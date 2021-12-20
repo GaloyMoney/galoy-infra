@@ -98,6 +98,7 @@ $ ssh ${BASTION_USER}@${bastion_ip}
 $ gcloud auth login
 (...)
 $ kauth
+$ gcloud auth application-default login
 ```
 Once you have completed the authentication you should be able to talk to k8s and execute the rollout of the services phase:
 ```
