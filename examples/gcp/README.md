@@ -17,7 +17,7 @@ $ cd galoy-infra/examples/gcp
 
 ## Bootstrap phase
 
-The (`bootstrap`)[./bootstrap/main.tf] phase is intended to be executed against a blank GCP project.
+The [`bootstrap`](./bootstrap/main.tf) phase is intended to be executed against a blank GCP project.
 It will create the `inception` service account + GCS bucket to store the terraform state files for the other phases.
 
 Some variables must be set first:
@@ -54,6 +54,15 @@ Once complete you should see outputs that includes the `bastion_ip`
 bastion_ip = "<ip-address>"
 ```
 
+## Platform phase
+
+The [`platform`](./platform/main.tf) phase in this example will bring up the actual kubernetes platform. Once `inception` is complete you can execute:
+```
+bin/prep-platform.sh
+make platform
+```
+The result should be (among other things) a k8s cluster running in your gcp project.
+
 ## Test bastion login
 
 Since the next phase must be executed from the bastion let's first make sure you are able to ssh there.
@@ -66,20 +75,34 @@ and activate a 2FA method in your google account.
 
 Your bastion username is your email address with `_` underscores instead of `.` and `@`:
 ```
-bastion_user="$(echo <your-email> | sed 's/[.@]/_/g')"
+export BASTION_USER="$(echo <your-email> | sed 's/[.@]/_/g')"
 ```
 
 See if you can ssh via:
 ```
-$ ssh ${bastion_user}@${bastion_ip}
+$ ssh ${BASTION_USER}@${bastion_ip}
 <select 2fa method>
-$ <bastion_user>@<bastion_name>
+$ <bastion-user>@<bastion-name>
 ```
 
-## Platform phase
+## Services phase
 
-The [`platform`](./platform/main.tf) phase in this example is used to provision both the `platform` and `services` modules of this repository.
-This is _not_ reccomended for rollouts of production infrastructure, where these modules should each have their own lifecycle.
-Since the `services` module must talk to the k8s api we have to execute this phase from the bastion.
-
-WIP
+The [`services`](./services/main.tf) phase will bring up a few global dependencies that are pre-requisits for the galoy helm charts to function.
+To bring them up you must first sync the local code to the bastion via:
+```
+bin/prep-services.sh
+```
+Once the code has been uploaded you should ssh onto the bastion and login to gcloud from there:
+```
+$ ssh ${BASTION_USER}@${bastion_ip}
+$ gcloud auth login
+(...)
+$ kauth
+```
+Once you have completed the authentication you should be able to talk to k8s and execute the rollout of the services phase:
+```
+$ k get ns
+$ cd repo/examples/gcp
+$ make initial-services
+$ make services
+```
