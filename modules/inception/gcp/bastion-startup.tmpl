@@ -20,6 +20,13 @@ export GALOY_ENVIRONMENT=${project}
 export KUBE_CONFIG_PATH=~/.kube/config
 EOF
 
+cat <<EOF >> /etc/profile.d/auto-revoke.sh
+onExit() {
+  gcloud auth revoke
+}
+trap onExit EXIT
+EOF
+
 curl -LO https://storage.googleapis.com/kubernetes-release/release/v${kubectl_version}/bin/linux/amd64/kubectl
 chmod +x ./kubectl
 mv ./kubectl /usr/local/bin
