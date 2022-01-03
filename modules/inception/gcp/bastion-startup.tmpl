@@ -23,6 +23,7 @@ EOF
 cat <<EOF >> /etc/profile.d/auto-revoke.sh
 onExit() {
   gcloud auth revoke
+  echo Y | gcloud auth application-default revoke
 }
 trap onExit EXIT
 EOF
