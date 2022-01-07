@@ -20,6 +20,7 @@ export GALOY_ENVIRONMENT=${project}
 export KUBE_CONFIG_PATH=~/.kube/config
 EOF
 
+%{ if bastion_revoke_on_exit }
 cat <<EOF >> /etc/profile.d/auto-revoke.sh
 onExit() {
   gcloud auth revoke
@@ -27,6 +28,7 @@ onExit() {
 }
 trap onExit EXIT
 EOF
+%{ endif }
 
 curl -LO https://storage.googleapis.com/kubernetes-release/release/v${kubectl_version}/bin/linux/amd64/kubectl
 chmod +x ./kubectl

@@ -12,6 +12,9 @@ variable "bastion_machine_type" {
 variable "bastion_image" {
   default = "ubuntu-os-cloud/ubuntu-2110"
 }
+variable "bastion_revoke_on_exit" {
+  default = true
+}
 variable "network_prefix" {
   default = "10.0"
 }
@@ -42,7 +45,8 @@ locals {
   region         = var.region
   network_prefix = var.network_prefix
 
-  bastion_zone         = "${local.region}-${var.primary_zone}"
-  bastion_machine_type = var.bastion_machine_type
-  bastion_image        = var.bastion_image
+  bastion_zone           = "${local.region}-${var.primary_zone}"
+  bastion_machine_type   = var.bastion_machine_type
+  bastion_image          = var.bastion_image
+  bastion_revoke_on_exit = var.bastion_revoke_on_exit
 }
