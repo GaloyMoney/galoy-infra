@@ -5,6 +5,7 @@ locals {
   cepler_version  = "0.7.5"
   lnd_version     = "0.13.3"
   kubectl_version = "1.21.3"
+  k9s_version     = "0.25.18"
 }
 
 resource "google_service_account" "bastion" {
@@ -61,6 +62,7 @@ resource "google_compute_instance" "bastion" {
     bitcoin_version : local.bitcoin_version
     cepler_version : local.cepler_version
     kubectl_version : local.kubectl_version
+    k9s_version : local.k9s_version
     lnd_version : local.lnd_version
   })
 }
