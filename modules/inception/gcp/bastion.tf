@@ -57,7 +57,7 @@ resource "google_compute_instance" "bastion" {
     cluster_name : "${local.name_prefix}-cluster",
     zone : local.region,
     project : local.project,
-    bastion_revoke_on_exit: local.bastion_revoke_on_exit
+    bastion_revoke_on_exit : local.bastion_revoke_on_exit
     cfssl_version : local.cfssl_version,
     bitcoin_version : local.bitcoin_version
     cepler_version : local.cepler_version
