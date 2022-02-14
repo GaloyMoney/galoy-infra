@@ -113,12 +113,6 @@ ports:
     servicePort: 4317
     hostPort: 4317
     protocol: TCP
-  jaeger-thrift-c:
-    enabled: true
-    containerPort: 6831
-    servicePort: 6831
-    hostPort: 6831
-    protocol: UDP
   jaeger-thrift-b:
     enabled: true
     containerPort: 6832
