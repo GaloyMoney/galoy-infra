@@ -39,6 +39,9 @@ config:
       - key: code.function.params.twoFAToken
         action: update
         value: "<redacted>"
+      - key: code.function.params.body
+        action: update
+        value: "<redacted>"
     # If set to null, will be overridden with values based on k8s resource limits
     memory_limiter: null
     resourcedetection:
