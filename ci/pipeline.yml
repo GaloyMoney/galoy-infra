@@ -175,7 +175,7 @@ jobs:
   - in_parallel:
     - { get: galoy-staging }
     - { get: modules, passed: [testflight-cleanup], trigger: true}
-    - { get: repo, trigger: true, passed: [testflight-cleanup] }
+    - { get: repo, trigger: true, passed: [testflight-cleanup], params: { fetch_tags: false } }
     - { get: pipeline-tasks }
   - task: bump-repos
     config:
