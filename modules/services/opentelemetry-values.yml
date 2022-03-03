@@ -42,6 +42,12 @@ config:
       - key: code.function.params.body
         action: update
         value: "<redacted>"
+      - key: code.function.params.macaroon
+        action: update
+        value: "<redacted>"
+      - key: code.function.params.cert
+        action: update
+        value: "<redacted>"
     # If set to null, will be overridden with values based on k8s resource limits
     memory_limiter: null
     resourcedetection:
