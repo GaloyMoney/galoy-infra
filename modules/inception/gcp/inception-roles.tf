@@ -5,6 +5,7 @@ resource "google_project_iam_custom_role" "inception_make" {
   description = "Role for executing inception tf files for ${local.name_prefix}"
   permissions = [
     "compute.addresses.create",
+    "compute.addresses.createInternal",
     "compute.addresses.get",
     "compute.addresses.use",
     "compute.disks.create",
@@ -48,6 +49,7 @@ resource "google_project_iam_custom_role" "inception_destroy" {
   description = "Role for destroying inception environment for ${local.name_prefix}"
   permissions = [
     "compute.addresses.delete",
+    "compute.addresses.deleteInternal",
     "compute.firewalls.delete",
     "compute.instances.delete",
     "compute.instances.deleteAccessConfig",
