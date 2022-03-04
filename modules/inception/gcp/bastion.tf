@@ -70,11 +70,11 @@ resource "google_compute_instance" "bastion" {
 data "google_iam_policy" "bastion" {
   binding {
     role    = "roles/compute.osLogin"
-    members = local.platform_admins
+    members = local.bastion_users
   }
   binding {
     role    = "roles/compute.viewer"
-    members = local.platform_admins
+    members = local.bastion_users
   }
   binding {
     role    = "roles/compute.admin"
