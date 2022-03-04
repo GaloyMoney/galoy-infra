@@ -8,6 +8,7 @@ variable "inception_sa" {}
 variable "users" {
   type = list(object({
     id        = string
+    bastion   = bool
     inception = bool
     platform  = bool
     logs      = bool
