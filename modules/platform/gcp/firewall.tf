@@ -62,3 +62,27 @@ resource "google_compute_firewall" "dmz_nodes_ingress" {
   allow { protocol = "esp" }
   allow { protocol = "ah" }
 }
+
+resource "google_compute_firewall" "dmz_shared_internal_ip" {
+  name        = "${var.name_prefix}-bastion-shared_internal_ip-ingress"
+  description = "Allow ${var.name_prefix}-bastion to reach the shared internal IP"
+  project     = local.project
+  network     = data.google_compute_network.vpc.self_link
+  priority    = 1000
+  direction   = "INGRESS"
+
+  destination_ranges = [
+    "${local.shared_internal_ip_address}/32",
+  ]
+  source_ranges = [
+    data.google_compute_subnetwork.dmz.ip_cidr_range,
+  ]
+
+  # Allow all possible protocols
+  allow { protocol = "tcp" }
+  allow { protocol = "udp" }
+  allow { protocol = "icmp" }
+  allow { protocol = "sctp" }
+  allow { protocol = "esp" }
+  allow { protocol = "ah" }
+}

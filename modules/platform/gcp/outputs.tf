@@ -22,6 +22,10 @@ output "lnd2_ip" {
   value = google_compute_address.lnd2.address
 }
 
+output "shared_internal_ip" {
+  value = google_compute_address.shared_ip.address
+}
+
 output "shared_pg_host" {
   value = local.deploy_shared_pg ? module.shared_pg.0.private_ip : ""
 }
