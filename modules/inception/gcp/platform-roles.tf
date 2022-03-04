@@ -36,6 +36,7 @@ resource "google_project_iam_custom_role" "platform_make" {
     "compute.sslCertificates.create",
     "compute.sslCertificates.get",
     "compute.subnetworks.get",
+    "compute.subnetworks.use",
     "compute.subnetworks.create",
     "compute.targetHttpsProxies.create",
     "compute.targetHttpsProxies.get",
