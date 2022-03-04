@@ -72,7 +72,7 @@ resource "google_compute_firewall" "dmz_shared_internal_ip" {
   direction   = "INGRESS"
 
   destination_ranges = [
-    "${local.shared_internal_ipv_address}/32",
+    "${local.shared_internal_ip_address}/32",
   ]
   source_ranges = [
     data.google_compute_subnetwork.dmz.ip_cidr_range,
