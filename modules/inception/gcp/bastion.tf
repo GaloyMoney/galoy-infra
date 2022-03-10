@@ -107,7 +107,7 @@ resource "google_compute_firewall" "bastion_allow_all_inbound" {
 }
 
 resource "google_service_account_iam_member" "bastion_account_iam" {
-  for_each = toset(local.platform_admins)
+  for_each = toset(local.bastion_users)
 
   service_account_id = google_service_account.bastion.name
   role               = "roles/iam.serviceAccountUser"
