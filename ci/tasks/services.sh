@@ -20,21 +20,22 @@ cleanup_inception_key
 
 bin/prep-platform.sh
 
-bastion_ip="$(cd inception && terraform output bastion_ip | jq -r)"
+bastion_name="$(cd inception && terraform output bastion_name | jq -r)"
+bastion_zone="$(cd inception && terraform output bastion_zone | jq -r)"
 export BASTION_USER="sa_$(cat ${CI_ROOT}/gcloud-creds.json  | jq -r '.client_id')"
 export ADDITIONAL_SSH_OPTS="-o StrictHostKeyChecking=no -i ${CI_ROOT}/login.ssh"
+
+gcloud compute os-login ssh-keys add --key-file=${CI_ROOT}/login.ssh.pub
 
 cp ${CI_ROOT}/gcloud-creds.json ./
 bin/prep-services.sh
 
-gcloud compute os-login ssh-keys add --key-file=${CI_ROOT}/login.ssh.pub
-
 set +e
 for i in {1..60}; do
   echo "Attempt ${i} to find make on bastion"
-  ssh ${ADDITIONAL_SSH_OPTS} ${BASTION_USER}@${bastion_ip} "which make" && break
+  gcloud compute ssh ${bastion_name} --zone=${bastion_zone} -- "which make" && break
   sleep 2
 done
 set -e
 
-ssh ${ADDITIONAL_SSH_OPTS} ${BASTION_USER}@${bastion_ip} "cd repo/examples/gcp; export GOOGLE_APPLICATION_CREDENTIALS=\$(pwd)/gcloud-creds.json; echo yes | make initial-services && echo yes | make services"
+gcloud compute ssh ${bastion_name} --zone=${bastion_zone} -- "cd repo/examples/gcp; export GOOGLE_APPLICATION_CREDENTIALS=\$(pwd)/gcloud-creds.json; echo yes | make initial-services && echo yes | make services"

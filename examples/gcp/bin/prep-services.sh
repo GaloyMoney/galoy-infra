@@ -15,7 +15,8 @@ popd
 pushd inception
 
 cluster_sa=$(terraform output cluster_sa | jq -r)
-bastion_ip="$(terraform output bastion_ip | jq -r)"
+bastion_name="$(terraform output bastion_name | jq -r)"
+bastion_zone="$(terraform output bastion_zone | jq -r)"
 
 popd
 
@@ -47,7 +48,10 @@ EOF
 
 popd
 
+gcloud compute start-iap-tunnel ${bastion_name} --zone=${bastion_zone} 22 --local-host-port=localhost:2222 &
+trap 'jobs -p | xargs kill' EXIT
+
 ADDITIONAL_SSH_OPTS=${ADDITIONAL_SSH_OPTS:-""}
 echo "Syncing ${REPO_ROOT##*/} to bastion"
-rsync --exclude '**/.terraform/**' --exclude '**.terrafor*' -avr -e "ssh -l ${BASTION_USER} ${ADDITIONAL_SSH_OPTS}" \
-  ${REPO_ROOT}/ ${bastion_ip}:${REPO_ROOT_DIR}
+rsync --exclude '**/.terraform/**' --exclude '**.terrafor*' -avr -e "ssh -l ${BASTION_USER} ${ADDITIONAL_SSH_OPTS} -p 2222" \
+  ${REPO_ROOT}/ localhost:${REPO_ROOT_DIR}

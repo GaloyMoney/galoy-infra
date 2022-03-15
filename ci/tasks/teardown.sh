@@ -17,13 +17,14 @@ write_users
 bin/prep-inception.sh
 bin/prep-platform.sh
 
-bastion_ip="$(cd inception && terraform output bastion_ip | jq -r)"
+bastion_name="$(cd inception && terraform output bastion_ip | jq -r)"
+bastion_zone="$(cd inception && terraform output bastion_zone | jq -r)"
 export BASTION_USER="sa_$(cat ${CI_ROOT}/gcloud-creds.json  | jq -r '.client_id')"
 export ADDITIONAL_SSH_OPTS="-o StrictHostKeyChecking=no -i ${CI_ROOT}/login.ssh"
 
 bin/prep-services.sh
 
-ssh ${ADDITIONAL_SSH_OPTS} ${BASTION_USER}@${bastion_ip} "cd repo/examples/gcp; export GOOGLE_APPLICATION_CREDENTIALS=\$(pwd)/gcloud-creds.json; echo yes | make destroy-services"
+gcloud compute ssh ${bastion_name} --zone=${bastion_zone} -- "cd repo/examples/gcp; export GOOGLE_APPLICATION_CREDENTIALS=\$(pwd)/gcloud-creds.json; echo yes | make destroy-services"
 
 echo yes | make destroy-platform
 echo yes | GOOGLE_CREDENTIALS=$(cat inception-sa-creds.json) make destroy-inception

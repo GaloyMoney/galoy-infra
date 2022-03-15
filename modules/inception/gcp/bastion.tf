@@ -15,12 +15,6 @@ resource "google_service_account" "bastion" {
 
 }
 
-resource "google_compute_address" "bastion" {
-  project = local.project
-  name    = "${local.name_prefix}-bastion"
-  region  = local.region
-}
-
 resource "google_compute_instance" "bastion" {
   project      = local.project
   name         = "${local.name_prefix}-bastion"
@@ -42,10 +36,6 @@ resource "google_compute_instance" "bastion" {
 
   network_interface {
     subnetwork = google_compute_subnetwork.dmz.self_link
-
-    access_config {
-      nat_ip = google_compute_address.bastion.address
-    }
   }
 
   metadata = {
@@ -89,20 +79,20 @@ resource "google_compute_instance_iam_policy" "bastion" {
   policy_data   = data.google_iam_policy.bastion.policy_data
 }
 
-resource "google_compute_firewall" "bastion_allow_all_inbound" {
-  project = local.project
-  name    = "${local.name_prefix}-bastion-allow-ingress"
+resource "google_compute_firewall" "bastion_allow_iap_inbound" {
+  name = "${local.name_prefix}-bastion-allow-iap-ingress"
 
   network = google_compute_network.vpc.self_link
 
   target_tags   = [local.tag]
   direction     = "INGRESS"
-  source_ranges = ["0.0.0.0/0"]
+  source_ranges = ["35.235.240.0/20"]
 
   priority = "1000"
 
   allow {
-    protocol = "all"
+    protocol = "tcp"
+    ports    = [22]
   }
 }
 
@@ -112,4 +102,11 @@ resource "google_service_account_iam_member" "bastion_account_iam" {
   service_account_id = google_service_account.bastion.name
   role               = "roles/iam.serviceAccountUser"
   member             = each.key
+}
+
+resource "google_project_iam_member" "ssh_access" {
+  for_each = toset([for email in local.bastion_access : "user:${email}"])
+
+  role   = "roles/iap.tunnelResourceAccessor"
+  member = each.key
 }

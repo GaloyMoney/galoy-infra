@@ -16,7 +16,6 @@ popd
 pushd inception
 
 cluster_sa=$(terraform output cluster_sa | jq -r)
-bastion_ip="$(terraform output bastion_ip | jq -r)"
 
 popd
 

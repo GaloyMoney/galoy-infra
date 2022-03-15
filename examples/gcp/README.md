@@ -49,9 +49,10 @@ Execute it via:
 $ make inception
 ```
 
-Once complete you should see outputs that includes the `bastion_ip`
+Once complete you should see outputs that includes the `bastion_name` and `bastion_zone`
 ```
-bastion_ip = "<ip-address>"
+bastion_name = "<bastion-name>"
+bastion_zone = "<bastion-zone>"
 ```
 
 ## Platform phase
@@ -80,7 +81,7 @@ export BASTION_USER="$(echo <your-email> | sed 's/[.@]/_/g')"
 
 See if you can ssh via:
 ```
-$ ssh ${BASTION_USER}@${bastion_ip}
+$ gcloud compute ssh ${bastion_name} --zone=${bastion_zone} --project=${gcp_project}
 <select 2fa method>
 $ <bastion-user>@<bastion-name>
 ```
@@ -94,7 +95,7 @@ bin/prep-services.sh
 ```
 Once the code has been uploaded you should ssh onto the bastion and login to gcloud from there:
 ```
-$ ssh ${BASTION_USER}@${bastion_ip}
+$ gcloud compute ssh ${bastion_name} --zone=${bastion_zone} --project=${gcp_project}
 $ gcloud auth login
 (...)
 $ kauth
