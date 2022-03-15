@@ -105,8 +105,9 @@ resource "google_service_account_iam_member" "bastion_account_iam" {
 }
 
 resource "google_project_iam_member" "ssh_access" {
-  for_each = toset([for email in local.bastion_access : "user:${email}"])
+  for_each = toset(local.bastion_users)
 
+  project = local.project
   role   = "roles/iap.tunnelResourceAccessor"
   member = each.key
 }
