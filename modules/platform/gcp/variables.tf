@@ -7,7 +7,7 @@ variable "network_prefix" {
   default = "10.1"
 }
 variable "kube_version" {
-  default = "1.21.6-gke.1503"
+  default = "1.21.9-gke.1002"
 }
 variable "node_default_machine_type" {
   default = "n2-standard-4"

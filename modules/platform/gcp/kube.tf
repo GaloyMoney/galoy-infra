@@ -107,7 +107,7 @@ resource "google_container_cluster" "primary" {
 resource "google_container_node_pool" "default" {
   provider = google-beta
 
-  name     = "${local.name_prefix}-${local.node_default_machine_type}-nodes"
+  name     = "${local.name_prefix}-${local.node_default_machine_type}-default"
   project  = local.project
   version  = google_container_cluster.primary.master_version
   location = google_container_cluster.primary.location
@@ -166,7 +166,7 @@ resource "google_container_node_pool" "default" {
     }
 
     shielded_instance_config {
-      enable_secure_boot          = false
+      enable_secure_boot          = true
       enable_integrity_monitoring = true
     }
   }
