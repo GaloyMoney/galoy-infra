@@ -8,13 +8,6 @@ locals {
   k9s_version     = "0.25.18"
 }
 
-resource "google_service_account" "bastion" {
-  project      = local.project
-  account_id   = "${local.name_prefix}-bastion"
-  display_name = "Bastion account for ${local.name_prefix}"
-
-}
-
 resource "google_compute_instance" "bastion" {
   project      = local.project
   name         = "${local.name_prefix}-bastion"
@@ -95,20 +88,4 @@ resource "google_compute_firewall" "bastion_allow_iap_inbound" {
     protocol = "tcp"
     ports    = [22]
   }
-}
-
-resource "google_service_account_iam_member" "bastion_account_iam" {
-  for_each = toset(local.bastion_users)
-
-  service_account_id = google_service_account.bastion.name
-  role               = "roles/iam.serviceAccountUser"
-  member             = each.key
-}
-
-resource "google_project_iam_member" "ssh_access" {
-  for_each = toset(local.bastion_users)
-
-  project = local.project
-  role    = "roles/iap.tunnelResourceAccessor"
-  member  = each.key
 }
