@@ -17,7 +17,7 @@ write_users
 bin/prep-inception.sh
 bin/prep-platform.sh
 
-bastion_name="$(cd inception && terraform output bastion_ip | jq -r)"
+bastion_name="$(cd inception && terraform output bastion_name | jq -r)"
 bastion_zone="$(cd inception && terraform output bastion_zone | jq -r)"
 export BASTION_USER="sa_$(cat ${CI_ROOT}/gcloud-creds.json  | jq -r '.client_id')"
 export ADDITIONAL_SSH_OPTS="-o StrictHostKeyChecking=no -i ${CI_ROOT}/login.ssh"
