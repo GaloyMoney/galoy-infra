@@ -80,7 +80,8 @@ resource "google_compute_instance_iam_policy" "bastion" {
 }
 
 resource "google_compute_firewall" "bastion_allow_iap_inbound" {
-  name = "${local.name_prefix}-bastion-allow-iap-ingress"
+  project = local.project
+  name    = "${local.name_prefix}-bastion-allow-iap-ingress"
 
   network = google_compute_network.vpc.self_link
 
@@ -108,6 +109,6 @@ resource "google_project_iam_member" "ssh_access" {
   for_each = toset(local.bastion_users)
 
   project = local.project
-  role   = "roles/iap.tunnelResourceAccessor"
-  member = each.key
+  role    = "roles/iap.tunnelResourceAccessor"
+  member  = each.key
 }
