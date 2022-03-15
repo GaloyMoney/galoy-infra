@@ -4,7 +4,7 @@ resource "google_project_iam_custom_role" "bastion_access" {
   title       = "Bastion Access"
   description = "Role for bastion access"
   permissions = [
-    "compuse.instances.list",
+    "compute.instances.list",
     "iap.tunnelInstances.accessViaIAP"
   ]
 }
