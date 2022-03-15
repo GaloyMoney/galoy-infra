@@ -33,9 +33,9 @@ bin/prep-services.sh
 set +e
 for i in {1..60}; do
   echo "Attempt ${i} to find make on bastion"
-  gcloud compute ssh ${bastion_name} --zone=${bastion_zone} -- "which make" && break
+  gcloud compute ssh --ssh-key-file=${CI_ROOT}/login.ssh ${bastion_name} --zone=${bastion_zone} -- "which make" && break
   sleep 2
 done
 set -e
 
-gcloud compute ssh ${bastion_name} --zone=${bastion_zone} -- "cd repo/examples/gcp; export GOOGLE_APPLICATION_CREDENTIALS=\$(pwd)/gcloud-creds.json; echo yes | make initial-services && echo yes | make services"
+gcloud compute ssh --ssh-key-file=${CI_ROOT}/login.ssh ${bastion_name} --zone=${bastion_zone} -- "cd repo/examples/gcp; export GOOGLE_APPLICATION_CREDENTIALS=\$(pwd)/gcloud-creds.json; echo yes | make initial-services && echo yes | make services"
