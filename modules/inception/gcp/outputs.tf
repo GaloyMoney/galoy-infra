@@ -1,5 +1,5 @@
 output "bastion_name" {
-  value = google_compute_address.bastion.name
+  value = google_compute_instance.bastion.name
 }
 
 output "bastion_zone" {
