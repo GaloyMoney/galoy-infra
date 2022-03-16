@@ -18,6 +18,7 @@ resource "helm_release" "ingress_nginx" {
     templatefile("${path.module}/ingress-values.yml.tmpl", {
       service_type = local.local_deploy ? "NodePort" : "LoadBalancer"
       jaeger_host  = local.jaeger_host
+      service_name = local.ingress_service_name
     })
   ]
 
