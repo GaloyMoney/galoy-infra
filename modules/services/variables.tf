@@ -16,7 +16,7 @@ variable "kubemonkey_notification_url" {
 }
 
 variable "ingress_nginx_version" {
-  default = "4.0.6"
+  default = "4.0.18"
 }
 variable "cert_manager_version" {
   default = "v1.5.3"
