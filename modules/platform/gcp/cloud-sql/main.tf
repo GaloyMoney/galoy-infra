@@ -14,7 +14,7 @@ resource "google_sql_database_instance" "instance" {
   name = "${var.instance_name}-${random_id.db_name_suffix.hex}"
 
   project             = var.project
-  database_version    = "POSTGRES_14"
+  database_version    = "POSTGRES_13"
   region              = var.region
   deletion_protection = !var.destroyable_postgres
 
