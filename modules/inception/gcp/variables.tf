@@ -21,6 +21,7 @@ variable "network_prefix" {
 variable "inception_sa" {}
 variable "tf_state_bucket_name" {}
 variable "buckets_location" {}
+
 variable "users" {
   type = list(object({
     id        = string
