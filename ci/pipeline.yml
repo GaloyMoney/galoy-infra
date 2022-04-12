@@ -256,6 +256,16 @@ resources:
   source:
     url: #@ data.values.slack_webhook_url
 
+- name: testflight-uid
+  type: semver
+  source:
+    initial_version: 0.0.0
+    driver: git
+    file: version
+    uri: #@ data.values.git_uri
+    branch: #@ data.values.git_version_branch
+    private_key: #@ data.values.github_private_key
+
 resource_types:
 - name: terraform
   type: docker-image
@@ -285,13 +295,3 @@ resource_types:
   type: docker-image
   source:
     repository: cfcommunity/slack-notification-resource
-
-- name: testflight-uid
-  type: semver
-  source:
-    initial_version: 0.0.0
-    driver: git
-    file: version
-    uri: #@ data.values.git_uri
-    branch: #@ data.values.git_version_branch
-    private_key: #@ data.values.github_private_key
