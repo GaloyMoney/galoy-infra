@@ -20,7 +20,6 @@ TESTFLIGHT_ADMINS: #@ data.values.testflight_admins
 KUBE_HOST: #@ data.values.concourse_tf_kube_host
 KUBE_CA_CERT: #@ data.values.concourse_tf_kube_ca_cert
 KUBE_TOKEN: #@ data.values.concourse_tf_kube_token
-TF_VAR_name_prefix: testflight-l
 TF_VAR_gcp_project: galoy-infra-testflight
 TF_VAR_enable_services: false
 TF_VAR_destroyable_postgres: true
@@ -67,6 +66,7 @@ jobs:
     - { get: modules, trigger: true}
     - { get: repo }
     - { get: pipeline-tasks }
+    - { get: testflight-uid }
   - task: bootstrap
     config:
       platform: linux
@@ -75,6 +75,7 @@ jobs:
       - name: pipeline-tasks
       - name: repo
       - name: modules
+      - name: testflight-uid
       params: #@ testflight_task_params()
       run:
         path: pipeline-tasks/ci/tasks/bootstrap.sh
@@ -89,6 +90,7 @@ jobs:
     - { get: modules, trigger: true, passed: [testflight-bootstrap]}
     - { get: repo, trigger: true, passed: [testflight-bootstrap] }
     - { get: pipeline-tasks }
+    - { get: testflight-uid, passed: [testflight-bootstrap] }
   - task: inception
     config:
       platform: linux
@@ -97,6 +99,7 @@ jobs:
       - name: pipeline-tasks
       - name: repo
       - name: modules
+      - name: testflight-uid
       params: #@ testflight_task_params()
       run:
         path: pipeline-tasks/ci/tasks/inception.sh
@@ -111,6 +114,7 @@ jobs:
     - { get: modules, trigger: true, passed: [testflight-inception]}
     - { get: repo, trigger: true, passed: [testflight-inception] }
     - { get: pipeline-tasks }
+    - { get: testflight-uid, passed: [testflight-inception] }
   - task: platform
     config:
       platform: linux
@@ -119,6 +123,7 @@ jobs:
       - name: pipeline-tasks
       - name: repo
       - name: modules
+      - name: testflight-uid
       params: #@ testflight_task_params()
       run:
         path: pipeline-tasks/ci/tasks/platform.sh
@@ -133,6 +138,7 @@ jobs:
     - { get: modules, trigger: true, passed: [testflight-platform]}
     - { get: repo, trigger: true, passed: [testflight-platform] }
     - { get: pipeline-tasks }
+    - { get: testflight-uid, passed: [testflight-platform] }
   - task: services
     config:
       platform: linux
@@ -141,6 +147,7 @@ jobs:
       - name: pipeline-tasks
       - name: repo
       - name: modules
+      - name: testflight-uid
       params: #@ testflight_task_params()
       run:
         path: pipeline-tasks/ci/tasks/services.sh
@@ -154,6 +161,7 @@ jobs:
     - { get: modules, passed: [testflight-services], trigger: true}
     - { get: repo, trigger: true, passed: [testflight-services] }
     - { get: pipeline-tasks }
+    - { get: testflight-uid, passed: [testflight-services] }
   - task: teardown
     config:
       platform: linux
@@ -162,13 +170,16 @@ jobs:
       - name: pipeline-tasks
       - name: repo
       - name: modules
-      outputs: 
+      - name: testflight-uid
+      outputs:
       - name: repo
       params: #@ testflight_task_params()
       run:
         path: pipeline-tasks/ci/tasks/teardown.sh
-  - put: testflight-lock
-    params: { release: testflight-lock }
+  - in_parallel:
+    - {put: testflight-lock, params: {release: testflight-lock}}
+    - {put: testflight-uid, params: {bump: patch}}
+
 
 - name: bump-repos
   plan:
@@ -274,3 +285,13 @@ resource_types:
   type: docker-image
   source:
     repository: cfcommunity/slack-notification-resource
+
+- name: testflight-uid
+  type: semver
+  source:
+    initial_version: 0.0.0
+    driver: git
+    file: version
+    uri: #@ data.values.git_uri
+    branch: #@ data.values.git_version_branch
+    private_key: #@ data.values.github_private_key
