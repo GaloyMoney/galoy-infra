@@ -3,7 +3,7 @@
 deployments_git_uri: git@github.com:GaloyMoney/galoy-deployments.git
 git_uri: git@github.com:GaloyMoney/galoy-infra.git
 git_branch: main
-git_version_branch: testflight-uid
+git_version_branch: testflight-name-prefix-uid-branch
 cepler_gates_branch: cepler-gates
 cepler_gates_file: cepler-gates/infra.yml
 github_private_key: ((github.private_key))
