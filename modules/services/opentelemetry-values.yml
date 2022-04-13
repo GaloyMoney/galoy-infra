@@ -1,3 +1,23 @@
+# create cluster role for prometheus scraping:
+# https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/templates/prometheus/clusterrole.yaml
+clusterRole:
+  create: true
+  rules:
+  - apiGroups: [""]
+    resources:
+    - nodes
+    - nodes/metrics
+    - services
+    - endpoints
+    - pods
+    verbs: ["get", "list", "watch"]
+-   apiGroups:
+    - "networking.k8s.io"
+    resources:
+    - ingresses
+    verbs: ["get", "list", "watch"]
+-   nonResourceURLs: ["/metrics", "/metrics/cadvisor"]
+    verbs: ["get"]
 agentCollector:
   enabled: false
 standaloneCollector:
