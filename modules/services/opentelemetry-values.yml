@@ -9,12 +9,12 @@ clusterRole:
     - endpoints
     - pods
     verbs: ["get", "list", "watch"]
--   apiGroups:
+- - apiGroups:
     - "networking.k8s.io"
     resources:
     - ingresses
     verbs: ["get", "list", "watch"]
--   nonResourceURLs: ["/metrics", "/metrics/cadvisor"]
+- - nonResourceURLs: ["/metrics", "/metrics/cadvisor"]
     verbs: ["get"]
 agentCollector:
   enabled: false
