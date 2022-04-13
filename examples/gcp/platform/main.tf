@@ -12,7 +12,7 @@ variable "destroyable_postgres" {
 }
 
 module "platform" {
-  source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/platform/gcp?ref=d241cbe"
+  source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/platform/gcp?ref=c5bb216"
   # source = "../../../modules/platform/gcp"
 
   name_prefix               = var.name_prefix
