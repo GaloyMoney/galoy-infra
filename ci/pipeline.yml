@@ -214,7 +214,7 @@ jobs:
         repository: galoy-staging
         rebase: true
 
-- name: check-k8s-version
+- name: check-and-upgrade-k8s
   plan:
   - in_parallel:
     - get: daily-trigger-resource
