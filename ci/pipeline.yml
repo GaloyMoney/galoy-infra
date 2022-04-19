@@ -55,6 +55,9 @@ groups:
   - testflight-services
   - testflight-cleanup
   - bump-repos
+- name: k8s-upgrade
+  jobs:
+  - check-and-upgrade-k8s
 
 jobs:
 - name: testflight-bootstrap
