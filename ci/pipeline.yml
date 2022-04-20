@@ -226,6 +226,8 @@ jobs:
     - get: pipeline-tasks
   - task: check-and-upgrade-k8s
     config:
+      platform: linux
+      image_resource: #@ task_image_config()
       inputs:
       - name: repo
       - name: pipeline-tasks
