@@ -20,6 +20,7 @@ if [ "$LATEST_VERSION" != "$CURRENT_VERSION" ]; then
   hcledit -u -f modules/platform/gcp/variables.tf attribute set variable.kube_version.default $LATEST_VERSION
 else
   echo "No upgrade available"
+  exit 0
 fi
 
 make_commit "Bump k8s to '${LATEST_VERSION}'"
