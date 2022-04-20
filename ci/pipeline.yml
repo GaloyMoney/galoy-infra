@@ -55,6 +55,9 @@ groups:
   - testflight-services
   - testflight-cleanup
   - bump-repos
+- name: k8s-upgrade
+  jobs:
+  - check-and-upgrade-k8s
 
 jobs:
 - name: testflight-bootstrap
@@ -214,6 +217,29 @@ jobs:
         repository: galoy-staging
         rebase: true
 
+- name: check-and-upgrade-k8s
+  plan:
+  - in_parallel:
+    - get: daily-trigger-resource
+      trigger: true
+    - get: repo
+    - get: pipeline-tasks
+  - task: check-and-upgrade-k8s
+    config:
+      inputs:
+      - name: repo
+      - name: pipeline-tasks
+      outputs:
+      - name: repo
+      params:
+        BRANCH: #@ data.values.git_branch
+      run:
+        path: pipeline-tasks/ci/tasks/check-and-upgrade-k8s.sh
+  - put: repo
+    params:
+      repository: repo
+      rebase: true
+
 resources:
 - name: repo
   type: git
@@ -232,7 +258,7 @@ resources:
 - name: pipeline-tasks
   type: git
   source:
-    paths: [ci/tasks/*, Makefile]
+    paths: [ci/tasks/*, ci/k8s-upgrade/*, Makefile]
     uri: #@ data.values.git_uri
     branch: #@ data.values.git_branch
     private_key: #@ data.values.github_private_key
@@ -265,6 +291,10 @@ resources:
     uri: #@ data.values.git_uri
     branch: #@ data.values.git_version_branch
     private_key: #@ data.values.github_private_key
+
+- name: daily-trigger-resource
+  type: time
+  source: {interval: 24h}
 
 resource_types:
 - name: terraform
