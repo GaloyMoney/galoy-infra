@@ -1,21 +1,3 @@
-clusterRole:
-  create: true
-  rules:
-  - apiGroups: [""]
-    resources:
-    - nodes
-    - nodes/metrics
-    - services
-    - endpoints
-    - pods
-    verbs: ["get", "list", "watch"]
-  - apiGroups:
-    - "networking.k8s.io"
-    resources:
-    - ingresses
-    verbs: ["get", "list", "watch"]
-  - nonResourceURLs: ["/metrics", "/metrics/cadvisor"]
-    verbs: ["get"]
 agentCollector:
   enabled: false
 standaloneCollector:
@@ -39,12 +21,6 @@ config:
       headers:
         "x-honeycomb-team": ${HONEYCOMB_API_KEY}
         "x-honeycomb-dataset": ${HONEYCOMB_DATASET}
-    otlp/metrics:
-      endpoint: "api.honeycomb.io:443"
-      headers:
-        "x-honeycomb-team": ${HONEYCOMB_API_KEY}
-        "x-honeycomb-dataset": "${HONEYCOMB_DATASET}-metrics"
-
   extensions:
     health_check: {}
   processors:
@@ -100,51 +76,11 @@ config:
     prometheus:
       config:
         scrape_configs:
-        - job_name: 'kube-state-metrics'
-          scrape_interval: 5s
-          scrape_timeout: 4s
-          kubernetes_sd_configs:
-            - role: pod
-          relabel_configs:
-            - source_labels: [__meta_kubernetes_pod_name]
-              regex: 'prometheus-kube-state-metrics-.*'
-              action: keep
-        - job_name: 'kubernetes-pods'
-          scrape_interval: 10m
-          scrape_timeout: 120s
-          kubernetes_sd_configs:
-            - role: pod
-          relabel_configs:
-            - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
-              action: keep
-              regex: true
-            - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
-              action: replace
-              target_label: __metrics_path__
-              regex: (.+)
-            - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
-              action: replace
-              regex: ([^:]+)(?::\d+)?;(\d+)
-              replacement: $1:$2
-              target_label: __address__
-            - action: labelmap
-              regex: __meta_kubernetes_pod_label_(.+)
-            - source_labels: [__meta_kubernetes_namespace]
-              action: replace
-              target_label: kubernetes_namespace
-            - source_labels: [__meta_kubernetes_pod_name]
-              action: replace
-              target_label: kubernetes_pod_name
-            - source_labels: [__meta_kubernetes_pod_name]
-              regex: 'prometheus-kube-state-metrics-.*'
-              action: drop
-            - source_labels: [__meta_kubernetes_pod_name]
-              regex: 'lnd.*'
-              action: drop
-            - source_labels: [__meta_kubernetes_pod_name]
-              regex: 'dealer.*'
-              action: drop
-
+          - job_name: opentelemetry-collector
+            scrape_interval: 10s
+            static_configs:
+              - targets:
+                  - ${MY_POD_IP}:8888
   service:
     extensions:
       - health_check
@@ -160,7 +96,6 @@ config:
       metrics:
         exporters:
           - logging
-          - otlp/metrics
         processors:
           - memory_limiter
           - batch
