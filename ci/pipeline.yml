@@ -296,7 +296,9 @@ resources:
 
 - name: daily-trigger-resource
   type: time
-  source: {interval: 24h}
+  source:
+    start: 1:00 AM
+    stop: 2:00 AM
 
 resource_types:
 - name: terraform
