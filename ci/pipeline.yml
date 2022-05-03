@@ -205,6 +205,7 @@ jobs:
       - name: galoy-staging
       params:
         BRANCH: #@ data.values.git_branch
+        GITHUB_SSH_KEY: #@ data.values.github_private_key
       run:
         path: pipeline-tasks/ci/tasks/bump-repos.sh
   - in_parallel:

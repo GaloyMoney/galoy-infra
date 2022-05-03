@@ -11,6 +11,10 @@ popd
 pushd galoy-staging
 
 make bump-vendored-ref DEP=infra REF=${MODULES_GIT_LONG_REF}
-make vendir
+
+cat > github.key <<EOF
+${GITHUB_SSH_KEY}
+EOF
+GITHUB_SSH_KEY_BASE64=$(base64 -w 0 ./github.key) make vendir
 
 make_commit "Bump galoy-infra modules to '${MODULES_GIT_REF}'"
