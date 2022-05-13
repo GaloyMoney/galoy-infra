@@ -79,6 +79,7 @@ data "google_iam_policy" "tf_state_access" {
 }
 
 resource "google_storage_bucket_iam_policy" "policy" {
+  count       = local.attach_policy_to_tf_state_bucket ? 1 : 0
   bucket      = google_storage_bucket.tf_state.name
   policy_data = data.google_iam_policy.tf_state_access.policy_data
 }
