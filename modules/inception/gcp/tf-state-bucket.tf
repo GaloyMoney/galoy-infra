@@ -19,6 +19,7 @@ resource "google_project_iam_custom_role" "list_objects" {
 }
 
 data "google_iam_policy" "tf_state_access" {
+  count = local.policy_data_override == null ? 1 : 0
   binding {
     role    = "roles/storage.admin"
     members = concat(local.inception_admins, ["serviceAccount:${local.inception_sa}"])
@@ -79,7 +80,6 @@ data "google_iam_policy" "tf_state_access" {
 }
 
 resource "google_storage_bucket_iam_policy" "policy" {
-  count       = local.attach_policy_to_tf_state_bucket ? 1 : 0
   bucket      = google_storage_bucket.tf_state.name
-  policy_data = data.google_iam_policy.tf_state_access.policy_data
+  policy_data = local.policy_data_override == null ? data.google_iam_policy.tf_state_access.policy_data : local.policy_data_override
 }

@@ -21,7 +21,7 @@ variable "network_prefix" {
 variable "inception_sa" {}
 variable "tf_state_bucket_name" {}
 variable "buckets_location" {}
-variable "attach_policy_to_tf_state_bucket" { default = true }
+variable "policy_data_override" { default = null }
 
 variable "users" {
   type = list(object({
@@ -53,6 +53,5 @@ locals {
   bastion_machine_type   = var.bastion_machine_type
   bastion_image          = var.bastion_image
   bastion_revoke_on_exit = var.bastion_revoke_on_exit
-
-  attach_policy_to_tf_state_bucket = var.attach_policy_to_tf_state_bucket
+  policy_data_override   = var.policy_data_override
 }
