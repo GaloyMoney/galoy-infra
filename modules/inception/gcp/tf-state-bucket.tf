@@ -82,5 +82,5 @@ data "google_iam_policy" "tf_state_access" {
 
 resource "google_storage_bucket_iam_policy" "policy" {
   bucket      = google_storage_bucket.tf_state.name
-  policy_data = local.tf_state_bucket_policy == null ? data.google_iam_policy.tf_state_access.policy_data : local.tf_state_bucket_policy
+  policy_data = local.tf_state_bucket_policy == null ? data.google_iam_policy.tf_state_access[0].policy_data : local.tf_state_bucket_policy
 }
