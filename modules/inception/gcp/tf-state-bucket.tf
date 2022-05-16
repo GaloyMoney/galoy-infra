@@ -9,6 +9,7 @@ resource "google_storage_bucket" "tf_state" {
 }
 
 resource "google_project_iam_custom_role" "list_objects" {
+  count       = local.tf_state_bucket_policy == null ? 1 : 0
   project     = local.project
   role_id     = replace("${local.name_prefix}-objects-list", "-", "_")
   title       = "List bucket Objects"
@@ -28,7 +29,7 @@ data "google_iam_policy" "tf_state_access" {
   dynamic "binding" {
     for_each = toset(local.platform_admins)
     content {
-      role = google_project_iam_custom_role.list_objects.id
+      role = google_project_iam_custom_role.list_objects[0].id
       members = [
         binding.key
       ]
