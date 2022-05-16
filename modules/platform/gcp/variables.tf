@@ -3,6 +3,9 @@ variable "gcp_project" {}
 variable "region" {
   default = "us-east1"
 }
+variable "cluster_zone" {
+  default = ""
+}
 variable "network_prefix" {
   default = "10.1"
 }
@@ -45,7 +48,7 @@ locals {
   nodes_service_account      = var.node_service_account
   min_default_node_count     = var.min_default_node_count
   max_default_node_count     = var.max_default_node_count
-  cluster_location           = local.region
+  cluster_location           = local.cluster_zone == "" ? local.region : local.cluster_zone
   postgres_tier              = var.postgres_tier
   destroyable_postgres       = var.destroyable_postgres
   deploy_shared_pg           = var.deploy_shared_pg
