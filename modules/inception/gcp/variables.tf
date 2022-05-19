@@ -6,6 +6,9 @@ variable "region" {
 variable "primary_zone" {
   default = "b"
 }
+variable "cluster_zone" {
+  default = ""
+}
 variable "bastion_machine_type" {
   default = "e2-micro"
 }
@@ -49,6 +52,7 @@ locals {
   region         = var.region
   network_prefix = var.network_prefix
 
+  cluster_location           = var.cluster_zone == "" ? local.region : "${local.region}-${var.cluster_zone}"
   bastion_zone           = "${local.region}-${var.primary_zone}"
   bastion_machine_type   = var.bastion_machine_type
   bastion_image          = var.bastion_image
