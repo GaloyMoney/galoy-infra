@@ -9,9 +9,8 @@ resource "google_storage_bucket" "tf_state" {
 }
 
 resource "google_project_iam_custom_role" "list_objects" {
-  count       = local.tf_state_bucket_policy == null ? 1 : 0
   project     = local.project
-  role_id     = replace("${local.name_prefix}-objects-list", "-", "_")
+  role_id     = local.object_list_role_name
   title       = "List bucket Objects"
   description = "Role to _only_ list objects (not get them) from ${local.name_prefix}"
   permissions = [
@@ -20,7 +19,6 @@ resource "google_project_iam_custom_role" "list_objects" {
 }
 
 data "google_iam_policy" "tf_state_access" {
-  count = local.tf_state_bucket_policy == null ? 1 : 0
   binding {
     role    = "roles/storage.admin"
     members = concat(local.inception_admins, ["serviceAccount:${local.inception_sa}"])
@@ -29,7 +27,7 @@ data "google_iam_policy" "tf_state_access" {
   dynamic "binding" {
     for_each = toset(local.platform_admins)
     content {
-      role = google_project_iam_custom_role.list_objects[0].id
+      role = google_project_iam_custom_role.list_objects.id
       members = [
         binding.key
       ]
@@ -82,5 +80,5 @@ data "google_iam_policy" "tf_state_access" {
 
 resource "google_storage_bucket_iam_policy" "policy" {
   bucket      = google_storage_bucket.tf_state.name
-  policy_data = local.tf_state_bucket_policy == null ? data.google_iam_policy.tf_state_access[0].policy_data : local.tf_state_bucket_policy
+  policy_data = local.tf_state_bucket_policy == null ? data.google_iam_policy.tf_state_access.policy_data : local.tf_state_bucket_policy
 }

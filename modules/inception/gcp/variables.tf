@@ -21,6 +21,10 @@ variable "bastion_revoke_on_exit" {
 variable "network_prefix" {
   default = "10.0"
 }
+variable "object_list_role_name" {
+  default = "object-list"
+}
+
 variable "inception_sa" {}
 variable "tf_state_bucket_name" {}
 variable "buckets_location" {}
@@ -49,8 +53,9 @@ locals {
   platform_admins          = concat([for user in var.users : user.id if user.platform], ["serviceAccount:${var.inception_sa}"])
   bastion_users            = toset(concat([for user in var.users : user.id if user.bastion], local.platform_admins))
 
-  region         = var.region
-  network_prefix = var.network_prefix
+  region                = var.region
+  network_prefix        = var.network_prefix
+  object_list_role_name = replace("${local.name_prefix}-${var.object_list_role_name}", "-", "_")
 
   cluster_location       = var.cluster_zone == "" ? local.region : "${local.region}-${var.cluster_zone}"
   bastion_zone           = "${local.region}-${var.primary_zone}"
