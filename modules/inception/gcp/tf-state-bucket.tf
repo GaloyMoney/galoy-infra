@@ -10,7 +10,7 @@ resource "google_storage_bucket" "tf_state" {
 
 resource "google_project_iam_custom_role" "list_objects" {
   project     = local.project
-  role_id     = local.object_list_role_name
+  role_id     = local.objects_list_role_name
   title       = "List bucket Objects"
   description = "Role to _only_ list objects (not get them) from ${local.name_prefix}"
   permissions = [
