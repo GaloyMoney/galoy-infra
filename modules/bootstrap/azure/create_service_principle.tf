@@ -5,6 +5,10 @@ terraform {
       source  = "hashicorp/azuread"
       version = "~> 2.15.0"
     }
+    azurerm = {
+      source = "hashicorp/azurerm"
+      version = "~>2.0"
+    }
   }
 }
 
@@ -31,3 +35,14 @@ resource "azuread_application" "inception" {
 resource "azuread_service_principal" "bootstrap" {
   application_id = azuread_application.inception.application_id
 }
+
+provider "azurerm" {
+  features {}
+}
+
+# Create resource group
+resource "azurerm_resource_group" "bootstrap" {
+  name     = "bootstrap"
+  location = local.resource_group_location
+}
+
