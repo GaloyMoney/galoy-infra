@@ -14,9 +14,9 @@ provider "azuread" {
 }
 
 # Retrieve domain information
-data "azuread_domains" "example" {
-  only_initial = true
-}
+#data "azuread_domains" "example" {
+#  only_initial = true
+#}
 
 locals {
   inception_sa_name = "${local.name_prefix}-inception-tf"
