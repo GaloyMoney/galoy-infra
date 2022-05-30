@@ -10,7 +10,7 @@ terraform {
 
 # Configure the Azure Active Directory Provider
 provider "azuread" {
-  tenant_id = "39556a4a-56ea-43c1-bc70-3775bf0a7820"
+  tenant_id = local.tenant_id
 }
 
 # Retrieve domain information

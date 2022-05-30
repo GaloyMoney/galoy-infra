@@ -2,7 +2,7 @@ variable "name_prefix" {}
 variable "gcp_project" {}
 variable "organization_id" { default = "" }
 variable "external_users" { default = [] }
-variable "tenant_id" { default = "" }
+variable "tenant_id" {}
 variable "tf_state_bucket_location" {
   default = "eastus"
 }
