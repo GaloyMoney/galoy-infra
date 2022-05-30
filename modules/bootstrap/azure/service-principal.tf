@@ -4,12 +4,12 @@ provider "azuread" {
 }
 
 locals {
-  inception_sa_name = "${local.name_prefix}-inception-tf"
+  inception_app_name = "${local.name_prefix}-inception-tf"
 }
 
 # Create an application
 resource "azuread_application" "inception" {
-  display_name = local.inception_sa_name
+  display_name = local.inception_app_name
 }
 
 # Create a service principal
