@@ -51,3 +51,29 @@ output "auth_pg_admin_password" {
   value     = local.deploy_auth_pg ? module.auth_pg.0.admin_password : ""
   sensitive = true
 }
+
+output "lnd_1_pg_host" {
+  value = local.deploy_lnd_pg ? module.lnd_1_pg.0.private_ip : ""
+}
+
+output "lnd_1_pg_admin_username" {
+  value = local.deploy_lnd_pg ? module.lnd_1_pg.0.admin_username : ""
+}
+
+output "lnd_1_pg_admin_password" {
+  value     = local.deploy_lnd_pg ? module.lnd_1_pg.0.admin_password : ""
+  sensitive = true
+}
+
+output "lnd_2_pg_host" {
+  value = local.deploy_lnd_pg ? module.lnd_2_pg.0.private_ip : ""
+}
+
+output "lnd_2_pg_admin_username" {
+  value = local.deploy_lnd_pg ? module.lnd_2_pg.0.admin_username : ""
+}
+
+output "lnd_2_pg_admin_password" {
+  value     = local.deploy_lnd_pg ? module.lnd_2_pg.0.admin_password : ""
+  sensitive = true
+}

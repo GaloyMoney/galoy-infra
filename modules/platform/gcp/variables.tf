@@ -21,6 +21,9 @@ variable "postgres_tier" {
 variable "destroyable_postgres" {
   default = false
 }
+variable "shared_pg_ha" {
+  default = false
+}
 variable "deploy_shared_pg" {
   default = true
 }
@@ -54,6 +57,7 @@ locals {
   cluster_location           = var.cluster_zone == "" ? local.region : "${local.region}-${var.cluster_zone}"
   postgres_tier              = var.postgres_tier
   destroyable_postgres       = var.destroyable_postgres
+  shared_pg_ha               = var.shared_pg_ha
   deploy_shared_pg           = var.deploy_shared_pg
   deploy_auth_pg             = var.deploy_auth_pg
   deploy_lnd_pg              = var.deploy_lnd_pg
