@@ -3,7 +3,7 @@ variable "gcp_project" {}
 variable "organization_id" { default = "" }
 variable "external_users" { default = [] }
 variable "tf_state_bucket_location" {
-  default = "US-EAST1"
+  default = "eastus"
 }
 variable "tf_state_bucket_force_destroy" {
   default = false
@@ -11,11 +11,15 @@ variable "tf_state_bucket_force_destroy" {
 variable "enable_services" {
   default = true
 }
+variable "resource_group_location" {
+	default = "eastus"
+}
 
 locals {
-  organization_id               = var.organization_id
+  tenant_id                 	= var.tenant_id
   external_users                = var.external_users
   name_prefix                   = var.name_prefix
+  resource_group_location		= var.resource_group_location
   tf_state_bucket_location      = var.tf_state_bucket_location
   tf_state_bucket_force_destroy = var.tf_state_bucket_force_destroy
   project                       = var.gcp_project
