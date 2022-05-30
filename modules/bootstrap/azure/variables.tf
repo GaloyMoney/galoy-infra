@@ -1,5 +1,4 @@
 variable "name_prefix" {}
-variable "gcp_project" {}
 variable "organization_id" { default = "" }
 variable "external_users" { default = [] }
 variable "tenant_id" {}
@@ -23,5 +22,4 @@ locals {
   resource_group_location		= var.resource_group_location
   tf_state_bucket_location      = var.tf_state_bucket_location
   tf_state_bucket_force_destroy = var.tf_state_bucket_force_destroy
-  project                       = var.gcp_project
 }

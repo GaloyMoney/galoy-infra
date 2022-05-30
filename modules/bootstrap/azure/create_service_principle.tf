@@ -38,9 +38,3 @@ resource "azurerm_resource_group" "bootstrap" {
   location = local.resource_group_location
 }
 
-# Create a user
-#resource "azuread_user" "example" {
-#  user_principal_name = "ExampleUser@${data.azuread_domains.inception.domains.0.domain_name}"
-#  display_name        = "Example User"
-#  password            = "..."
-#}
