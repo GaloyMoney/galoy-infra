@@ -29,7 +29,7 @@ resource "azuread_application" "inception" {
 
 # Create a service principal
 resource "azuread_service_principal" "bootstrap" {
-  application_id = azuread_application.example.application_id
+  application_id = azuread_application.inception.application_id
 }
 
 # Create resource group
@@ -40,7 +40,7 @@ resource "azurerm_resource_group" "bootstrap" {
 
 # Create a user
 #resource "azuread_user" "example" {
-#  user_principal_name = "ExampleUser@${data.azuread_domains.example.domains.0.domain_name}"
+#  user_principal_name = "ExampleUser@${data.azuread_domains.inception.domains.0.domain_name}"
 #  display_name        = "Example User"
 #  password            = "..."
 #}
