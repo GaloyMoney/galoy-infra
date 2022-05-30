@@ -1,5 +1,5 @@
 resource "azurerm_storage_account" "bootstrap" {
-  name                     = "${local.name_prefix}-storage-account"
+  name                     = "${local.name_prefix}StorageAcc"
   resource_group_name      = azurerm_resource_group.bootstrap.name
   location                 = local.tf_state_storage_location
   account_tier             = "Standard"
@@ -7,7 +7,7 @@ resource "azurerm_storage_account" "bootstrap" {
 }
 
 resource "azurerm_storage_container" "bootstrap" {
-  name                  = "${local.name_prefix}-storage-container"
+  name                  = "${local.name_prefix}StorageCon"
   storage_account_name  = azurerm_storage_account.bootstrap.name
   container_access_type = "private"
 }
