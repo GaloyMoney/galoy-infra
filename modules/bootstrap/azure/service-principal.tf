@@ -20,5 +20,3 @@ provider "azurerm" {
 resource "azuread_service_principal" "bootstrap" {
   application_id = azuread_application.inception.application_id
 }
-
-
