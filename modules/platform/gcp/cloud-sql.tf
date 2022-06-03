@@ -25,7 +25,7 @@ module "shared_pg" {
   region               = local.region
   instance_name        = "${local.name_prefix}-shared-pg"
   destroyable_postgres = var.destroyable_postgres
-  highly_available     = local.shared_pg_ha
+  highly_available     = local.pg_ha
   postgres_tier        = local.postgres_tier
 
   depends_on = [google_service_networking_connection.cloud_sql]
@@ -40,7 +40,7 @@ module "auth_pg" {
   region               = local.region
   instance_name        = "${local.name_prefix}-auth-pg"
   destroyable_postgres = var.destroyable_postgres
-  highly_available     = false
+  highly_available     = local.pg_ha
   postgres_tier        = local.postgres_tier
 
   depends_on = [google_service_networking_connection.cloud_sql]
@@ -55,7 +55,7 @@ module "lnd_1_pg" {
   region               = local.region
   instance_name        = "${local.name_prefix}-lnd-1-pg"
   destroyable_postgres = var.destroyable_postgres
-  highly_available     = false
+  highly_available     = local.pg_ha
   postgres_tier        = local.postgres_tier
 
   depends_on = [google_service_networking_connection.cloud_sql]
@@ -70,7 +70,7 @@ module "lnd_2_pg" {
   region               = local.region
   instance_name        = "${local.name_prefix}-lnd-2-pg"
   destroyable_postgres = var.destroyable_postgres
-  highly_available     = false
+  highly_available     = local.pg_ha
   postgres_tier        = local.postgres_tier
 
   depends_on = [google_service_networking_connection.cloud_sql]
