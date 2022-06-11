@@ -46,8 +46,8 @@ module "auth_pg" {
   depends_on = [google_service_networking_connection.cloud_sql]
 }
 
-module "lnd_1_pg" {
-  count  = local.deploy_lnd_pg ? 1 : 0
+module "lnd1_pg" {
+  count  = local.deploy_lnd1_pg ? 1 : 0
   source = "./cloud-sql"
 
   project              = local.project
@@ -61,8 +61,8 @@ module "lnd_1_pg" {
   depends_on = [google_service_networking_connection.cloud_sql]
 }
 
-module "lnd_2_pg" {
-  count  = local.deploy_lnd_pg ? 1 : 0
+module "lnd2_pg" {
+  count  = local.deploy_lnd2_pg ? 1 : 0
   source = "./cloud-sql"
 
   project              = local.project
