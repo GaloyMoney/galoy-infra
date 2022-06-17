@@ -21,6 +21,10 @@ EOF
   gcloud config set project "${TF_VAR_gcp_project}"
 }
 
+function init_azure() {
+  
+}
+
 function init_kubeconfig() {
   cat <<EOF > ${CI_ROOT}/ca.cert
 ${KUBE_CA_CERT}

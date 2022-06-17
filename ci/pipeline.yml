@@ -47,20 +47,23 @@ params:
 #@ end
 
 groups:
-- name: testflight
+- name: testflight-gcp
   jobs:
-  - testflight-bootstrap
-  - testflight-inception
-  - testflight-platform
-  - testflight-services
-  - testflight-cleanup
+  - testflight-bootstrap-gcp
+  - testflight-inception-gcp
+  - testflight-platform-gcp
+  - testflight-services-gcp
+  - testflight-cleanup-gcp
   - bump-repos
 - name: k8s-upgrade
   jobs:
   - check-and-upgrade-k8s
+- name: testflight-azure
+  jobs:
+  - testflight-bootstrap-azure
 
 jobs:
-- name: testflight-bootstrap
+- name: testflight-bootstrap-gcp
   serial: true
   plan:
   - put: testflight-lock
@@ -85,15 +88,15 @@ jobs:
   - #@ slack_success_notification()
   on_failure: #@ slack_failure_notification()
 
-- name: testflight-inception
+- name: testflight-inception-gcp
   serial: true
   plan:
-  - { get: testflight-lock, passed: [testflight-bootstrap] }
+  - { get: testflight-lock, passed: [testflight-bootstrap-gcp] }
   - in_parallel:
-    - { get: modules, trigger: true, passed: [testflight-bootstrap]}
-    - { get: repo, trigger: true, passed: [testflight-bootstrap] }
+    - { get: modules, trigger: true, passed: [testflight-bootstrap-gcp]}
+    - { get: repo, trigger: true, passed: [testflight-bootstrap-gcp] }
     - { get: pipeline-tasks }
-    - { get: testflight-uid, passed: [testflight-bootstrap] }
+    - { get: testflight-uid, passed: [testflight-bootstrap-gcp] }
   - task: inception
     config:
       platform: linux
@@ -109,15 +112,15 @@ jobs:
   - #@ slack_success_notification()
   on_failure: #@ slack_failure_notification()
 
-- name: testflight-platform
+- name: testflight-platform-gcp
   serial: true
   plan:
-  - { get: testflight-lock, passed: [testflight-inception] }
+  - { get: testflight-lock, passed: [testflight-inception-gcp] }
   - in_parallel:
-    - { get: modules, trigger: true, passed: [testflight-inception]}
-    - { get: repo, trigger: true, passed: [testflight-inception] }
+    - { get: modules, trigger: true, passed: [testflight-inception-gcp]}
+    - { get: repo, trigger: true, passed: [testflight-inception-gcp] }
     - { get: pipeline-tasks }
-    - { get: testflight-uid, passed: [testflight-inception] }
+    - { get: testflight-uid, passed: [testflight-inception-gcp] }
   - task: platform
     config:
       platform: linux
@@ -133,15 +136,15 @@ jobs:
   - #@ slack_success_notification()
   on_failure: #@ slack_failure_notification()
 
-- name: testflight-services
+- name: testflight-services-gcp
   serial: true
   plan:
-  - { get: testflight-lock, passed: [testflight-platform] }
+  - { get: testflight-lock, passed: [testflight-platform-gcp] }
   - in_parallel:
-    - { get: modules, trigger: true, passed: [testflight-platform]}
-    - { get: repo, trigger: true, passed: [testflight-platform] }
+    - { get: modules, trigger: true, passed: [testflight-platform-gcp]}
+    - { get: repo, trigger: true, passed: [testflight-platform-gcp] }
     - { get: pipeline-tasks }
-    - { get: testflight-uid, passed: [testflight-platform] }
+    - { get: testflight-uid, passed: [testflight-platform-gcp] }
   - task: services
     config:
       platform: linux
@@ -157,14 +160,14 @@ jobs:
   - #@ slack_success_notification()
   on_failure: #@ slack_failure_notification()
 
-- name: testflight-cleanup
+- name: testflight-cleanup-gcp
   plan:
-  - { get: testflight-lock, passed: [testflight-services] }
+  - { get: testflight-lock, passed: [testflight-services-gcp] }
   - in_parallel:
-    - { get: modules, passed: [testflight-services], trigger: true}
-    - { get: repo, trigger: true, passed: [testflight-services] }
+    - { get: modules, passed: [testflight-services-gcp], trigger: true}
+    - { get: repo, trigger: true, passed: [testflight-services-gcp] }
     - { get: pipeline-tasks }
-    - { get: testflight-uid, passed: [testflight-services] }
+    - { get: testflight-uid, passed: [testflight-services-gcp] }
   - task: teardown
     config:
       platform: linux
@@ -188,8 +191,8 @@ jobs:
   plan:
   - in_parallel:
     - { get: galoy-staging }
-    - { get: modules, passed: [testflight-cleanup], trigger: true}
-    - { get: repo, trigger: true, passed: [testflight-cleanup], params: { fetch_tags: false } }
+    - { get: modules, passed: [testflight-cleanup-gcp], trigger: true}
+    - { get: repo, trigger: true, passed: [testflight-cleanup-gcp], params: { fetch_tags: false } }
     - { get: pipeline-tasks }
   - task: bump-repos
     config:
@@ -242,6 +245,25 @@ jobs:
     params:
       repository: repo
       rebase: true
+
+- name: testflight-bootstrap-azure
+  serial: true
+  plan:
+  - put: testflight-lock
+    params: { claim: azure-testflight }
+  - in_parallel:
+    - { get: modules, trigger: true}
+    - { get: repo }
+  - task: bootstrap
+    config:
+      platform: linux
+      image_resource: #@ task_image_config()
+      inputs:
+      - name: repo
+      - name: modules
+      params: #@ testflight_task_params()
+      run:
+        path: pipeline-tasks/ci/tasks/bootstrap-azure.sh
 
 resources:
 - name: repo
