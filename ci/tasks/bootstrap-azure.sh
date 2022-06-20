@@ -1,20 +1,20 @@
 #!/bin/bash
+apk add az
 
 set -eu
 
 source pipeline-tasks/ci/tasks/helpers.sh
 
-pushd repo/examples/gcp
+pushd repo/examples/azure
 
-update_examples_git_ref
+# update_examples_git_ref
 
-init_azure
-init_kubeconfig
-init_bootstrap
+# init_azure
+# init_kubeconfig
+# init_bootstrap
 
-write_users
+# write_users
 
-echo yes | TF_VAR_tf_state_bucket_force_destroy=true \
-  make bootstrap
+echo yes |  make bootstrap
 
-cleanup_inception_key
+# cleanup_inception_key
