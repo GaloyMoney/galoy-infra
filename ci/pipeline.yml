@@ -30,9 +30,8 @@ groups:
 #@ end
 - name: image
   jobs:
-#@ for cloud in supported_iaas:
+#@ for/end cloud in supported_iaas:
   - #@ build_pipeline_image_job_name(cloud)
-#@ end
 - name: k8s-upgrade
   jobs:
   - check-and-upgrade-k8s

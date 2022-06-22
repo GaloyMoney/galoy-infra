@@ -274,6 +274,54 @@ plan:
       rebase: true
 #@ end
 
+#@ def build_pipeline_image_job():
+name: #@ build_pipeline_image_job_name("gcp")
+serial: true
+plan:
+- {get: gcp-pipeline-image-def, trigger: true}
+- task: build
+  privileged: true
+  config:
+    platform: linux
+    image_resource:
+      type: registry-image
+      source:
+        repository: vito/oci-build-task
+    inputs:
+    - name: gcp-pipeline-image-def
+    outputs:
+    - name: image
+    params:
+      CONTEXT: gcp-pipeline-image-def/ci/image/gcp
+    run:
+      path: build
+- put: gcp-pipeline-image
+  params:
+    image: image/image.tar
+#@ end
+
+#@ def pipeline_image_resource():
+name: gcp-pipeline-image
+type: registry-image
+source:
+  tag: latest
+  username: #@ data.values.docker_registry_user
+  password: #@ data.values.docker_registry_password
+  repository: #@ pipeline_image()
+#@ end
+
+#@ def pipeline_image_def_resource():
+name: gcp-pipeline-image-def
+type: git
+source:
+  paths: [ci/image/gcp/Dockerfile]
+  uri: #@ data.values.git_uri
+  branch: #@ data.values.git_branch
+  private_key: #@ data.values.github_private_key
+#@ end
+
+---
+
 #@ def gcp_jobs():
 - #@ gcp_testflight_bootstrap_job()
 - #@ gcp_testflight_inception_job()
@@ -281,8 +329,11 @@ plan:
 - #@ gcp_testflight_services_job()
 - #@ gcp_testflight_cleanup_job()
 - #@ gcp_bump_repos_job()
+- #@ build_pipeline_image_job()
 #@ end
 
 #@ def gcp_resources():
 - #@ gcp_modules()
+- #@ pipeline_image_resource()
+- #@ pipeline_image_def_resource()
 #@ end
