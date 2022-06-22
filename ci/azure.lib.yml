@@ -86,8 +86,6 @@ plan:
     passed: 
     - #@ testflight_bootstrap_job_name("azure")
   - { get: pipeline-tasks }
-    passed:
-    - #@ testflight_bootstrap_job_name("azure")
 - task: inception
   config:
     platform: linux
@@ -121,8 +119,6 @@ plan:
     passed: 
     - #@ testflight_inception_job_name("azure")
   - { get: pipeline-tasks }
-    passed: 
-    - #@ testflight_inception_job_name("azure")
 - task: platform
   config:
     platform: linux
@@ -281,4 +277,5 @@ source:
 - #@ azure_modules()
 - #@ pipeline_image_resource()
 - #@ pipeline_image_def_resource()
+- #@ azure_testflight_lock_resource()
 #@ end
