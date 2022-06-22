@@ -5,23 +5,23 @@
 #@ end
 
 #@ def testflight_bootstrap_job_name(cloud):
-#@   return cloud + "-testflight-bootstrap"
+#@   return testflight_group_name(cloud) + "-bootstrap"
 #@ end
 
 #@ def testflight_inception_job_name(cloud):
-#@   return cloud + "-testflight-inception"
+#@   return testflight_group_name(cloud) + "-inception"
 #@ end
 
 #@ def testflight_platform_job_name(cloud):
-#@   return cloud + "-testflight-platform"
+#@   return testflight_group_name(cloud) + "-platform"
 #@ end
 
 #@ def testflight_services_job_name(cloud):
-#@   return cloud + "-testflight-services"
+#@   return testflight_group_name(cloud) + "-services"
 #@ end
 
 #@ def testflight_cleanup_job_name(cloud):
-#@   return cloud + "-testflight-cleanup"
+#@   return testflight_group_name(cloud) + "-cleanup"
 #@ end
 
 #@ def bump_repos_job_name(cloud):
@@ -57,7 +57,7 @@
   type: git
   source:
     uri: #@ data.values.deployments_git_uri
-    branch: #@ data.values.git_branch
+    branch: main
     private_key: #@ data.values.github_private_key
 
 - name: slack
