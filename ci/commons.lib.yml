@@ -60,28 +60,11 @@
     branch: #@ data.values.git_branch
     private_key: #@ data.values.github_private_key
 
-- name: testflight-lock
-  type: pool
-  source:
-    uri: git@github.com:GaloyMoney/concourse-locks.git
-    branch: main
-    pool: infra-testflight
-    private_key: #@ data.values.github_private_key
-
 - name: slack
   type: slack-notification
   source:
     url: #@ data.values.slack_webhook_url
 
-- name: testflight-uid
-  type: semver
-  source:
-    initial_version: 0.0.0
-    driver: git
-    file: version
-    uri: #@ data.values.git_uri
-    branch: #@ data.values.git_version_branch
-    private_key: #@ data.values.github_private_key
 #@ end
 
 #@ def resource_types():

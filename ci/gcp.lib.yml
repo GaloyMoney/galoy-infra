@@ -56,14 +56,14 @@ BRANCH: #@ data.values.git_branch
 name: #@ testflight_bootstrap_job_name("gcp")
 serial: true
 plan:
-- put: testflight-lock
+- put: gcp-testflight-lock
   params: { claim: gcp-testflight }
 - in_parallel:
   - get: #@ modules_resource_name("gcp")
     trigger: true
   - { get: repo }
   - { get: pipeline-tasks }
-  - { get: testflight-uid }
+  - { get: gcp-testflight-uid }
 - task: bootstrap
   config:
     platform: linux
@@ -73,7 +73,7 @@ plan:
     - name: repo
     - name: #@ modules_resource_name("gcp")
       path: modules
-    - name: testflight-uid
+    - name: gcp-testflight-uid
     params: #@ gcp_testflight_task_params()
     run:
       path: pipeline-tasks/ci/tasks/bootstrap.sh
@@ -85,7 +85,7 @@ on_failure: #@ slack_failure_notification()
 name: #@ testflight_inception_job_name("gcp")
 serial: true
 plan:
-- get: testflight-lock
+- get: gcp-testflight-lock
   passed: 
   - #@ testflight_bootstrap_job_name("gcp")
 - in_parallel:
@@ -97,7 +97,7 @@ plan:
     passed: 
     - #@ testflight_bootstrap_job_name("gcp")
   - { get: pipeline-tasks }
-  - get: testflight-uid
+  - get: gcp-testflight-uid
     passed:
     - #@ testflight_bootstrap_job_name("gcp")
 - task: inception
@@ -109,7 +109,7 @@ plan:
     - name: repo
     - name: #@ modules_resource_name("gcp")
       path: modules
-    - name: testflight-uid
+    - name: gcp-testflight-uid
     params: #@ gcp_testflight_task_params()
     run:
       path: pipeline-tasks/ci/tasks/inception.sh
@@ -121,7 +121,7 @@ on_failure: #@ slack_failure_notification()
 name: #@ testflight_platform_job_name("gcp")
 serial: true
 plan:
-- get: testflight-lock
+- get: gcp-testflight-lock
   passed: 
   - #@ testflight_inception_job_name("gcp")
 - in_parallel:
@@ -133,7 +133,7 @@ plan:
     passed: 
     - #@ testflight_inception_job_name("gcp")
   - { get: pipeline-tasks }
-  - get: testflight-uid
+  - get: gcp-testflight-uid
     passed: 
     - #@ testflight_inception_job_name("gcp")
 - task: platform
@@ -145,7 +145,7 @@ plan:
     - name: repo
     - name: #@ modules_resource_name("gcp")
       path: modules
-    - name: testflight-uid
+    - name: gcp-testflight-uid
     params: #@ gcp_testflight_task_params()
     run:
       path: pipeline-tasks/ci/tasks/platform.sh
@@ -157,7 +157,7 @@ on_failure: #@ slack_failure_notification()
 name: #@ testflight_services_job_name("gcp")
 serial: true
 plan:
-- get: testflight-lock
+- get: gcp-testflight-lock
   passed: 
   - #@ testflight_platform_job_name("gcp")
 - in_parallel:
@@ -169,7 +169,7 @@ plan:
     passed: 
     - #@ testflight_platform_job_name("gcp")
   - { get: pipeline-tasks }
-  - get: testflight-uid
+  - get: gcp-testflight-uid
     passed: 
     - #@ testflight_platform_job_name("gcp")
 - task: services
@@ -181,7 +181,7 @@ plan:
     - name: repo
     - name: #@ modules_resource_name("gcp")
       path: modules
-    - name: testflight-uid
+    - name: gcp-testflight-uid
     params: #@ gcp_testflight_task_params()
     run:
       path: pipeline-tasks/ci/tasks/services.sh
@@ -193,7 +193,7 @@ on_failure: #@ slack_failure_notification()
 name: #@ testflight_cleanup_job_name("gcp")
 serial: true
 plan:
-- get: testflight-lock
+- get: gcp-testflight-lock
   passed: 
   - #@ testflight_services_job_name("gcp")
 - in_parallel:
@@ -205,7 +205,7 @@ plan:
     passed: 
     - #@ testflight_services_job_name("gcp")
   - { get: pipeline-tasks }
-  - get: testflight-uid
+  - get: gcp-testflight-uid
     passed: 
     - #@ testflight_services_job_name("gcp")
 - task: teardown
@@ -217,15 +217,15 @@ plan:
     - name: repo
     - name: #@ modules_resource_name("gcp")
       path: modules
-    - name: testflight-uid
+    - name: gcp-testflight-uid
     outputs:
     - name: repo
     params: #@ gcp_testflight_task_params()
     run:
       path: pipeline-tasks/ci/tasks/teardown.sh
 - in_parallel:
-  - { put: testflight-lock, params: { release: testflight-lock }}
-  - { put: testflight-uid, params: { bump: patch } }
+  - { put: gcp-testflight-lock, params: { release: gcp-testflight-lock }}
+  - { put: gcp-testflight-uid, params: { bump: patch } }
 - #@ slack_success_notification()
 on_failure: #@ slack_failure_notification()
 #@ end
@@ -320,6 +320,28 @@ source:
   private_key: #@ data.values.github_private_key
 #@ end
 
+#@ def gcp_testflight_uid_resource():
+name: gcp-testflight-uid
+type: semver
+source:
+  initial_version: 0.0.0
+  driver: git
+  file: version
+  uri: #@ data.values.git_uri
+  branch: #@ data.values.git_version_branch
+  private_key: #@ data.values.github_private_key
+#@ end
+
+#@ def gcp_testflight_lock_resource():
+name: gcp-testflight-lock
+type: pool
+source:
+  uri: #@ data.values.concourse_locks_git_uri
+  branch: main
+  pool: gcp-infra-testflight
+  private_key: #@ data.values.github_private_key
+#@ end
+
 ---
 
 #@ def gcp_jobs():
@@ -336,4 +358,6 @@ source:
 - #@ gcp_modules()
 - #@ pipeline_image_resource()
 - #@ pipeline_image_def_resource()
+- #@ gcp_testflight_uid_resource()
+- #@ gcp_testflight_lock_resource()
 #@ end
