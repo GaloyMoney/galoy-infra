@@ -14,7 +14,7 @@ TMPDIR=""¬
 TMPDIR=$(mktemp -d -t repipe.XXXXXX)
 trap "rm -rf ${TMPDIR}" INT TERM QUIT EXIT
 
-ytt -f ci > ${TMPDIR}/pipeline.yml
+ytt -f ci > test.yml
 
 echo "Updating pipeline @ ${target}"
 
