@@ -16,6 +16,10 @@
 #@   "gcp_jobs",
 #@   "gcp_resources")
 
+#@ load("azure.lib.yml",
+#@   "azure_jobs",
+#@   "azure_resources")
+
 #@ supported_iaas = ["gcp", "azure"]
 groups:
 #@ for cloud in supported_iaas:
@@ -38,6 +42,9 @@ groups:
 
 jobs:
 #@ for/end job in gcp_jobs():
+- #@ job
+
+#@ for/end job in azure_jobs():
 - #@ job
 
 - name: check-and-upgrade-k8s
@@ -75,6 +82,9 @@ resources:
 - #@ resource
 
 #@ for/end resource in gcp_resources():
+- #@ resource
+
+#@ for/end resource in azure_resources():
 - #@ resource
 
 - name: daily-trigger-resource

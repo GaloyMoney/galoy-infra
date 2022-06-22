@@ -1,5 +1,17 @@
 #@ load("@ytt:data", "data")
 
+#@ load("commons.lib.yml",
+#@   "testflight_bootstrap_job_name",
+#@   "testflight_inception_job_name",
+#@   "testflight_platform_job_name",
+#@   "testflight_services_job_name",
+#@   "testflight_cleanup_job_name",
+#@   "bump_repos_job_name",
+#@   "build_pipeline_image_job_name",
+#@   "modules_resource_name",
+#@   "slack_success_notification",
+#@   "slack_failure_notification")
+
 #@ def pipeline_image():
 #@   return data.values.docker_registry + "/azure-infra-pipeline"
 #@ end
@@ -10,4 +22,268 @@ source:
   username: #@ data.values.docker_registry_user
   password: #@ data.values.docker_registry_password
   repository: #@ pipeline_image()
+#@ end
+
+#@ def azure_modules():
+name: #@ modules_resource_name("azure")
+type: git
+source:
+  paths: 
+  - modules/bootstrap/azure
+  - modules/inception/azure
+  - modules/platform/azure
+  - modules/services
+  uri: #@ data.values.git_uri
+  branch: #@ data.values.git_branch
+  private_key: #@ data.values.github_private_key
+#@ end
+
+#@ def azure_testflight_task_params():
+BRANCH: #@ data.values.git_branch
+#@ end
+
+#@ def azure_testflight_bootstrap_job():
+name: #@ testflight_bootstrap_job_name("azure")
+serial: true
+plan:
+- put: testflight-lock
+  params: { claim: azure-testflight }
+- in_parallel:
+  - get: #@ modules_resource_name("azure")
+    trigger: true
+  - { get: repo }
+  - { get: pipeline-tasks }
+  - { get: testflight-uid }
+- task: bootstrap
+  config:
+    platform: linux
+    image_resource: #@ task_image_config()
+    inputs:
+    - name: pipeline-tasks
+    - name: repo
+    - name: #@ modules_resource_name("azure")
+      path: modules
+    - name: testflight-uid
+    params: #@ azure_testflight_task_params()
+    run:
+      path: echo
+      args: ["Bootstrap"]
+- #@ slack_success_notification()
+on_failure: #@ slack_failure_notification()
+#@ end
+
+#@ def azure_testflight_inception_job():
+name: #@ testflight_inception_job_name("azure")
+serial: true
+plan:
+- get: testflight-lock
+  passed: 
+  - #@ testflight_bootstrap_job_name("azure")
+- in_parallel:
+  - get: #@ modules_resource_name("azure")
+    trigger: true
+    passed:
+    - #@ testflight_bootstrap_job_name("azure")
+  - get: repo
+    passed: 
+    - #@ testflight_bootstrap_job_name("azure")
+  - { get: pipeline-tasks }
+  - get: testflight-uid
+    passed:
+    - #@ testflight_bootstrap_job_name("azure")
+- task: inception
+  config:
+    platform: linux
+    image_resource: #@ task_image_config()
+    inputs:
+    - name: pipeline-tasks
+    - name: repo
+    - name: #@ modules_resource_name("azure")
+      path: modules
+    - name: testflight-uid
+    params: #@ azure_testflight_task_params()
+    run:
+      path: echo
+      args: ["Inception"]
+- #@ slack_success_notification()
+on_failure: #@ slack_failure_notification()
+#@ end
+
+#@ def azure_testflight_platform_job():
+name: #@ testflight_platform_job_name("azure")
+serial: true
+plan:
+- get: testflight-lock
+  passed: 
+  - #@ testflight_inception_job_name("azure")
+- in_parallel:
+  - get: #@ modules_resource_name("azure")
+    trigger: true
+    passed: 
+    - #@ testflight_inception_job_name("azure")
+  - get: repo
+    passed: 
+    - #@ testflight_inception_job_name("azure")
+  - { get: pipeline-tasks }
+  - get: testflight-uid
+    passed: 
+    - #@ testflight_inception_job_name("azure")
+- task: platform
+  config:
+    platform: linux
+    image_resource: #@ task_image_config()
+    inputs:
+    - name: pipeline-tasks
+    - name: repo
+    - name: #@ modules_resource_name("azure")
+      path: modules
+    - name: testflight-uid
+    params: #@ azure_testflight_task_params()
+    run:
+      path: echo
+      args: ["Platform"]
+- #@ slack_success_notification()
+on_failure: #@ slack_failure_notification()
+#@ end
+
+#@ def azure_testflight_services_job():
+name: #@ testflight_services_job_name("azure")
+serial: true
+plan:
+- get: testflight-lock
+  passed: 
+  - #@ testflight_platform_job_name("azure")
+- in_parallel:
+  - get: #@ modules_resource_name("azure")
+    trigger: true
+    passed: 
+    - #@ testflight_platform_job_name("azure")
+  - get: repo
+    passed: 
+    - #@ testflight_platform_job_name("azure")
+  - { get: pipeline-tasks }
+  - get: testflight-uid
+    passed: 
+    - #@ testflight_platform_job_name("azure")
+- task: services
+  config:
+    platform: linux
+    image_resource: #@ task_image_config()
+    inputs:
+    - name: pipeline-tasks
+    - name: repo
+    - name: #@ modules_resource_name("azure")
+      path: modules
+    - name: testflight-uid
+    params: #@ azure_testflight_task_params()
+    run:
+      path: echo
+      args: ["Services"]
+- #@ slack_success_notification()
+on_failure: #@ slack_failure_notification()
+#@ end
+
+#@ def azure_testflight_cleanup_job():
+name: #@ testflight_cleanup_job_name("azure")
+serial: true
+plan:
+- get: testflight-lock
+  passed: 
+  - #@ testflight_services_job_name("azure")
+- in_parallel:
+  - get: #@ modules_resource_name("azure")
+    trigger: true
+    passed: 
+    - #@ testflight_services_job_name("azure")
+  - get: repo
+    passed: 
+    - #@ testflight_services_job_name("azure")
+  - { get: pipeline-tasks }
+  - get: testflight-uid
+    passed: 
+    - #@ testflight_services_job_name("azure")
+- task: teardown
+  config:
+    platform: linux
+    image_resource: #@ task_image_config()
+    inputs:
+    - name: pipeline-tasks
+    - name: repo
+    - name: #@ modules_resource_name("azure")
+      path: modules
+    - name: testflight-uid
+    outputs:
+    - name: repo
+    params: #@ azure_testflight_task_params()
+    run:
+      path: echo
+      args: ["Teardown"]
+- in_parallel:
+  - { put: testflight-lock, params: { release: testflight-lock }}
+  - { put: testflight-uid, params: { bump: patch } }
+- #@ slack_success_notification()
+on_failure: #@ slack_failure_notification()
+#@ end
+
+#@ def build_pipeline_image_job():
+name: #@ build_pipeline_image_job_name("azure")
+serial: true
+plan:
+- {get: azure-pipeline-image-def, trigger: true}
+- task: build
+  privileged: true
+  config:
+    platform: linux
+    image_resource:
+      type: registry-image
+      source:
+        repository: vito/oci-build-task
+    inputs:
+    - name: azure-pipeline-image-def
+    outputs:
+    - name: image
+    params:
+      CONTEXT: azure-pipeline-image-def/ci/image/azure
+    run:
+      path: build
+- put: azure-pipeline-image
+  params:
+    image: image/image.tar
+#@ end
+
+#@ def pipeline_image_resource():
+name: azure-pipeline-image
+type: registry-image
+source:
+  tag: latest
+  username: #@ data.values.docker_registry_user
+  password: #@ data.values.docker_registry_password
+  repository: #@ pipeline_image()
+#@ end
+
+#@ def pipeline_image_def_resource():
+name: azure-pipeline-image-def
+type: git
+source:
+  paths: [ci/image/azure/Dockerfile]
+  uri: #@ data.values.git_uri
+  branch: #@ data.values.git_branch
+  private_key: #@ data.values.github_private_key
+#@ end
+
+---
+
+#@ def azure_jobs():
+- #@ azure_testflight_bootstrap_job()
+- #@ azure_testflight_inception_job()
+- #@ azure_testflight_platform_job()
+- #@ azure_testflight_services_job()
+- #@ azure_testflight_cleanup_job()
+- #@ build_pipeline_image_job()
+#@ end
+
+#@ def azure_resources():
+- #@ azure_modules()
+- #@ pipeline_image_resource()
+- #@ pipeline_image_def_resource()
 #@ end
