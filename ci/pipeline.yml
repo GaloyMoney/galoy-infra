@@ -30,6 +30,7 @@ groups:
   - #@ testflight_platform_job_name(cloud)
   - #@ testflight_services_job_name(cloud)
   - #@ testflight_cleanup_job_name(cloud)
+  #@ if/end cloud == "gcp":
   - #@ bump_repos_job_name(cloud)
 #@ end
 - name: image
