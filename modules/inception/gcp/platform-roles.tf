@@ -57,6 +57,7 @@ resource "google_project_iam_custom_role" "platform_make" {
     "cloudsql.users.create",
     "cloudsql.users.list",
     "cloudsql.instances.list",
+    "monitoring.timeSeries.list",
   ]
 }
 
