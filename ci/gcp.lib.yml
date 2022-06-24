@@ -76,7 +76,7 @@ plan:
     - name: gcp-testflight-uid
     params: #@ gcp_testflight_task_params()
     run:
-      path: pipeline-tasks/ci/tasks/bootstrap.sh
+      path: pipeline-tasks/ci/tasks/gcp/bootstrap.sh
 - #@ slack_success_notification()
 on_failure: #@ slack_failure_notification()
 #@ end
@@ -112,7 +112,7 @@ plan:
     - name: gcp-testflight-uid
     params: #@ gcp_testflight_task_params()
     run:
-      path: pipeline-tasks/ci/tasks/inception.sh
+      path: pipeline-tasks/ci/tasks/gcp/inception.sh
 - #@ slack_success_notification()
 on_failure: #@ slack_failure_notification()
 #@ end
@@ -148,7 +148,7 @@ plan:
     - name: gcp-testflight-uid
     params: #@ gcp_testflight_task_params()
     run:
-      path: pipeline-tasks/ci/tasks/platform.sh
+      path: pipeline-tasks/ci/tasks/gcp/platform.sh
 - #@ slack_success_notification()
 on_failure: #@ slack_failure_notification()
 #@ end
@@ -184,7 +184,7 @@ plan:
     - name: gcp-testflight-uid
     params: #@ gcp_testflight_task_params()
     run:
-      path: pipeline-tasks/ci/tasks/services.sh
+      path: pipeline-tasks/ci/tasks/gcp/services.sh
 - #@ slack_success_notification()
 on_failure: #@ slack_failure_notification()
 #@ end
@@ -222,7 +222,7 @@ plan:
     - name: repo
     params: #@ gcp_testflight_task_params()
     run:
-      path: pipeline-tasks/ci/tasks/teardown.sh
+      path: pipeline-tasks/ci/tasks/gcp/teardown.sh
 - in_parallel:
   - { put: gcp-testflight-lock, params: { release: gcp-testflight-lock }}
   - { put: gcp-testflight-uid, params: { bump: patch } }

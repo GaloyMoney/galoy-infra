@@ -39,7 +39,10 @@ source:
 #@ end
 
 #@ def azure_testflight_task_params():
-BRANCH: #@ data.values.git_branch
+ARM_CLIENT_ID: #@ data.values.testflight_azure_client_id
+ARM_CLIENT_SECRET: #@ data.values.testflight_azure_client_secret
+ARM_TENANT_ID: #@ data.values.testflight_azure_tenant_id
+ARM_SUBSCRIPTION_ID: #@ data.values.testflight_azure_subscription_id
 #@ end
 
 #@ def azure_testflight_bootstrap_job():
@@ -64,8 +67,7 @@ plan:
       path: modules
     params: #@ azure_testflight_task_params()
     run:
-      path: echo
-      args: ["Bootstrap"]
+      path: pipeline-tasks/ci/tasks/azure/bootstrap.sh
 - #@ slack_success_notification()
 on_failure: #@ slack_failure_notification()
 #@ end
@@ -97,8 +99,7 @@ plan:
       path: modules
     params: #@ azure_testflight_task_params()
     run:
-      path: echo
-      args: ["Inception"]
+      path: pipeline-tasks/ci/tasks/azure/inception.sh
 - #@ slack_success_notification()
 on_failure: #@ slack_failure_notification()
 #@ end
@@ -130,8 +131,7 @@ plan:
       path: modules
     params: #@ azure_testflight_task_params()
     run:
-      path: echo
-      args: ["Platform"]
+      path: pipeline-tasks/ci/tasks/azure/platform.sh
 - #@ slack_success_notification()
 on_failure: #@ slack_failure_notification()
 #@ end
@@ -163,8 +163,7 @@ plan:
       path: modules
     params: #@ azure_testflight_task_params()
     run:
-      path: echo
-      args: ["Services"]
+      path: pipeline-tasks/ci/tasks/azure/services.sh
 - #@ slack_success_notification()
 on_failure: #@ slack_failure_notification()
 #@ end
@@ -198,10 +197,8 @@ plan:
     - name: repo
     params: #@ azure_testflight_task_params()
     run:
-      path: echo
-      args: ["Teardown"]
-- in_parallel:
-  - { put: azure-testflight-lock, params: { release: azure-testflight-lock }}
+      path: pipeline-tasks/ci/tasks/azure/teardown.sh
+- { put: azure-testflight-lock, params: { release: azure-testflight-lock }}
 - #@ slack_success_notification()
 on_failure: #@ slack_failure_notification()
 #@ end
