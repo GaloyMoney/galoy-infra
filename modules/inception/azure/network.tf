@@ -48,11 +48,6 @@ resource "azurerm_network_interface" "bastion_network_interface" {
   location            = data.azurerm_resource_group.resource_group.location
   resource_group_name = data.azurerm_resource_group.resource_group.name
 
-  # ip_configuration {
-  #   name                          = "bastion_network_interface_configuration1"
-  #   subnet_id                     = azurerm_subnet.bastion_subnet.id
-  #   private_ip_address_allocation = "Dynamic"
-  # }
   ip_configuration {
     name                          = "bastion_network_interface_configuration1"
     subnet_id                     = azurerm_subnet.bastion_subnet.id
