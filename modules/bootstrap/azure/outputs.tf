@@ -7,3 +7,6 @@ output "tf_state_storage_location" {
 output "tf_state_storage_account" {
   value = azurerm_storage_account.bootstrap.name
 }
+output "resource_group" {
+  value = azurerm_resource_group.bootstrap.name
+}
