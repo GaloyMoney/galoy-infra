@@ -32,12 +32,28 @@ EOF
   kubectl config use-context tf-backend
 }
 
-function init_bootstrap() {
+function init_bootstrap_gcp() {
   pushd bootstrap
   cat <<EOF > override.tf
 terraform {
   backend "kubernetes" {
-    secret_suffix = "testflight"
+    secret_suffix = "testflight-gcp"
+    namespace     = "concourse-tf"
+    config_path   = "/root/.kube/config"
+  }
+}
+EOF
+
+  terraform init
+  popd
+}
+
+function init_bootstrap_azure() {
+  pushd bootstrap
+  cat <<EOF > override.tf
+terraform {
+  backend "kubernetes" {
+    secret_suffix = "testflight-azure"
     namespace     = "concourse-tf"
     config_path   = "/root/.kube/config"
   }

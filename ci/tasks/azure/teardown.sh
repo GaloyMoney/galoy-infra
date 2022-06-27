@@ -11,4 +11,4 @@ update_examples_git_ref
 init_kubeconfig
 init_bootstrap_azure
 
-echo yes | make bootstrap 
+echo yes | make destroy-bootstrap

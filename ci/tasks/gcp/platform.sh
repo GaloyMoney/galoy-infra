@@ -11,7 +11,7 @@ update_examples_git_ref
 init_gcloud
 
 init_kubeconfig
-init_bootstrap
+init_bootstrap_gcp
 
 write_users
 
