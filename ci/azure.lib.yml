@@ -43,6 +43,9 @@ ARM_CLIENT_ID: #@ data.values.testflight_azure_client_id
 ARM_CLIENT_SECRET: #@ data.values.testflight_azure_client_secret
 ARM_TENANT_ID: #@ data.values.testflight_azure_tenant_id
 ARM_SUBSCRIPTION_ID: #@ data.values.testflight_azure_subscription_id
+KUBE_HOST: #@ data.values.concourse_tf_kube_host
+KUBE_CA_CERT: #@ data.values.concourse_tf_kube_ca_cert
+KUBE_TOKEN: #@ data.values.concourse_tf_kube_token
 #@ end
 
 #@ def azure_testflight_bootstrap_job():
@@ -56,6 +59,7 @@ plan:
     trigger: true
   - { get: repo }
   - { get: pipeline-tasks }
+  - { get: azure-testflight-uid }
 - task: bootstrap
   config:
     platform: linux
@@ -65,6 +69,8 @@ plan:
     - name: repo
     - name: #@ modules_resource_name("azure")
       path: modules
+    - name: azure-testflight-uid
+      path: testflight-uid
     params: #@ azure_testflight_task_params()
     run:
       path: pipeline-tasks/ci/tasks/azure/bootstrap.sh
@@ -88,6 +94,7 @@ plan:
     passed: 
     - #@ testflight_bootstrap_job_name("azure")
   - { get: pipeline-tasks }
+  - { get: azure-testflight-uid }
 - task: inception
   config:
     platform: linux
@@ -97,6 +104,8 @@ plan:
     - name: repo
     - name: #@ modules_resource_name("azure")
       path: modules
+    - name: azure-testflight-uid
+      path: testflight-uid
     params: #@ azure_testflight_task_params()
     run:
       path: pipeline-tasks/ci/tasks/azure/inception.sh
@@ -120,6 +129,7 @@ plan:
     passed: 
     - #@ testflight_inception_job_name("azure")
   - { get: pipeline-tasks }
+  - { get: azure-testflight-uid }
 - task: platform
   config:
     platform: linux
@@ -129,6 +139,8 @@ plan:
     - name: repo
     - name: #@ modules_resource_name("azure")
       path: modules
+    - name: azure-testflight-uid
+      path: testflight-uid
     params: #@ azure_testflight_task_params()
     run:
       path: pipeline-tasks/ci/tasks/azure/platform.sh
@@ -152,6 +164,7 @@ plan:
     passed: 
     - #@ testflight_platform_job_name("azure")
   - { get: pipeline-tasks }
+  - { get: azure-testflight-uid }
 - task: services
   config:
     platform: linux
@@ -161,6 +174,8 @@ plan:
     - name: repo
     - name: #@ modules_resource_name("azure")
       path: modules
+    - name: azure-testflight-uid
+      path: testflight-uid
     params: #@ azure_testflight_task_params()
     run:
       path: pipeline-tasks/ci/tasks/azure/services.sh
@@ -184,6 +199,7 @@ plan:
     passed: 
     - #@ testflight_services_job_name("azure")
   - { get: pipeline-tasks }
+  - { get: azure-testflight-uid }
 - task: teardown
   config:
     platform: linux
@@ -193,6 +209,8 @@ plan:
     - name: repo
     - name: #@ modules_resource_name("azure")
       path: modules
+    - name: azure-testflight-uid
+      path: testflight-uid
     outputs:
     - name: repo
     params: #@ azure_testflight_task_params()
@@ -249,6 +267,18 @@ source:
   private_key: #@ data.values.github_private_key
 #@ end
 
+#@ def azure_testflight_uid_resource():
+name: azure-testflight-uid
+type: semver
+source:
+  initial_version: 0.0.0
+  driver: git
+  file: azure-version
+  uri: #@ data.values.git_uri
+  branch: #@ data.values.git_version_branch
+  private_key: #@ data.values.github_private_key
+#@ end
+
 #@ def azure_testflight_lock_resource():
 name: azure-testflight-lock
 type: pool
@@ -274,5 +304,6 @@ source:
 - #@ azure_modules()
 - #@ pipeline_image_resource()
 - #@ pipeline_image_def_resource()
+- #@ azure_testflight_uid_resource()
 - #@ azure_testflight_lock_resource()
 #@ end

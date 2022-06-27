@@ -4,7 +4,7 @@ export MODULES_GIT_LONG_REF="$(cat modules/.git/ref)"
 export KUBE_CONFIG="~/.kube/config"
 export CI_ROOT="$(pwd)"
 export CI_ROOT_DIR="${CI_ROOT##*/}"
-export TF_VAR_name_prefix="testflight-$(cat gcp-testflight-uid/version | tr . -)"
+export TF_VAR_name_prefix="testflight-$(cat testflight-uid/version | tr . -)"
 
 function init_gcloud() {
   cat <<EOF > ${CI_ROOT}/gcloud-creds.json

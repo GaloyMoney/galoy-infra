@@ -74,6 +74,7 @@ plan:
     - name: #@ modules_resource_name("gcp")
       path: modules
     - name: gcp-testflight-uid
+      path: testflight-uid
     params: #@ gcp_testflight_task_params()
     run:
       path: pipeline-tasks/ci/tasks/gcp/bootstrap.sh
@@ -110,6 +111,7 @@ plan:
     - name: #@ modules_resource_name("gcp")
       path: modules
     - name: gcp-testflight-uid
+      path: testflight-uid
     params: #@ gcp_testflight_task_params()
     run:
       path: pipeline-tasks/ci/tasks/gcp/inception.sh
@@ -146,6 +148,7 @@ plan:
     - name: #@ modules_resource_name("gcp")
       path: modules
     - name: gcp-testflight-uid
+      path: testflight-uid
     params: #@ gcp_testflight_task_params()
     run:
       path: pipeline-tasks/ci/tasks/gcp/platform.sh
@@ -182,6 +185,7 @@ plan:
     - name: #@ modules_resource_name("gcp")
       path: modules
     - name: gcp-testflight-uid
+      path: testflight-uid
     params: #@ gcp_testflight_task_params()
     run:
       path: pipeline-tasks/ci/tasks/gcp/services.sh
@@ -218,6 +222,7 @@ plan:
     - name: #@ modules_resource_name("gcp")
       path: modules
     - name: gcp-testflight-uid
+      path: testflight-uid
     outputs:
     - name: repo
     params: #@ gcp_testflight_task_params()
