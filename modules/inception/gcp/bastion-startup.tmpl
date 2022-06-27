@@ -18,6 +18,8 @@ alias kauth="gcloud container clusters get-credentials ${cluster_name} --zone ${
 
 export GALOY_ENVIRONMENT=${project}
 export KUBE_CONFIG_PATH=~/.kube/config
+export PATH="$HOME/.npm-global/bin:$PATH"
+bos completion bash
 EOF
 
 %{ if bastion_revoke_on_exit }
@@ -63,3 +65,9 @@ mkdir k9s && cd k9s \
    && tar -xvf k9s_Linux_x86_64.tar.gz \
    && mv k9s /usr/local/bin \
    && cd .. && rm -rf k9s*
+
+curl -sL https://deb.nodesource.com/setup_14.x | bash - \
+  && apt-get install -y nodejs \
+  && mkdir ~/.npm-global \
+  && npm config set prefix '~/.npm-global' \
+  && npm i -g balanceofsatoshis@${bos_version}
