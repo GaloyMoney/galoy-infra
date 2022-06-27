@@ -217,6 +217,7 @@ plan:
     run:
       path: pipeline-tasks/ci/tasks/azure/teardown.sh
 - { put: azure-testflight-lock, params: { release: azure-testflight-lock }}
+- { put: azure-testflight-uid, params: { bump: patch } }
 - #@ slack_success_notification()
 on_failure: #@ slack_failure_notification()
 #@ end
