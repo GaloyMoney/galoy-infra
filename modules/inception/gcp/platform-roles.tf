@@ -54,7 +54,6 @@ resource "google_project_iam_custom_role" "platform_make" {
     "cloudsql.instances.create",
     "cloudsql.instances.get",
     "cloudsql.instances.update",
-    "cloudsql.instances.patch",
     "cloudsql.users.create",
     "cloudsql.users.list",
     "cloudsql.instances.list",
