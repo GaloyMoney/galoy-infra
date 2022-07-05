@@ -35,7 +35,7 @@ data "azurerm_subscription" "current" {
 
 # Create Contributor role assignment for Service Principal
 resource "azurerm_role_assignment" "bootstrap_spn_contributor" {
-  scope                = data.azurerm_subscription.current.display_name
+  scope                = data.azurerm_subscription.current.id
   role_definition_name = "Contributor"
   principal_id         = azuread_service_principal.bootstrap.id
 }
