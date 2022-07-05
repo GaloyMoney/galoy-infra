@@ -7,3 +7,10 @@ output "tf_state_storage_location" {
 output "tf_state_storage_account" {
   value = azurerm_storage_account.bootstrap.name
 }
+output "client_id" {
+  value = azuread_application.inception.application_id
+}
+output "client_secret" {
+  value     = azuread_application_password.inception_app_password.value
+  sensitive = true
+}
