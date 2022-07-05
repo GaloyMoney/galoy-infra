@@ -32,7 +32,7 @@ resource "azuread_application_password" "inception_app_password" {
 
 # Create Contributor role assignment for Service Principal
 resource "azurerm_role_assignment" "bootstrap_spn_contributor" {
-  scope                = data.azurerm_subscription.main.id
+  scope                = data.azurerm_subscription.current.display_name
   role_definition_name = "Contributor"
   principal_id         = azuread_service_principal.bootstrap.id
 }
