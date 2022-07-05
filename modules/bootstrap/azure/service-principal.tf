@@ -30,6 +30,9 @@ resource "azuread_application_password" "inception_app_password" {
 #   resource_object_id  = azuread_service_principal.msgraph.object_id
 # }
 
+data "azurerm_subscription" "current" {
+}
+
 # Create Contributor role assignment for Service Principal
 resource "azurerm_role_assignment" "bootstrap_spn_contributor" {
   scope                = data.azurerm_subscription.current.display_name
