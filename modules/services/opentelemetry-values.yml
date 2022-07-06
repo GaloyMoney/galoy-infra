@@ -48,6 +48,9 @@ config:
       - key: code.function.params.cert
         action: update
         value: "<redacted>"
+      - key: code.function.params.secret
+        action: update
+        value: "<redacted>"
     # If set to null, will be overridden with values based on k8s resource limits
     memory_limiter: null
     resourcedetection:
