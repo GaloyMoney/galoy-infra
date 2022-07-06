@@ -20,7 +20,7 @@ resource "azuread_service_principal" "bootstrap" {
 # Create Application password (client secret)
 resource "azuread_application_password" "inception_app_password" {
   application_object_id = azuread_application.inception.object_id
-  end_date_relative     = "2h" # expire in 3 years
+  end_date_relative     = "48h" # expire in 3 years
 }
 
 # # Create app role assignment for Service Principal
