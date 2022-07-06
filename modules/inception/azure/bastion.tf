@@ -1,7 +1,7 @@
 resource "azurerm_virtual_machine" "bastion" {
-  name                  = "${var.prefix}-vm"
-  location              = azurerm_resource_group.resource_group.location
-  resource_group_name   = azurerm_resource_group.resource_group.name
+  name                  = "${local.name_prefix}-vm"
+  location              = data.azurerm_resource_group.resource_group.location
+  resource_group_name   = data.azurerm_resource_group.resource_group.name
   network_interface_ids = [azurerm_network_interface.bastion_network_interface.id]
   vm_size               = "Standard_DS1_v2"
 
