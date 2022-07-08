@@ -23,13 +23,6 @@ resource "azuread_application_password" "inception_app_password" {
   end_date_relative     = "48h" # expire in 3 years
 }
 
-# # Create app role assignment for Service Principal
-# resource "azuread_app_role_assignment" "bootstrap_spn_role" {
-#   app_role_id         = azuread_service_principal.msgraph.app_role_ids["Application.ReadWrite.All"]
-#   principal_object_id = azuread_service_principal.bootstrap.object_id
-#   resource_object_id  = azuread_service_principal.msgraph.object_id
-# }
-
 data "azurerm_subscription" "current" {
 }
 
