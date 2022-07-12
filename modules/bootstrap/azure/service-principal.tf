@@ -1,7 +1,5 @@
 # Configure the Azure Active Directory Provider
-provider "azuread" {
-  tenant_id = local.tenant_id
-}
+provider "azuread" {}
 
 # Create an application
 resource "azuread_application" "inception" {

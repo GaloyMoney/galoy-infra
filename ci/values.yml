@@ -1,19 +1,31 @@
 #@data/values
 ---
-deployments_git_uri: git@github.com:GaloyMoney/galoy-deployments.git
 git_uri: git@github.com:GaloyMoney/galoy-infra.git
 git_branch: main
 git_version_branch: testflight-name-prefix-uid-branch
+github_private_key: ((github.private_key))
+
+deployments_git_uri: git@github.com:GaloyMoney/galoy-deployments.git
+concourse_locks_git_uri: git@github.com:GaloyMoney/concourse-locks.git
+
 cepler_gates_branch: cepler-gates
 cepler_gates_file: cepler-gates/infra.yml
-github_private_key: ((github.private_key))
+
 docker_registry: us.gcr.io/galoy-org
 docker_registry_user: ((docker-creds.username))
 docker_registry_password: ((docker-creds.password))
+
 concourse_tf_kube_host:  ((tf-backend-creds.host))
 concourse_tf_kube_ca_cert:  ((tf-backend-creds.ca_cert))
 concourse_tf_kube_token:  ((tf-backend-creds.token))
+
 testflight_gcp_creds: ((testflight-gcp-creds.creds_json))
+
+testflight_azure_client_id: ((testflight-azure-creds.client_id))
+testflight_azure_client_secret: ((testflight-azure-creds.client_secret))
+testflight_azure_tenant_id: ((testflight-azure-creds.tenant_id))
+testflight_azure_subscription_id: ((testflight-azure-creds.subscription_id))
+
 testflight_admins: ((testflight-admins.users_json))
 testflight_ssh_private_key: ((testflight-ssh.ssh_private_key))
 testflight_ssh_pub_key: ((testflight-ssh.ssh_public_key))

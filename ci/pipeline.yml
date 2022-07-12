@@ -1,222 +1,52 @@
 #@ load("@ytt:data", "data")
 
-#@ def pipeline_image():
-#@   return data.values.docker_registry + "/galoy-deployments-pipeline"
-#@ end
+#@ load("commons.lib.yml", 
+#@   "testflight_group_name",
+#@   "testflight_bootstrap_job_name",
+#@   "testflight_inception_job_name",
+#@   "testflight_platform_job_name",
+#@   "testflight_services_job_name",
+#@   "testflight_cleanup_job_name",
+#@   "bump_repos_job_name",
+#@   "build_pipeline_image_job_name",
+#@   "common_resources",
+#@   "resource_types")
 
-#@ def task_image_config():
-type: registry-image
-source:
-  username: #@ data.values.docker_registry_user
-  password: #@ data.values.docker_registry_password
-  repository: #@ pipeline_image()
-#@ end
+#@ load("gcp.lib.yml",
+#@   "gcp_jobs",
+#@   "gcp_resources")
 
-#@ def testflight_task_params():
-GOOGLE_CREDENTIALS: #@ data.values.testflight_gcp_creds
-SSH_PRIVATE_KEY: #@ data.values.testflight_ssh_private_key
-SSH_PUB_KEY: #@ data.values.testflight_ssh_pub_key
-TESTFLIGHT_ADMINS: #@ data.values.testflight_admins
-KUBE_HOST: #@ data.values.concourse_tf_kube_host
-KUBE_CA_CERT: #@ data.values.concourse_tf_kube_ca_cert
-KUBE_TOKEN: #@ data.values.concourse_tf_kube_token
-TF_VAR_gcp_project: galoy-infra-testflight
-TF_VAR_enable_services: false
-TF_VAR_destroyable_postgres: true
-BRANCH: #@ data.values.git_branch
-#@ end
+#@ load("azure.lib.yml",
+#@   "azure_jobs",
+#@   "azure_resources")
 
-#@ def slack_failure_notification():
-#@ fail_url = "<$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME| :face_with_symbols_on_mouth: $BUILD_JOB_NAME> failed!"
-put: slack
-params:
-  channel:  #@ data.values.slack_channel
-  username: #@ data.values.slack_username
-  icon_url: https://cl.ly/2F421Y300u07/concourse-logo-blue-transparent.png
-  text:    #@ fail_url
-#@ end
-
-#@ def slack_success_notification():
-#@ success_url = "<$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME| :zap: $BUILD_JOB_NAME> completed!"
-put: slack
-params:
-  channel:  #@ data.values.slack_channel
-  username: #@ data.values.slack_username
-  icon_url: https://cl.ly/2F421Y300u07/concourse-logo-blue-transparent.png
-  text:    #@ success_url
-#@ end
-
+#@ supported_iaas = ["gcp", "azure"]
 groups:
-- name: testflight
+#@ for cloud in supported_iaas:
+- name: #@ testflight_group_name(cloud)
   jobs:
-  - testflight-bootstrap
-  - testflight-inception
-  - testflight-platform
-  - testflight-services
-  - testflight-cleanup
-  - bump-repos
+  - #@ testflight_bootstrap_job_name(cloud)
+  - #@ testflight_inception_job_name(cloud)
+  - #@ testflight_platform_job_name(cloud)
+  - #@ testflight_services_job_name(cloud)
+  - #@ testflight_cleanup_job_name(cloud)
+  #@ if/end cloud == "gcp":
+  - #@ bump_repos_job_name(cloud)
+#@ end
+- name: image
+  jobs:
+#@ for/end cloud in supported_iaas:
+  - #@ build_pipeline_image_job_name(cloud)
 - name: k8s-upgrade
   jobs:
   - check-and-upgrade-k8s
 
 jobs:
-- name: testflight-bootstrap
-  serial: true
-  plan:
-  - put: testflight-lock
-    params: { claim: gcp-testflight }
-  - in_parallel:
-    - { get: modules, trigger: true}
-    - { get: repo }
-    - { get: pipeline-tasks }
-    - { get: testflight-uid }
-  - task: bootstrap
-    config:
-      platform: linux
-      image_resource: #@ task_image_config()
-      inputs:
-      - name: pipeline-tasks
-      - name: repo
-      - name: modules
-      - name: testflight-uid
-      params: #@ testflight_task_params()
-      run:
-        path: pipeline-tasks/ci/tasks/bootstrap.sh
-  - #@ slack_success_notification()
-  on_failure: #@ slack_failure_notification()
+#@ for/end job in gcp_jobs():
+- #@ job
 
-- name: testflight-inception
-  serial: true
-  plan:
-  - { get: testflight-lock, passed: [testflight-bootstrap] }
-  - in_parallel:
-    - { get: modules, trigger: true, passed: [testflight-bootstrap]}
-    - { get: repo, trigger: true, passed: [testflight-bootstrap] }
-    - { get: pipeline-tasks }
-    - { get: testflight-uid, passed: [testflight-bootstrap] }
-  - task: inception
-    config:
-      platform: linux
-      image_resource: #@ task_image_config()
-      inputs:
-      - name: pipeline-tasks
-      - name: repo
-      - name: modules
-      - name: testflight-uid
-      params: #@ testflight_task_params()
-      run:
-        path: pipeline-tasks/ci/tasks/inception.sh
-  - #@ slack_success_notification()
-  on_failure: #@ slack_failure_notification()
-
-- name: testflight-platform
-  serial: true
-  plan:
-  - { get: testflight-lock, passed: [testflight-inception] }
-  - in_parallel:
-    - { get: modules, trigger: true, passed: [testflight-inception]}
-    - { get: repo, trigger: true, passed: [testflight-inception] }
-    - { get: pipeline-tasks }
-    - { get: testflight-uid, passed: [testflight-inception] }
-  - task: platform
-    config:
-      platform: linux
-      image_resource: #@ task_image_config()
-      inputs:
-      - name: pipeline-tasks
-      - name: repo
-      - name: modules
-      - name: testflight-uid
-      params: #@ testflight_task_params()
-      run:
-        path: pipeline-tasks/ci/tasks/platform.sh
-  - #@ slack_success_notification()
-  on_failure: #@ slack_failure_notification()
-
-- name: testflight-services
-  serial: true
-  plan:
-  - { get: testflight-lock, passed: [testflight-platform] }
-  - in_parallel:
-    - { get: modules, trigger: true, passed: [testflight-platform]}
-    - { get: repo, trigger: true, passed: [testflight-platform] }
-    - { get: pipeline-tasks }
-    - { get: testflight-uid, passed: [testflight-platform] }
-  - task: services
-    config:
-      platform: linux
-      image_resource: #@ task_image_config()
-      inputs:
-      - name: pipeline-tasks
-      - name: repo
-      - name: modules
-      - name: testflight-uid
-      params: #@ testflight_task_params()
-      run:
-        path: pipeline-tasks/ci/tasks/services.sh
-  - #@ slack_success_notification()
-  on_failure: #@ slack_failure_notification()
-
-- name: testflight-cleanup
-  plan:
-  - { get: testflight-lock, passed: [testflight-services] }
-  - in_parallel:
-    - { get: modules, passed: [testflight-services], trigger: true}
-    - { get: repo, trigger: true, passed: [testflight-services] }
-    - { get: pipeline-tasks }
-    - { get: testflight-uid, passed: [testflight-services] }
-  - task: teardown
-    config:
-      platform: linux
-      image_resource: #@ task_image_config()
-      inputs:
-      - name: pipeline-tasks
-      - name: repo
-      - name: modules
-      - name: testflight-uid
-      outputs:
-      - name: repo
-      params: #@ testflight_task_params()
-      run:
-        path: pipeline-tasks/ci/tasks/teardown.sh
-  - in_parallel:
-    - {put: testflight-lock, params: {release: testflight-lock}}
-    - {put: testflight-uid, params: {bump: patch}}
-
-
-- name: bump-repos
-  plan:
-  - in_parallel:
-    - { get: galoy-staging }
-    - { get: modules, passed: [testflight-cleanup], trigger: true}
-    - { get: repo, trigger: true, passed: [testflight-cleanup], params: { fetch_tags: false } }
-    - { get: pipeline-tasks }
-  - task: bump-repos
-    config:
-      platform: linux
-      image_resource: #@ task_image_config()
-      inputs:
-      - name: galoy-staging
-      - name: pipeline-tasks
-      - name: modules
-      - name: repo
-      outputs:
-      - name: repo
-      - name: galoy-staging
-      params:
-        BRANCH: #@ data.values.git_branch
-        GITHUB_SSH_KEY: #@ data.values.github_private_key
-      run:
-        path: pipeline-tasks/ci/tasks/bump-repos.sh
-  - in_parallel:
-    - put: repo
-      params:
-        repository: repo
-        rebase: true
-    - put: galoy-staging
-      params:
-        repository: galoy-staging
-        rebase: true
+#@ for/end job in azure_jobs():
+- #@ job
 
 - name: check-and-upgrade-k8s
   plan:
@@ -228,7 +58,12 @@ jobs:
   - task: check-and-upgrade-k8s
     config:
       platform: linux
-      image_resource: #@ task_image_config()
+      image_resource:
+        type: registry-image
+        source:
+          username: #@ data.values.docker_registry_user
+          password: #@ data.values.docker_registry_password
+          repository: #@ data.values.docker_registry + "/galoy-deployments-pipeline"
       inputs:
       - name: repo
       - name: pipeline-tasks
@@ -244,56 +79,14 @@ jobs:
       rebase: true
 
 resources:
-- name: repo
-  type: git
-  source:
-    ignore_paths: ["ci/*[^md]"]
-    uri: #@ data.values.git_uri
-    branch: #@ data.values.git_branch
-    private_key: #@ data.values.github_private_key
-- name: modules
-  type: git
-  source:
-    paths: ["modules"]
-    uri: #@ data.values.git_uri
-    branch: #@ data.values.git_branch
-    private_key: #@ data.values.github_private_key
-- name: pipeline-tasks
-  type: git
-  source:
-    paths: [ci/tasks/*, ci/k8s-upgrade/*, Makefile]
-    uri: #@ data.values.git_uri
-    branch: #@ data.values.git_branch
-    private_key: #@ data.values.github_private_key
-- name: galoy-staging
-  type: git
-  source:
-    uri: #@ data.values.deployments_git_uri
-    branch: #@ data.values.git_branch
-    private_key: #@ data.values.github_private_key
+#@ for/end resource in common_resources():
+- #@ resource
 
-- name: testflight-lock
-  type: pool
-  source:
-    uri: git@github.com:GaloyMoney/concourse-locks.git
-    branch: main
-    pool: infra-testflight
-    private_key: #@ data.values.github_private_key
+#@ for/end resource in gcp_resources():
+- #@ resource
 
-- name: slack
-  type: slack-notification
-  source:
-    url: #@ data.values.slack_webhook_url
-
-- name: testflight-uid
-  type: semver
-  source:
-    initial_version: 0.0.0
-    driver: git
-    file: version
-    uri: #@ data.values.git_uri
-    branch: #@ data.values.git_version_branch
-    private_key: #@ data.values.github_private_key
+#@ for/end resource in azure_resources():
+- #@ resource
 
 - name: daily-trigger-resource
   type: time
@@ -301,32 +94,4 @@ resources:
     start: 1:00 AM
     stop: 2:00 AM
 
-resource_types:
-- name: terraform
-  type: docker-image
-  source:
-    repository: ljfranklin/terraform-resource
-    tag: latest
-
-- name: cepler-in
-  type: registry-image
-  source:
-    repository: cepler/cepler-concourse-resource
-    tag: latest
-
-- name: cepler-out
-  type: registry-image
-  source:
-    repository: cepler/cepler-concourse-resource
-    tag: latest
-
-- name: honeymarker
-  type: docker-image
-  source:
-    repository: #@ data.values.docker_registry + "/honeymarker-resource"
-    tag: edge
-
-- name: slack-notification
-  type: docker-image
-  source:
-    repository: cfcommunity/slack-notification-resource
+resource_types: #@ resource_types()
