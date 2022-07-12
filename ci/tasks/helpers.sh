@@ -4,7 +4,7 @@ export MODULES_GIT_LONG_REF="$(cat modules/.git/ref)"
 export KUBE_CONFIG="~/.kube/config"
 export CI_ROOT="$(pwd)"
 export CI_ROOT_DIR="${CI_ROOT##*/}"
-export TF_VAR_name_prefix="testflight-$(cat testflight-uid/version | tr . -)"
+export TF_VAR_name_prefix="testflight$(cat testflight-uid/version | tr -d .)"
 
 function init_gcloud() {
   cat <<EOF > ${CI_ROOT}/gcloud-creds.json
@@ -32,12 +32,28 @@ EOF
   kubectl config use-context tf-backend
 }
 
-function init_bootstrap() {
+function init_bootstrap_gcp() {
   pushd bootstrap
   cat <<EOF > override.tf
 terraform {
   backend "kubernetes" {
-    secret_suffix = "testflight"
+    secret_suffix = "testflight-gcp"
+    namespace     = "concourse-tf"
+    config_path   = "/root/.kube/config"
+  }
+}
+EOF
+
+  terraform init
+  popd
+}
+
+function init_bootstrap_azure() {
+  pushd bootstrap
+  cat <<EOF > override.tf
+terraform {
+  backend "kubernetes" {
+    secret_suffix = "testflight-azure"
     namespace     = "concourse-tf"
     config_path   = "/root/.kube/config"
   }

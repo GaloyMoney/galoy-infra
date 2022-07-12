@@ -9,12 +9,14 @@ pushd repo/examples/gcp
 update_examples_git_ref
 
 init_gcloud
+
 init_kubeconfig
-init_bootstrap
+init_bootstrap_gcp
 
 write_users
 
-echo yes | TF_VAR_tf_state_bucket_force_destroy=true \
-  make bootstrap
-
+bin/prep-inception.sh
 cleanup_inception_key
+
+bin/prep-platform.sh
+echo yes | make platform
