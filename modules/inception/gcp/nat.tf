@@ -2,7 +2,7 @@ resource "google_compute_router" "router" {
   name    = "${local.name_prefix}-router"
   project = local.project
   region  = local.region
-  network = data.google_compute_network.vpc.self_link
+  network = google_compute_network.vpc.self_link
   bgp {
     asn = 64514
   }
