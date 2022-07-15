@@ -50,6 +50,10 @@ resource "google_compute_instance" "bastion" {
     lnd_version : local.lnd_version
     bos_version : local.bos_version
   })
+
+  depends_on = [
+    google_compute_router_nat.main
+  ]
 }
 
 data "google_iam_policy" "bastion" {
