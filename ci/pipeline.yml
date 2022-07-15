@@ -22,6 +22,20 @@
 
 #@ supported_iaas = ["gcp", "azure"]
 groups:
+- name: all
+  jobs:
+#@ for cloud in supported_iaas:
+  - #@ testflight_bootstrap_job_name(cloud)
+  - #@ testflight_inception_job_name(cloud)
+  - #@ testflight_platform_job_name(cloud)
+  - #@ testflight_services_job_name(cloud)
+  - #@ testflight_cleanup_job_name(cloud)
+  #@ if/end cloud == "gcp":
+  - #@ bump_repos_job_name(cloud)
+#@ end
+#@ for/end cloud in supported_iaas:
+  - #@ build_pipeline_image_job_name(cloud)
+  - check-and-upgrade-k8s
 #@ for cloud in supported_iaas:
 - name: #@ testflight_group_name(cloud)
   jobs:
