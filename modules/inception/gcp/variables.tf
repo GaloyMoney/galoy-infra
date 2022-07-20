@@ -13,7 +13,7 @@ variable "bastion_machine_type" {
   default = "e2-micro"
 }
 variable "bastion_image" {
-  default = "ubuntu-os-cloud/ubuntu-2110"
+  default = "ubuntu-os-cloud/ubuntu-2204"
 }
 variable "bastion_revoke_on_exit" {
   default = true
