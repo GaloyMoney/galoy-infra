@@ -19,5 +19,7 @@ resource "google_compute_router_nat" "main" {
   depends_on = [
     google_project_iam_custom_role.inception_make,
     google_project_iam_custom_role.inception_destroy,
+    google_project_iam_member.inception_make,
+    google_project_iam_member.inception_destroy,
   ]
 }
