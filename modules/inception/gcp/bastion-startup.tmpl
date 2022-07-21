@@ -7,7 +7,7 @@ apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_re
 
 # Keep make and terraform the first items installed as they are needed
 # for testflight to complete
-apt-get update && apt-get install -y make terraform jq tree wget redis postgresql
+apt-get update && apt-get install -y make terraform jq tree wget redis postgresql vault
 
 gcloud components install gke-gcloud-auth-plugin
 
