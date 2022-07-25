@@ -23,4 +23,4 @@ else
   exit 0
 fi
 
-make_commit "Bump k8s to '${LATEST_VERSION}'"
+make_commit "chore: bump kubernetes to '${LATEST_VERSION}'"
