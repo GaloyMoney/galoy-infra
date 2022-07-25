@@ -7,7 +7,7 @@ source pipeline-tasks/ci/tasks/helpers.sh
 pushd pipeline-tasks/ci/k8s-upgrade
 
 terraform init && terraform apply -auto-approve
-LATEST_VERSION="$(terraform output -json | jq .latest_version.value)"
+LATEST_VERSION="$(terraform output -json | jq -r .latest_version.value)"
 
 popd
 
@@ -23,4 +23,4 @@ else
   exit 0
 fi
 
-make_commit "Bump k8s to '${LATEST_VERSION}'"
+make_commit "chore: bump kubernetes to '${LATEST_VERSION}'"
