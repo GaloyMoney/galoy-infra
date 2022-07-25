@@ -7,7 +7,7 @@ source pipeline-tasks/ci/tasks/helpers.sh
 pushd pipeline-tasks/ci/k8s-upgrade
 
 terraform init && terraform apply -auto-approve
-LATEST_VERSION="$(terraform output -json | jq .latest_version.value)"
+LATEST_VERSION="$(terraform output -json | jq -r .latest_version.value)"
 
 popd
 
