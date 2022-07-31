@@ -5,6 +5,7 @@ variable "network_prefix" {
   default = "10.0"
 }
 variable "resource_group_name" {
+  default = "test18-bootstrap"
 }
 locals {
   name_prefix              = var.name_prefix
