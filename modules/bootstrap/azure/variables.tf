@@ -3,6 +3,9 @@ variable "tenant_id" {}
 variable "tf_state_storage_location" {
   default = "eastus"
 }
+variable "tf_state_storage_force_destroy" {
+  default = false
+}
 variable "resource_group_location" {
   default = "eastus"
 }

@@ -1,6 +1,6 @@
 resource "azurerm_storage_account" "bootstrap" {
   name                     = "${local.name_prefix}sa"
-  resource_group_name      = azurerm_resource_group.bootstrap.name
+  resource_group_name      = data.azurerm_resource_group.resource_group.name
   location                 = local.tf_state_storage_location
   account_tier             = "Standard"
   account_replication_type = "LRS"

@@ -2,7 +2,7 @@ output "tf_state_storage_blob_name" {
   value = azurerm_storage_blob.tf_state.name
 }
 output "tf_state_storage_container" {
-  value = azurerm_storage_container.bootstrap
+  value = azurerm_storage_container.bootstrap.name
 }
 output "tf_state_storage_location" {
   value = azurerm_storage_account.bootstrap.location
@@ -24,7 +24,7 @@ output "client_secret" {
 output "tenant_id" {
   value = local.tenant_id
 }
-output "subsciption_id" {
-  value = data.azurerm_subscription.current.id
+output "subscription_id" {
+  value = data.azurerm_subscription.current.subscription_id
 }
 
