@@ -20,4 +20,7 @@ output "client_secret" {
   value     = azuread_application_password.inception_app_password.value
   sensitive = true
 }
+output "tenant_id" {
+  value = 
+}
 
