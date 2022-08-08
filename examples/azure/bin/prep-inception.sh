@@ -11,13 +11,17 @@ tf_state_storage_blob_name=$(terraform output tf_state_storage_blob_name | jq -r
 tf_state_storage_container=$(terraform output tf_state_storage_container | jq -r)
 resource_group_name=$(terraform output resource_group | jq -r)
 name_prefix=$(terraform output name_prefix | jq -r)
+client_id=$(terraform output application_id | jq -r)
+client_secret=$(terraform output client_secret | jq -r)
+tenant_id=$(terraform output tenant_id | jq -r)
+subscription_id=$(terraform output subscription_id | jq -r)
 
 popd
 
-export ARM_CLIENT_ID = #@ data.values.testflight_azure_client_id
-export ARM_CLIENT_SECRET = #@ data.values.testflight_azure_client_secret
-#export ARM_TENANT_ID = #@ data.values.testflight_azure_tenant_id
-#export ARM_SUBSCRIPTION_ID = 
+export ARM_CLIENT_ID = $client_id
+export ARM_CLIENT_SECRET = $client_secret
+export ARM_TENANT_ID = $tenant_id
+export ARM_SUBSCRIPTION_ID = $subscription_id
 pushd inception
 
 ACCOUNT_KEY=$(az storage account keys list --resource-group $resource_group_name --account-name $tf_state_storage_account --query '[0].value' -o tsv)

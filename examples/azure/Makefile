@@ -10,4 +10,16 @@ destroy-bootstrap:
 		&& $(TF) init \
 		&& $(TF) destroy
 
-.PHONY: bootstrap
+inception:
+	cd inception \
+		&& $(TF) init \
+		&& $(TF) apply
+
+destroy-inception:
+	cd inception \
+		&& $(TF) init \
+		&& $(TF) destroy
+
+
+.PHONY: bootstrap inception
+

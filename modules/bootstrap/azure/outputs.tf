@@ -22,6 +22,9 @@ output "client_secret" {
   sensitive = true
 }
 output "tenant_id" {
-  value = 
+  value = local.tenant_id
+}
+output "subsciption_id" {
+  value = data.azurerm_subscription.current.id
 }
 
