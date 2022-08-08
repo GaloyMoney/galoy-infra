@@ -4,6 +4,7 @@ bootstrap:
 	cd bootstrap \
 		&& $(TF) init \
 		&& $(TF) apply
+		bin/prep-inception.sh
 
 destroy-bootstrap:
 	cd bootstrap \
