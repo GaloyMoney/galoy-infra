@@ -11,9 +11,28 @@ module "bootstrap" {
 output "tf_state_storage_blob_name" {
   value = module.bootstrap.tf_state_storage_blob_name
 }
+output "tf_state_storage_container" {
+  value = module.bootstrap.tf_state_storage_container
+}
 output "tf_state_storage_location" {
   value = module.bootstrap.tf_state_storage_location
 }
 output "tf_state_storage_account" {
   value = module.bootstrap.tf_state_storage_account
+}
+output "resource_group" {
+  value = module.bootstrap.resource_group
+}
+output "application_id" {
+  value = module.bootstrap.pplication_id
+}
+output "client_secret" {
+  value     = module.bootstrap.client_secret
+  sensitive = true
+}
+output "tenant_id" {
+  value = module.bootstrap.tenant_id
+}
+output "subscription_id" {
+  value = module.bootstrap.subscription_id
 }
