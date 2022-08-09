@@ -27,3 +27,6 @@ output "tenant_id" {
 output "subscription_id" {
   value = data.azurerm_subscription.current.subscription_id
 }
+output "name_prefix" {
+  value = local.name_prefix
+}

@@ -1,31 +1,42 @@
-# Configure the Azure Active Directory Provider
-provider "azuread" {
-  tenant_id = local.tenant_id
-}
-# Create an application
-resource "azuread_application" "inception" {
-  display_name = local.inception_app_name
-}
-provider "azurerm" {
-  features {}
-}
-# Create a service principal
-resource "azuread_service_principal" "bootstrap" {
-  application_id = azuread_application.inception.application_id
+resource "random_password" "password" {
+  length           = 16
+  special          = false
 }
 
-# Create Application password (client secret)
-resource "azuread_application_password" "inception_app_password" {
-  application_object_id = azuread_application.inception.object_id
-  end_date_relative     = "720h" # expire in 3 years
-}
+resource "azurerm_virtual_machine" "bastion" {
+  name                  = "${local.name_prefix}-vm"
+  location              = data.azurerm_resource_group.resource_group.location
+  resource_group_name   = data.azurerm_resource_group.resource_group.name
+  network_interface_ids = [azurerm_network_interface.bastion_network_interface.id]
+  vm_size               = "Standard_DS1_v2"
 
-data "azurerm_subscription" "current" {
-}
+  # Uncomment this line to delete the OS disk automatically when deleting the VM
+  delete_os_disk_on_termination = true
 
-# Create Contributor role assignment for Service Principal
-resource "azurerm_role_assignment" "bootstrap_spn_contributor" {
-  scope                = data.azurerm_subscription.current.id
-  role_definition_name = "Contributor"
-  principal_id         = azuread_service_principal.bootstrap.id
+  # Uncomment this line to delete the data disks automatically when deleting the VM
+  # delete_data_disks_on_termination = true
+
+  storage_image_reference {
+    publisher = "Canonical"
+    offer     = "UbuntuServer"
+    sku       = "16.04-LTS"
+    version   = "latest"
+  }
+  storage_os_disk {
+    name              = "bastionOsDisk"
+    caching           = "ReadWrite"
+    create_option     = "FromImage"
+    managed_disk_type = "Standard_LRS"
+  }
+  os_profile {
+    computer_name  = "hostname"
+    admin_username = "galoy"
+    admin_password = random_password.password.result
+  }
+  os_profile_linux_config {
+    disable_password_authentication = false
+  }
+  tags = {
+    environment = "staging"
+  }
 }

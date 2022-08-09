@@ -20,11 +20,11 @@ output "tf_state_storage_location" {
 output "tf_state_storage_account" {
   value = module.bootstrap.tf_state_storage_account
 }
-output "resource_group" {
+output "resource_group_name" {
   value = module.bootstrap.resource_group
 }
 output "application_id" {
-  value = module.bootstrap.pplication_id
+  value = module.bootstrap.application_id
 }
 output "client_secret" {
   value     = module.bootstrap.client_secret
@@ -35,4 +35,7 @@ output "tenant_id" {
 }
 output "subscription_id" {
   value = module.bootstrap.subscription_id
+}
+output "name_prefix" {
+  value = module.bootstrap.name_prefix
 }
