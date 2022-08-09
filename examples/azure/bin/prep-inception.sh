@@ -32,6 +32,8 @@ export ARM_ACCESS_KEY=$access_key
 
 pushd inception
 
+pushd inception
+
 cat <<EOF > terraform.tf
 terraform {
   backend "azurerm" {
