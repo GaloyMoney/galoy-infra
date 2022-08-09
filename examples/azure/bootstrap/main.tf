@@ -1,10 +1,20 @@
 variable "name_prefix" {}
+<<<<<<< HEAD
 
 module "bootstrap" {
   source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/bootstrap/azure?ref=b276fd3"
   # source = "../../../modules/bootstrap/azure"
 
   name_prefix = var.name_prefix
+=======
+variable "tenant_id" {}
+module "bootstrap" {
+  source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/bootstrap/azure?ref=b276fd3"
+  #source = "../../../modules/bootstrap/azure"
+
+  name_prefix = var.name_prefix
+  tenant_id = var.tenant_id
+>>>>>>> e911944 (need to fix make inception run)
 }
 
 output "tf_state_storage_blob_name" {
