@@ -14,3 +14,6 @@ output "client_secret" {
   value     = azuread_application_password.inception_app_password.value
   sensitive = true
 }
+output "resource_group" {
+  value = azurerm_resource_group.bootstrap.name
+}
