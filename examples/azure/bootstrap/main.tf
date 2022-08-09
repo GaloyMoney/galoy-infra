@@ -1,8 +1,8 @@
 variable "name_prefix" {}
 variable "tenant_id" {}
 module "bootstrap" {
-  #source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/bootstrap/azure?ref=b276fd3"
-  source = "../../../modules/bootstrap/azure"
+  source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/bootstrap/azure?ref=b276fd3"
+  #source = "../../../modules/bootstrap/azure"
 
   name_prefix = var.name_prefix
   tenant_id = var.tenant_id
