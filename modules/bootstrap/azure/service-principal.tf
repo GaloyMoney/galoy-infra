@@ -21,12 +21,6 @@ resource "azuread_application_password" "inception_app_password" {
   end_date_relative     = "720h" # expire in 3 years
 }
 
-<<<<<<< HEAD
-data "azurerm_subscription" "current" {
-}
-
-=======
->>>>>>> b8e51c0 (removed unused comment block)
 data "azurerm_subscription" "current" {
 }
 
