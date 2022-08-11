@@ -10,7 +10,7 @@ apt-add-repository "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https:/
 
 # Keep make and terraform the first items installed as they are needed
 # for testflight to complete
-apt-get update && apt-get install -y make terraform jq tree wget redis postgresql vault
+apt-get update && apt-get install -y make terraform jq tree wget redis postgresql vault google-cloud-sdk-gke-gcloud-auth-plugin
 
 cat <<EOF > /etc/profile.d/aliases.sh
 alias tf="terraform"
