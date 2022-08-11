@@ -21,7 +21,7 @@ alias kauth="gcloud container clusters get-credentials ${cluster_name} --zone ${
 
 export GALOY_ENVIRONMENT=${project}
 export KUBE_CONFIG_PATH=~/.kube/config
-bos completion bash
+source <(bos completion bash)
 EOF
 
 %{ if bastion_revoke_on_exit }
