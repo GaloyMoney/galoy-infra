@@ -23,7 +23,9 @@ resource "helm_release" "otel" {
   namespace  = kubernetes_namespace.otel.metadata[0].name
 
   values = [
-    file("${path.module}/opentelemetry-values.yml"),
+    templatefile("${path.module}/opentelemetry-values.yml", {
+      trace_sample_pct : local.trace_sample_pct,
+    }),
     local.small_footprint ? file("${path.module}/opentelemetry-small-footprint.yml") : ""
   ]
 
