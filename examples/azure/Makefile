@@ -18,7 +18,12 @@ inception:
 
 destroy-inception:
 	cd inception \
-		&& $(TF) init \
+		&& $(TF) state rm module.inception.azurerm_storage_account.bootstrap || true
+	cd inception \
+		&& $(TF) state rm module.inception.azurerm_storage_container.bootstrap || true
+	cd inception \
+		&& $(TF) state rm module.inception.azurerm_storage_blob.tf_state || true
+	cd inception \
 		&& $(TF) destroy
 
 

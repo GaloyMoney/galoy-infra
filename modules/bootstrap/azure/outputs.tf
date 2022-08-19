@@ -30,3 +30,16 @@ output "subscription_id" {
 output "name_prefix" {
   value = local.name_prefix
 }
+output "tf_state_storage_blob_id" {
+  value = azurerm_storage_blob.tf_state.id
+}
+output "tf_state_storage_container_id" {
+  value = azurerm_storage_container.bootstrap.id
+}
+output "tf_state_storage_account_id" {
+  value = azurerm_storage_account.bootstrap.id
+}
+output "tf_state_access_key" {
+  value = data.external.access_key.result
+  sensitive = false
+}

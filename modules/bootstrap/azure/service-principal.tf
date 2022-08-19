@@ -7,7 +7,11 @@ resource "azuread_application" "inception" {
   display_name = local.inception_app_name
 }
 provider "azurerm" {
-  features {}
+  features {
+    resource_group {
+      prevent_deletion_if_contains_resources = false
+    }
+  }
 }
 # Create a service principal
 resource "azuread_service_principal" "bootstrap" {
