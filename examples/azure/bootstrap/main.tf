@@ -50,4 +50,5 @@ output "name_prefix" {
 }
 output "access_key" {
   value = module.bootstrap.tf_state_access_key
+  sensitive = true
 }
