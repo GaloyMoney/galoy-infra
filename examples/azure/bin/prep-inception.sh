@@ -30,7 +30,13 @@ export ARM_TENANT_ID=$tenant_id
 export ARM_SUBSCRIPTION_ID=$subscription_id
 export ARM_ACCESS_KEY=$access_key
 
+<<<<<<< HEAD
 pushd inception
+=======
+# ACCOUNT_KEY=$(az storage account keys list --resource-group $resource_group_name --account-name $tf_state_storage_account --query '[0].value' -o tsv)
+# echo $ACCOUNT_KEY
+export ARM_ACCESS_KEY=$access_key
+>>>>>>> 85702a6 (runner upto inception is working)
 
 pushd inception
 
@@ -46,7 +52,7 @@ terraform {
 }
 EOF
 
-terraform init
+terraform init -reconfigure
 terraform state show module.inception.azurerm_storage_account.bootstrap || \
   terraform import module.inception.azurerm_storage_account.bootstrap ${tf_state_storage_account_id}
  terraform state show module.inception.azurerm_storage_container.bootstrap || \
