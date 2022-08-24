@@ -28,7 +28,7 @@ source:
 name: #@ modules_resource_name("gcp")
 type: git
 source:
-  paths: 
+  paths:
   - modules/bootstrap/gcp
   - modules/inception/gcp
   - modules/platform/gcp
@@ -87,7 +87,7 @@ name: #@ testflight_inception_job_name("gcp")
 serial: true
 plan:
 - get: gcp-testflight-lock
-  passed: 
+  passed:
   - #@ testflight_bootstrap_job_name("gcp")
 - in_parallel:
   - get: #@ modules_resource_name("gcp")
@@ -95,7 +95,7 @@ plan:
     passed:
     - #@ testflight_bootstrap_job_name("gcp")
   - get: repo
-    passed: 
+    passed:
     - #@ testflight_bootstrap_job_name("gcp")
   - { get: pipeline-tasks }
   - get: gcp-testflight-uid
@@ -124,19 +124,19 @@ name: #@ testflight_platform_job_name("gcp")
 serial: true
 plan:
 - get: gcp-testflight-lock
-  passed: 
+  passed:
   - #@ testflight_inception_job_name("gcp")
 - in_parallel:
   - get: #@ modules_resource_name("gcp")
     trigger: true
-    passed: 
+    passed:
     - #@ testflight_inception_job_name("gcp")
   - get: repo
-    passed: 
+    passed:
     - #@ testflight_inception_job_name("gcp")
   - { get: pipeline-tasks }
   - get: gcp-testflight-uid
-    passed: 
+    passed:
     - #@ testflight_inception_job_name("gcp")
 - task: platform
   config:
@@ -161,19 +161,19 @@ name: #@ testflight_services_job_name("gcp")
 serial: true
 plan:
 - get: gcp-testflight-lock
-  passed: 
+  passed:
   - #@ testflight_platform_job_name("gcp")
 - in_parallel:
   - get: #@ modules_resource_name("gcp")
     trigger: true
-    passed: 
+    passed:
     - #@ testflight_platform_job_name("gcp")
   - get: repo
-    passed: 
+    passed:
     - #@ testflight_platform_job_name("gcp")
   - { get: pipeline-tasks }
   - get: gcp-testflight-uid
-    passed: 
+    passed:
     - #@ testflight_platform_job_name("gcp")
 - task: services
   config:
@@ -198,19 +198,19 @@ name: #@ testflight_cleanup_job_name("gcp")
 serial: true
 plan:
 - get: gcp-testflight-lock
-  passed: 
+  passed:
   - #@ testflight_services_job_name("gcp")
 - in_parallel:
   - get: #@ modules_resource_name("gcp")
     trigger: true
-    passed: 
+    passed:
     - #@ testflight_services_job_name("gcp")
   - get: repo
-    passed: 
+    passed:
     - #@ testflight_services_job_name("gcp")
   - { get: pipeline-tasks }
   - get: gcp-testflight-uid
-    passed: 
+    passed:
     - #@ testflight_services_job_name("gcp")
 - task: teardown
   config:
@@ -242,7 +242,7 @@ plan:
   - { get: galoy-staging }
   - get: #@ modules_resource_name("gcp")
     trigger: true
-    passed: 
+    passed:
     - #@ testflight_cleanup_job_name("gcp")
   - get: repo
     trigger: true
