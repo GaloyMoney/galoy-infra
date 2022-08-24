@@ -25,7 +25,7 @@ function init_kubeconfig() {
   cat <<EOF > ${CI_ROOT}/ca.cert
 ${KUBE_CA_CERT}
 EOF
-  
+
   kubectl config set-cluster tf-backend --server=${KUBE_HOST} --certificate-authority="${CI_ROOT}/ca.cert"
   kubectl config set-credentials tf-backend-user --token=${KUBE_TOKEN}
   kubectl config set-context tf-backend --cluster=tf-backend --user=tf-backend-user --namespace tf-backend
@@ -99,7 +99,7 @@ function make_commit() {
     git config --global user.name "CI Bot"
   fi
 
-  
+
   (cd $(git rev-parse --show-toplevel)
     git merge --no-edit ${BRANCH}
     git add -A
