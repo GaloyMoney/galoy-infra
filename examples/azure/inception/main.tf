@@ -17,3 +17,7 @@ output "vnet_name" {
 output "bastion_public_ip" {
   value = module.inception.bastion_public_ip
 }
+output "bastion_password" {
+  value = module.inception.bastion_password
+  sensitive = true
+}
