@@ -12,7 +12,7 @@ destroy-bootstrap:
 		&& $(TF) destroy
 
 platform:
-	export ARM_ACCESS_KEY=$(cd bootstrap && terraform output access_key | jq -r)
+	export ARM_ACCESS_KEY=$(cd bootstrap && terraform output -json access_key | jq -r ".access_key")
 	cd platform \
 		&& $(TF) apply
 
