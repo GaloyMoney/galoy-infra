@@ -19,12 +19,21 @@ config:
     otlp:
       endpoint: "api.honeycomb.io:443"
       headers:
-        "x-honeycomb-team": ${HONEYCOMB_API_KEY}
-        "x-honeycomb-dataset": ${HONEYCOMB_DATASET}
+        "x-honeycomb-team": $${HONEYCOMB_API_KEY}
+        "x-honeycomb-dataset": $${HONEYCOMB_DATASET}
   extensions:
     health_check: {}
   processors:
     batch: {}
+    tail_sampling:
+      policies:
+      - name: status_code
+        type: status_code
+        status_code:
+          status_codes: [ERROR]
+      - name: probabilistic
+        type: probabilistic
+        probabilistic: { sampling_percentage: ${trace_sample_pct} }
     attributes:
       actions:
       - key: graphql.variables.input.code
@@ -83,7 +92,7 @@ config:
             scrape_interval: 10s
             static_configs:
               - targets:
-                  - ${MY_POD_IP}:8888
+                  - $${MY_POD_IP}:8888
   service:
     extensions:
       - health_check
@@ -114,6 +123,7 @@ config:
         - resourcedetection
         - attributes
         - k8sattributes
+        - tail_sampling
         - batch
         receivers:
           - jaeger

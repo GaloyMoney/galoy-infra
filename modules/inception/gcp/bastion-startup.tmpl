@@ -5,12 +5,12 @@ sed -i'' 's/pam_mkhomedir.so$/pam_mkhomedir.so umask=0077/' /etc/pam.d/sshd # Ma
 curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add -
 apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
 
-curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
-apt-add-repository "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main"
+echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
 
 # Keep make and terraform the first items installed as they are needed
 # for testflight to complete
-apt-get update && apt-get install -y make terraform jq tree wget redis postgresql vault google-cloud-sdk-gke-gcloud-auth-plugin
+apt-get update && apt-get install -y make terraform jq tree wget redis postgresql vault
 
 cat <<EOF > /etc/profile.d/aliases.sh
 alias tf="terraform"
@@ -21,7 +21,7 @@ alias kauth="gcloud container clusters get-credentials ${cluster_name} --zone ${
 
 export GALOY_ENVIRONMENT=${project}
 export KUBE_CONFIG_PATH=~/.kube/config
-bos completion bash
+source <(bos completion bash)
 EOF
 
 %{ if bastion_revoke_on_exit }
@@ -73,3 +73,5 @@ curl -sL https://deb.nodesource.com/setup_14.x | bash - \
   && npm config set prefix '/usr' \
   && npm i -g balanceofsatoshis@${bos_version} \
   && ln -s ../lib/node_modules/balanceofsatoshis/bos /usr/bin/
+
+apt-get install -y google-cloud-sdk-gke-gcloud-auth-plugin
