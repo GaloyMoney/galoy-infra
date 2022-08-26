@@ -11,6 +11,11 @@ destroy-bootstrap:
 		&& $(TF) init \
 		&& $(TF) destroy
 
+platform:
+	export ARM_ACCESS_KEY=$(cd bootstrap && terraform output -json access_key | jq -r ".access_key")
+	cd platform \
+		&& $(TF) apply
+
 inception:
 	export ARM_CLIENT_ID=$(cd bootstrap && terraform output client_id | jq -r)
 	export ARM_CLIENT_SECRET=$(cd bootstrap && terraform output client_secret | jq -r)
@@ -36,5 +41,10 @@ destroy-inception:
 	cd inception \
 		&& $(TF) destroy
 
+destroy-platform:
+	export ARM_ACCESS_KEY=$(cd bootstrap && terraform output access_key | jq -r)
+	cd platform \
+		&& $(TF) destroy
 
-.PHONY: bootstrap inception
+
+.PHONY: bootstrap inception platform
