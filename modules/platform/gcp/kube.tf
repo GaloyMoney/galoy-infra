@@ -31,7 +31,10 @@ resource "google_container_cluster" "primary" {
 
   default_max_pods_per_node = local.max_pods_per_node
 
-  enable_binary_authorization = true
+  binary_authorization {
+    evaluation_mode = "PROJECT_SINGLETON_POLICY_ENFORCE"
+  }
+
   enable_intranode_visibility = false
   enable_shielded_nodes       = true
 

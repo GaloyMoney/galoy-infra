@@ -1,15 +1,18 @@
 # Configure the Azure Active Directory Provider
-provider "azuread" {}
-
+provider "azuread" {
+  tenant_id = local.tenant_id
+}
 # Create an application
 resource "azuread_application" "inception" {
   display_name = local.inception_app_name
 }
-
 provider "azurerm" {
-  features {}
+  features {
+    resource_group {
+      prevent_deletion_if_contains_resources = false
+    }
+  }
 }
-
 # Create a service principal
 resource "azuread_service_principal" "bootstrap" {
   application_id = azuread_application.inception.application_id
@@ -18,7 +21,7 @@ resource "azuread_service_principal" "bootstrap" {
 # Create Application password (client secret)
 resource "azuread_application_password" "inception_app_password" {
   application_object_id = azuread_application.inception.object_id
-  end_date_relative     = "48h" # expire in 3 years
+  end_date_relative     = "720h" # expire in 3 years
 }
 
 data "azurerm_subscription" "current" {

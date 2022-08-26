@@ -61,7 +61,7 @@ resource "google_project_iam_custom_role" "platform_make" {
 resource "google_project_iam_custom_role" "platform_destroy" {
   project     = local.project
   role_id     = replace("${local.name_prefix}-platform-destroy", "-", "_")
-  title       = "Create Platform"
+  title       = "Destroy Platform"
   description = "Role for destroying the platform ${local.name_prefix}"
   permissions = [
     "logging.logMetrics.delete",
