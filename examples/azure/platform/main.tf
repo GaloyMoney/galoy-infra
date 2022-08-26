@@ -27,3 +27,13 @@ module "platform" {
   cluster_name = var.cluster_name
   cluster_location = var.cluster_location
 }
+
+output "client_certificate" {
+  value     = module.platform.client_certificate
+  sensitive = true
+}
+
+output "kube_config" {
+  value = module.platform.kube_config
+  sensitive = true
+}
