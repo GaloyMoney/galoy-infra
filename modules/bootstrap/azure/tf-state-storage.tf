@@ -20,11 +20,10 @@ resource "azurerm_storage_blob" "tf_state" {
 }
 
 data "external" "access_key" {
-  program = ["bash", "${path.root}/tf-state-storage.sh"]
+  program = ["bash", "${path.module}/tf-state-storage.sh"]
   query = {
     resource_group_name = azurerm_resource_group.bootstrap.name
-    storage_account = azurerm_storage_account.bootstrap.name
+    storage_account     = azurerm_storage_account.bootstrap.name
   }
 
 }
-

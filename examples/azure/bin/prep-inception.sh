@@ -18,7 +18,7 @@ client_id=$(terraform output application_id | jq -r)
 client_secret=$(terraform output client_secret | jq -r)
 tenant_id=$(terraform output tenant_id | jq -r)
 subscription_id=$(terraform output subscription_id | jq -r)
-access_key=$(terraform output access_key | jq -r)
+access_key=$(terraform output -json access_key | jq -r ".access_key")
 
 popd
 
@@ -28,9 +28,6 @@ export ARM_CLIENT_ID=$client_id
 export ARM_CLIENT_SECRET=$client_secret
 export ARM_TENANT_ID=$tenant_id
 export ARM_SUBSCRIPTION_ID=$subscription_id
-
-# ACCOUNT_KEY=$(az storage account keys list --resource-group $resource_group_name --account-name $tf_state_storage_account --query '[0].value' -o tsv)
-# echo $ACCOUNT_KEY
 export ARM_ACCESS_KEY=$access_key
 
 pushd inception
@@ -47,7 +44,7 @@ terraform {
 }
 EOF
 
-terraform init -reconfigure
+terraform init
 terraform state show module.inception.azurerm_storage_account.bootstrap || \
   terraform import module.inception.azurerm_storage_account.bootstrap ${tf_state_storage_account_id}
  terraform state show module.inception.azurerm_storage_container.bootstrap || \
