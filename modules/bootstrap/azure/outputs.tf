@@ -40,6 +40,6 @@ output "tf_state_storage_account_id" {
   value = azurerm_storage_account.bootstrap.id
 }
 output "tf_state_access_key" {
-  value = data.external.access_key.result
-  sensitive = false
+  value     = data.external.access_key.result
+  sensitive = true
 }

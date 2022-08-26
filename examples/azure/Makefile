@@ -21,7 +21,7 @@ inception:
 	export ARM_CLIENT_SECRET=$(cd bootstrap && terraform output client_secret | jq -r)
 	export ARM_TENANT_ID=$(cd bootstrap && terraform output tenant_id | jq -r)
 	export ARM_SUBSCRIPTION_ID=$(cd bootstrap && terraform output subscription_id | jq -r)
-	export ARM_ACCESS_KEY=$(cd bootstrap && terraform output access_key | jq -r)
+	export ARM_ACCESS_KEY=$(cd bootstrap && terraform output -json access_key | jq -r ".access_key")
 	cd inception \
 		&& $(TF) init \
 		&& $(TF) apply
