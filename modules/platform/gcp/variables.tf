@@ -31,10 +31,10 @@ variable "deploy_auth_pg" {
   default = true
 }
 variable "deploy_lnd1_pg" {
-  default = true
+  default = false
 }
 variable "deploy_lnd2_pg" {
-  default = true
+  default = false
 }
 variable "node_service_account" {}
 variable "min_default_node_count" {
