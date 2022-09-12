@@ -5,7 +5,7 @@ module "bootstrap" {
   source = "../../../modules/bootstrap/azure"
 
   name_prefix = var.name_prefix
-  tenant_id = var.tenant_id
+  tenant_id   = var.tenant_id
 }
 
 output "tf_state_storage_blob_name" {
@@ -49,6 +49,6 @@ output "name_prefix" {
   value = module.bootstrap.name_prefix
 }
 output "access_key" {
-  value = module.bootstrap.tf_state_access_key
+  value     = module.bootstrap.tf_state_access_key
   sensitive = true
 }
