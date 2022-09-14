@@ -22,9 +22,14 @@ resource "google_sql_database_instance" "instance" {
     tier              = var.postgres_tier
     availability_type = var.highly_available ? "REGIONAL" : "ZONAL"
 
+    database_flag {
+      name  = "max_connections"
+      vaule = 100
+    }
+
     backup_configuration {
       enabled                        = true
-      point_in_time_recovery_enabled = false
+      point_in_time_recovery_enabled = true
     }
 
     ip_configuration {
