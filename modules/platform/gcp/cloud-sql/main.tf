@@ -24,7 +24,7 @@ resource "google_sql_database_instance" "instance" {
 
     database_flags {
       name  = "max_connections"
-      vaule = 100
+      value = 100
     }
 
     backup_configuration {
