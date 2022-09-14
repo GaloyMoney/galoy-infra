@@ -52,6 +52,10 @@ output "auth_pg_admin_password" {
   sensitive = true
 }
 
+output "stablestats_pg_host" {
+  value = local.deploy_stablestats_pg ? module.stablestats_pg.0.private_ip : ""
+}
+
 output "stablesats_pg_admin_username" {
   value = local.deploy_stablesats_pg ? module.stablesats_pg.0.admin_username : ""
 }
