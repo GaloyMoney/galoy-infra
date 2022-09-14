@@ -22,7 +22,7 @@ resource "google_sql_database_instance" "instance" {
     tier              = var.postgres_tier
     availability_type = var.highly_available ? "REGIONAL" : "ZONAL"
 
-    database_flag {
+    database_flags {
       name  = "max_connections"
       vaule = 100
     }
