@@ -52,6 +52,15 @@ output "auth_pg_admin_password" {
   sensitive = true
 }
 
+output "stablesats_pg_admin_username" {
+  value = local.deploy_stablesats_pg ? module.stablesats_pg.0.admin_username : ""
+}
+
+output "stablesats_pg_admin_password" {
+  value     = local.deploy_stablesats_pg ? module.stablesats_pg.0.admin_password : ""
+  sensitive = true
+}
+
 output "lnd1_pg_host" {
   value = local.deploy_lnd1_pg ? module.lnd1_pg.0.private_ip : ""
 }
