@@ -8,6 +8,7 @@ locals {
     "stackdriver.googleapis.com",
     "servicenetworking.googleapis.com",
     "sqladmin.googleapis.com",
+    "bigqueryconnection.googleapis.com",
   ]
 }
 
