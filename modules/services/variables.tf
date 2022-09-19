@@ -42,6 +42,7 @@ locals {
   bitcoin_namespace           = "${var.name_prefix}-bitcoin"
   monitoring_namespace        = "${var.name_prefix}-monitoring"
   addons_namespace            = "${var.name_prefix}-addons"
+  signer_namespace            = "${var.name_prefix}-signer"
   smoketest_cronjob           = var.smoketest_cronjob
   smoketest_name              = "smoketest"
   smoketest_cronjob_name      = "${local.smoketest_name}-cronjob"
@@ -64,6 +65,7 @@ locals {
     local.bitcoin_namespace,
     local.monitoring_namespace,
     local.addons_namespace,
+    local.signer_namespace,
   ]
 }
 
