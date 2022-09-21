@@ -48,25 +48,26 @@ variable "max_default_node_count" {
 }
 
 locals {
-  name_prefix                = var.name_prefix
-  cluster_name               = "${var.name_prefix}-cluster"
-  master_ipv4_cidr_block     = "172.16.0.0/28"
-  project                    = var.gcp_project
-  region                     = var.region
-  network_prefix             = var.network_prefix
-  shared_internal_ip_address = "${local.network_prefix}.1.1"
-  kube_version               = var.kube_version
-  node_default_machine_type  = var.node_default_machine_type
-  nodes_service_account      = var.node_service_account
-  min_default_node_count     = var.min_default_node_count
-  max_default_node_count     = var.max_default_node_count
-  cluster_location           = var.cluster_zone == "" ? local.region : "${local.region}-${var.cluster_zone}"
-  postgres_tier              = var.postgres_tier
-  destroyable_postgres       = var.destroyable_postgres
-  pg_ha                      = var.pg_ha
-  deploy_shared_pg           = var.deploy_shared_pg
-  deploy_auth_pg             = var.deploy_auth_pg
-  deploy_stablesats_pg       = var.deploy_stablesats_pg
-  deploy_lnd1_pg             = var.deploy_lnd1_pg
-  deploy_lnd2_pg             = var.deploy_lnd2_pg
+  name_prefix               = var.name_prefix
+  cluster_name              = "${var.name_prefix}-cluster"
+  master_ipv4_cidr_block    = "172.16.0.0/28"
+  project                   = var.gcp_project
+  region                    = var.region
+  network_prefix            = var.network_prefix
+  lnd1_internal_ip          = "${local.network_prefix}.1.1"
+  lnd2_internal_ip          = "${local.network_prefix}.1.2"
+  kube_version              = var.kube_version
+  node_default_machine_type = var.node_default_machine_type
+  nodes_service_account     = var.node_service_account
+  min_default_node_count    = var.min_default_node_count
+  max_default_node_count    = var.max_default_node_count
+  cluster_location          = var.cluster_zone == "" ? local.region : "${local.region}-${var.cluster_zone}"
+  postgres_tier             = var.postgres_tier
+  destroyable_postgres      = var.destroyable_postgres
+  pg_ha                     = var.pg_ha
+  deploy_shared_pg          = var.deploy_shared_pg
+  deploy_auth_pg            = var.deploy_auth_pg
+  deploy_stablesats_pg      = var.deploy_stablesats_pg
+  deploy_lnd1_pg            = var.deploy_lnd1_pg
+  deploy_lnd2_pg            = var.deploy_lnd2_pg
 }
