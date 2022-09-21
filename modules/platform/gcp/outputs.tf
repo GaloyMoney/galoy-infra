@@ -43,8 +43,16 @@ output "shared_pg_admin_password" {
   sensitive = true
 }
 
+output "shared_pg_instance_name" {
+  value = local.deploy_shared_pg ? module.shared_pg.0.instance_name : ""
+}
+
 output "shared_pg_connection_name" {
   value = local.deploy_shared_pg ? module.shared_pg.0.connection_name : ""
+}
+
+output "auth_pg_instance_name" {
+  value = local.deploy_auth_pg ? module.auth_pg.0.instance_name : ""
 }
 
 output "auth_pg_host" {
@@ -62,6 +70,10 @@ output "auth_pg_admin_password" {
 
 output "auth_pg_connection_name" {
   value = local.deploy_auth_pg ? module.auth_pg.0.connection_name : ""
+}
+
+output "stablesats_pg_instance_name" {
+  value = local.deploy_stablesats_pg ? module.stablesats_pg.0.instance_name : ""
 }
 
 output "stablesats_pg_host" {

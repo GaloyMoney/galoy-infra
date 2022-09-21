@@ -51,6 +51,10 @@ resource "google_sql_user" "admin" {
   project  = var.project
 }
 
+output "instance_name" {
+  value = google_sql_database_instance.instance.name
+}
+
 output "admin_username" {
   value = google_sql_user.admin.name
 }
