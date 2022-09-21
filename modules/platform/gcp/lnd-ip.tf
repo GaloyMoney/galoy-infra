@@ -12,7 +12,7 @@ resource "google_compute_address" "lnd2" {
 
 resource "google_compute_address" "lnd1_internal_ip" {
   project = local.project
-  name    = "${local.name_prefix}-internal"
+  name    = "${local.name_prefix}-lnd1-internal"
   region  = local.region
 
   subnetwork   = google_compute_subnetwork.cluster.id
@@ -23,7 +23,7 @@ resource "google_compute_address" "lnd1_internal_ip" {
 
 resource "google_compute_address" "lnd2_internal_ip" {
   project = local.project
-  name    = "${local.name_prefix}-internal"
+  name    = "${local.name_prefix}-lnd2-internal"
   region  = local.region
 
   subnetwork   = google_compute_subnetwork.cluster.id
