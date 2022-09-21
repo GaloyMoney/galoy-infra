@@ -22,8 +22,12 @@ output "lnd2_ip" {
   value = google_compute_address.lnd2.address
 }
 
-output "shared_internal_ip" {
-  value = google_compute_address.shared_ip.address
+output "lnd1_internal_ip" {
+  value = google_compute_address.lnd1_internal_ip.address
+}
+
+output "lnd2_internal_ip" {
+  value = google_compute_address.lnd2_internal_ip.address
 }
 
 output "shared_pg_host" {
