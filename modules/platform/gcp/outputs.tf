@@ -39,6 +39,10 @@ output "shared_pg_admin_password" {
   sensitive = true
 }
 
+output "shared_pg_connection_name" {
+  value = local.deploy_shared_pg ? module.shared_pg.0.connection_name : ""
+}
+
 output "auth_pg_host" {
   value = local.deploy_auth_pg ? module.auth_pg.0.private_ip : ""
 }
@@ -52,6 +56,10 @@ output "auth_pg_admin_password" {
   sensitive = true
 }
 
+output "auth_pg_connection_name" {
+  value = local.deploy_auth_pg ? module.auth_pg.0.connection_name : ""
+}
+
 output "stablesats_pg_host" {
   value = local.deploy_stablesats_pg ? module.stablesats_pg.0.private_ip : ""
 }
@@ -63,6 +71,10 @@ output "stablesats_pg_admin_username" {
 output "stablesats_pg_admin_password" {
   value     = local.deploy_stablesats_pg ? module.stablesats_pg.0.admin_password : ""
   sensitive = true
+}
+
+output "stablesats_pg_connection_name" {
+  value = local.deploy_stablesats_pg ? module.stablesats_pg.0.connection_name : ""
 }
 
 output "lnd1_pg_host" {
