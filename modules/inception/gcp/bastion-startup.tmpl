@@ -48,6 +48,10 @@ wget https://github.com/bodymindarts/cepler/releases/download/v${cepler_version}
   && chmod +x /usr/local/bin/cepler \
   && rm -rf ./cepler-*
 
+wget https://github.com/starkandwayne/safe/releases/download/v${safe_version}/safe-linux-amd64 \
+  && mv safe-linux-amd64 /usr/local/bin/safe \
+  && chmod +x /usr/local/bin/safe
+
 wget https://bitcoincore.org/bin/bitcoin-core-${bitcoin_version}/bitcoin-${bitcoin_version}-x86_64-linux-gnu.tar.gz \
   && tar -xvf bitcoin-${bitcoin_version}-x86_64-linux-gnu.tar.gz \
   && mv bitcoin-${bitcoin_version}/bin/* /usr/local/bin

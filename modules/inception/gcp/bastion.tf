@@ -2,7 +2,8 @@ locals {
   tag             = "${local.name_prefix}-bastion"
   cfssl_version   = "1.6.1"
   bitcoin_version = "22.0"
-  cepler_version  = "0.7.8"
+  cepler_version  = "0.7.9"
+  safe_version    = "1.7.0"
   lnd_version     = "0.15.0"
   kubectl_version = "1.21.9"
   k9s_version     = "0.25.18"
@@ -45,6 +46,7 @@ resource "google_compute_instance" "bastion" {
     cfssl_version : local.cfssl_version,
     bitcoin_version : local.bitcoin_version
     cepler_version : local.cepler_version
+    safe_version : local.safe_version
     kubectl_version : local.kubectl_version
     k9s_version : local.k9s_version
     lnd_version : local.lnd_version
