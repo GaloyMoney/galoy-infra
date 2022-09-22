@@ -5,8 +5,10 @@
 #@   "testflight_bootstrap_job_name",
 #@   "testflight_inception_job_name",
 #@   "testflight_platform_job_name",
+#@   "testflight_postgresql_job_name",
 #@   "testflight_services_job_name",
 #@   "testflight_cleanup_job_name",
+#@   "testflight_cleanup_postgresql_job_name",
 #@   "bump_repos_job_name",
 #@   "build_pipeline_image_job_name",
 #@   "common_resources",
@@ -30,8 +32,11 @@ groups:
   - #@ testflight_platform_job_name(cloud)
   - #@ testflight_services_job_name(cloud)
   - #@ testflight_cleanup_job_name(cloud)
-  #@ if/end cloud == "gcp":
+  #@ if cloud == "gcp":
+  - #@ testflight_postgresql_job_name(cloud)
+  - #@ testflight_cleanup_postgresql_job_name(cloud)
   - #@ bump_repos_job_name(cloud)
+  #@ end
 #@ end
 #@ for/end cloud in supported_iaas:
   - #@ build_pipeline_image_job_name(cloud)
@@ -44,8 +49,11 @@ groups:
   - #@ testflight_platform_job_name(cloud)
   - #@ testflight_services_job_name(cloud)
   - #@ testflight_cleanup_job_name(cloud)
-  #@ if/end cloud == "gcp":
+  #@ if cloud == "gcp":
+  - #@ testflight_postgresql_job_name(cloud)
+  - #@ testflight_cleanup_postgresql_job_name(cloud)
   - #@ bump_repos_job_name(cloud)
+  #@ end
 #@ end
 - name: image
   jobs:

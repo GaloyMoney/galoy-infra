@@ -4,8 +4,10 @@
 #@   "testflight_bootstrap_job_name",
 #@   "testflight_inception_job_name",
 #@   "testflight_platform_job_name",
+#@   "testflight_postgresql_job_name",
 #@   "testflight_services_job_name",
 #@   "testflight_cleanup_job_name",
+#@   "testflight_cleanup_postgresql_job_name",
 #@   "bump_repos_job_name",
 #@   "build_pipeline_image_job_name",
 #@   "modules_resource_name",
@@ -32,6 +34,7 @@ source:
   - modules/bootstrap/gcp
   - modules/inception/gcp
   - modules/platform/gcp
+  - modules/postgresql/gcp
   - modules/services
   uri: #@ data.values.git_uri
   branch: #@ data.values.git_branch
@@ -48,7 +51,6 @@ KUBE_CA_CERT: #@ data.values.concourse_tf_kube_ca_cert
 KUBE_TOKEN: #@ data.values.concourse_tf_kube_token
 TF_VAR_gcp_project: galoy-infra-testflight
 TF_VAR_enable_services: false
-TF_VAR_destroyable_postgres: true
 BRANCH: #@ data.values.git_branch
 #@ end
 
@@ -193,6 +195,43 @@ plan:
 on_failure: #@ slack_failure_notification()
 #@ end
 
+#@ def gcp_testflight_postgresql_job():
+name: #@ testflight_postgresql_job_name("gcp")
+serial: true
+plan:
+- get: gcp-testflight-lock
+  passed:
+  - #@ testflight_inception_job_name("gcp")
+- in_parallel:
+  - get: #@ modules_resource_name("gcp")
+    trigger: true
+    passed:
+    - #@ testflight_inception_job_name("gcp")
+  - get: repo
+    passed:
+    - #@ testflight_inception_job_name("gcp")
+  - { get: pipeline-tasks }
+  - get: gcp-testflight-uid
+    passed:
+    - #@ testflight_inception_job_name("gcp")
+- task: postgresql
+  config:
+    platform: linux
+    image_resource: #@ task_image_config()
+    inputs:
+    - name: pipeline-tasks
+    - name: repo
+    - name: #@ modules_resource_name("gcp")
+      path: modules
+    - name: gcp-testflight-uid
+      path: testflight-uid
+    params: #@ gcp_testflight_task_params()
+    run:
+      path: pipeline-tasks/ci/tasks/gcp/postgresql.sh
+- #@ slack_success_notification()
+on_failure: #@ slack_failure_notification()
+#@ end
+
 #@ def gcp_testflight_cleanup_job():
 name: #@ testflight_cleanup_job_name("gcp")
 serial: true
@@ -200,18 +239,22 @@ plan:
 - get: gcp-testflight-lock
   passed:
   - #@ testflight_services_job_name("gcp")
+  - #@ testflight_cleanup_postgresql_job_name("gcp")
 - in_parallel:
   - get: #@ modules_resource_name("gcp")
     trigger: true
     passed:
     - #@ testflight_services_job_name("gcp")
+    - #@ testflight_cleanup_postgresql_job_name("gcp")
   - get: repo
     passed:
     - #@ testflight_services_job_name("gcp")
+    - #@ testflight_cleanup_postgresql_job_name("gcp")
   - { get: pipeline-tasks }
   - get: gcp-testflight-uid
     passed:
     - #@ testflight_services_job_name("gcp")
+    - #@ testflight_cleanup_postgresql_job_name("gcp")
 - task: teardown
   config:
     platform: linux
@@ -231,6 +274,45 @@ plan:
 - in_parallel:
   - { put: gcp-testflight-lock, params: { release: gcp-testflight-lock }}
   - { put: gcp-testflight-uid, params: { bump: patch } }
+- #@ slack_success_notification()
+on_failure: #@ slack_failure_notification()
+#@ end
+
+#@ def gcp_testflight_cleanup_postgresql_job():
+name: #@ testflight_cleanup_postgresql_job_name("gcp")
+serial: true
+plan:
+- get: gcp-testflight-lock
+  passed:
+  - #@ testflight_postgresql_job_name("gcp")
+- in_parallel:
+  - get: #@ modules_resource_name("gcp")
+    trigger: true
+    passed:
+    - #@ testflight_postgresql_job_name("gcp")
+  - get: repo
+    passed:
+    - #@ testflight_postgresql_job_name("gcp")
+  - { get: pipeline-tasks }
+  - get: gcp-testflight-uid
+    passed:
+    - #@ testflight_postgresql_job_name("gcp")
+- task: teardown
+  config:
+    platform: linux
+    image_resource: #@ task_image_config()
+    inputs:
+    - name: pipeline-tasks
+    - name: repo
+    - name: #@ modules_resource_name("gcp")
+      path: modules
+    - name: gcp-testflight-uid
+      path: testflight-uid
+    outputs:
+    - name: repo
+    params: #@ gcp_testflight_task_params()
+    run:
+      path: pipeline-tasks/ci/tasks/gcp/teardown-postgresql.sh
 - #@ slack_success_notification()
 on_failure: #@ slack_failure_notification()
 #@ end
@@ -354,6 +436,8 @@ source:
 - #@ gcp_testflight_inception_job()
 - #@ gcp_testflight_platform_job()
 - #@ gcp_testflight_services_job()
+- #@ gcp_testflight_postgresql_job()
+- #@ gcp_testflight_cleanup_postgresql_job()
 - #@ gcp_testflight_cleanup_job()
 - #@ gcp_bump_repos_job()
 - #@ build_pipeline_image_job()
