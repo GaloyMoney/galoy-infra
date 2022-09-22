@@ -23,6 +23,11 @@ services:
 	cd services \
 		&& $(TF) apply
 
+postgresql:
+	cd postgresql \
+		&& $(TF) init \
+		&& $(TF) apply
+
 destroy-inception:
 	cd inception \
 		&& $(TF) state rm module.inception.google_storage_bucket.tf_state || true
@@ -42,4 +47,8 @@ destroy-bootstrap:
 	cd bootstrap \
 		&& $(TF) destroy
 
-.PHONY: bootstrap inception platform services
+destroy-postgresql:
+	cd postgresql \
+		&& $(TF) destroy
+
+.PHONY: bootstrap inception platform services postgresql

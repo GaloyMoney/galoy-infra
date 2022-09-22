@@ -54,6 +54,8 @@ resource "google_project_iam_custom_role" "platform_make" {
     "cloudsql.users.create",
     "cloudsql.users.list",
     "cloudsql.instances.list",
+    "bigquery.connections.create",
+    "bigquery.connections.get",
     "monitoring.timeSeries.list",
   ]
 }
@@ -80,5 +82,6 @@ resource "google_project_iam_custom_role" "platform_destroy" {
     "compute.globalAddresses.deleteInternal",
     "cloudsql.instances.delete",
     "cloudsql.users.delete",
+    "bigquery.connections.delete",
   ]
 }

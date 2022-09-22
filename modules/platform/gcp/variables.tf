@@ -30,15 +30,6 @@ variable "deploy_shared_pg" {
 variable "deploy_auth_pg" {
   default = true
 }
-variable "deploy_stablesats_pg" {
-  default = true
-}
-variable "deploy_lnd1_pg" {
-  default = false
-}
-variable "deploy_lnd2_pg" {
-  default = false
-}
 variable "node_service_account" {}
 variable "min_default_node_count" {
   default = 1
@@ -67,7 +58,4 @@ locals {
   pg_ha                     = var.pg_ha
   deploy_shared_pg          = var.deploy_shared_pg
   deploy_auth_pg            = var.deploy_auth_pg
-  deploy_stablesats_pg      = var.deploy_stablesats_pg
-  deploy_lnd1_pg            = var.deploy_lnd1_pg
-  deploy_lnd2_pg            = var.deploy_lnd2_pg
 }
