@@ -70,6 +70,7 @@ resource "postgresql_grant" "big_query_connect" {
 
   depends_on = [
     google_bigquery_connection.db
+    postgresql_grant.grant_all
   ]
 }
 resource "postgresql_grant" "big_query_select" {
@@ -82,6 +83,7 @@ resource "postgresql_grant" "big_query_select" {
 
   depends_on = [
     google_bigquery_connection.db
+    postgresql_grant.big_query_connect
   ]
 }
 
