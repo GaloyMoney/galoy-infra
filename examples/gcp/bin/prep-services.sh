@@ -52,12 +52,16 @@ gcloud compute start-iap-tunnel ${bastion_name} --zone=${bastion_zone} 22 --loca
 sleep 5
 trap 'jobs -p | xargs kill' EXIT
 
+set +e
 ADDITIONAL_SSH_OPTS=${ADDITIONAL_SSH_OPTS:-""}
 echo "Syncing ${REPO_ROOT##*/} to bastion"
 rsync --exclude '**/.terraform/**' --exclude '**.terrafor*' -avr \
   -e "ssh -l ${BASTION_USER} ${ADDITIONAL_SSH_OPTS} -p 2222 " \
   ${REPO_ROOT}/ localhost:${REPO_ROOT_DIR}
+set +e
+
 if [[ $? != 0 ]]; then
+  sleep 5
   echo "Failed to sync ${REPO_ROOT##*/} to bastion attempting a second time"
   rsync --exclude '**/.terraform/**' --exclude '**.terrafor*' -avr \
     -e "ssh -l ${BASTION_USER} ${ADDITIONAL_SSH_OPTS} -p 2222 " \

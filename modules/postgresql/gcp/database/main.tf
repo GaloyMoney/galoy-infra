@@ -92,6 +92,7 @@ resource "google_bigquery_connection" "db" {
   friendly_name = "${var.db_name}-connection"
   description   = "Connection to ${var.db_name} database"
   location      = "US"
+
   cloud_sql {
     instance_id = var.pg_instance_connection_name
     database    = postgresql_database.db.name
