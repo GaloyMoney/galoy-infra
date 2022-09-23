@@ -9,7 +9,6 @@ module "postgresql" {
   # source = "../../../modules/postgresql/gcp"
 
   instance_name = "${var.name_prefix}-pg"
-  vpc_name      = "${var.name_prefix}-vpc"
   gcp_project   = var.gcp_project
   destroyable   = var.destroyable_postgres
   databases     = ["stablesats"]
