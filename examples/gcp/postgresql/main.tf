@@ -12,5 +12,5 @@ module "postgresql" {
   vpc_name      = "${var.name_prefix}-vpc"
   gcp_project   = var.gcp_project
   destroyable   = var.destroyable_postgres
-  databases     = ["auth", "stablesats"]
+  databases     = ["stablesats"]
 }
