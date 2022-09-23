@@ -1,4 +1,5 @@
 variable "gcp_project" {}
+variable "vpc_name" {}
 variable "instance_name" {}
 variable "region" {
   default = "us-east1"
@@ -20,6 +21,7 @@ variable "databases" {
 
 locals {
   gcp_project      = var.gcp_project
+  vpc_name         = var.vpc_name
   region           = var.region
   instance_name    = var.instance_name
   destroyable      = var.destroyable

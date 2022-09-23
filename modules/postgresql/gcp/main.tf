@@ -1,3 +1,8 @@
+data "google_compute_network" "vpc" {
+  project = local.gcp_project
+  name    = local.vpc_name
+}
+
 resource "random_id" "db_name_suffix" {
   byte_length = 4
 }
