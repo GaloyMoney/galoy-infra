@@ -3,24 +3,6 @@ data "google_compute_network" "vpc" {
   name    = local.vpc_name
 }
 
-resource "google_compute_global_address" "peering" {
-  provider = google-beta
-
-  project       = local.gcp_project
-  name          = "${local.instance_name}-peering"
-  purpose       = "VPC_PEERING"
-  address_type  = "INTERNAL"
-  prefix_length = 24
-  network       = data.google_compute_network.vpc.id
-}
-
-resource "google_service_networking_connection" "postgresql" {
-  provider                = google-beta
-  network                 = data.google_compute_network.vpc.id
-  service                 = "servicenetworking.googleapis.com"
-  reserved_peering_ranges = [google_compute_global_address.peering.name]
-}
-
 resource "random_id" "db_name_suffix" {
   byte_length = 4
 }
