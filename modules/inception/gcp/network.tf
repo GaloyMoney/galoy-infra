@@ -29,7 +29,7 @@ resource "google_compute_global_address" "peering" {
 
 resource "google_service_networking_connection" "service" {
   provider                = google-beta
-  network                 = data.google_compute_network.vpc.id
+  network                 = google_compute_network.vpc.id
   service                 = "servicenetworking.googleapis.com"
   reserved_peering_ranges = [google_compute_global_address.peering.name]
 }
