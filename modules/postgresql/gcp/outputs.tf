@@ -7,13 +7,13 @@ output "private_ip" {
 }
 
 output "creds" {
-  value = [
-    for db in local.databases : {
+  value = {
+    for db in local.databases : db => {
       db_name  = db
       user     = module.database[db].user
       password = module.database[db].password
       conn     = "postgres://${module.database[db].user}:${module.database[db].password}@${google_sql_database_instance.instance.private_ip_address}:5432/${db}"
     }
-  ]
+  }
   sensitive = true
 }
