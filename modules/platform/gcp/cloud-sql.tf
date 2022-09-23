@@ -9,8 +9,6 @@ module "shared_pg" {
   destroyable_postgres = var.destroyable_postgres
   highly_available     = local.pg_ha
   postgres_tier        = local.postgres_tier
-
-  depends_on = [google_service_networking_connection.service]
 }
 
 module "auth_pg" {
@@ -24,6 +22,4 @@ module "auth_pg" {
   destroyable_postgres = var.destroyable_postgres
   highly_available     = local.pg_ha
   postgres_tier        = local.postgres_tier
-
-  depends_on = [google_service_networking_connection.service]
 }
