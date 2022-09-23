@@ -69,7 +69,7 @@ resource "postgresql_grant" "big_query_connect" {
   privileges = ["CONNECT"]
 
   depends_on = [
-    postgresql_grant.revoke_public,
+    postgresql_grant.grant_all,
   ]
 }
 resource "postgresql_grant" "big_query_select" {
@@ -81,7 +81,7 @@ resource "postgresql_grant" "big_query_select" {
   privileges = ["SELECT"]
 
   depends_on = [
-    postgresql_grant.revoke_public,
+    postgresql_grant.big_query_connect,
   ]
 }
 
