@@ -38,8 +38,6 @@ resource "google_sql_database_instance" "instance" {
     }
   }
 
-  depends_on = [google_service_networking_connection.postgresql]
-
   timeouts {
     create = "45m"
     update = "45m"
