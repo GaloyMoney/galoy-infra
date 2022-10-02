@@ -25,6 +25,11 @@ resource "google_compute_global_address" "peering" {
   address_type  = "INTERNAL"
   prefix_length = 16
   network       = google_compute_network.vpc.id
+
+  depends_on = [
+    google_project_iam_member.platform_make,
+    google_project_iam_member.platform_destroy
+  ]
 }
 
 resource "google_service_networking_connection" "service" {
