@@ -10,7 +10,7 @@ curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /
 
 # Keep make and terraform the first items installed as they are needed
 # for testflight to complete
-apt-get update && apt-get install -y make terraform jq tree wget redis postgresql vault
+apt-get update && apt-get install -y terraform make jq tree wget redis postgresql vault
 
 cat <<EOF > /etc/profile.d/aliases.sh
 alias tf="terraform"
