@@ -3,6 +3,9 @@ variable "db_name" {}
 variable "admin_user_name" {}
 variable "user_name" {}
 variable "pg_instance_connection_name" {}
+variable "connection_users" {
+  type = list(string)
+}
 
 output "user" {
   value = postgresql_role.user.name
@@ -102,6 +105,15 @@ resource "google_bigquery_connection" "db" {
       password = random_password.big_query.result
     }
   }
+}
+
+resource "google_bigquery_connection_iam_member" "user" {
+  for_each      = toset(var.connection_users)
+  project       = var.gcp_project
+  location      = google_bigquery_connection.db.location
+  connection_id = google_bigquery_connection.db.connection_id
+  role          = "roles/viewer"
+  member        = each.value
 }
 
 terraform {

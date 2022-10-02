@@ -66,6 +66,7 @@ module "database" {
   admin_user_name             = google_sql_user.admin.name
   user_name                   = "${each.value}-user"
   pg_instance_connection_name = google_sql_database_instance.instance.connection_name
+  connection_users            = local.big_query_viewers
 }
 
 provider "postgresql" {
