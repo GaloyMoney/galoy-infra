@@ -112,7 +112,7 @@ resource "google_bigquery_connection_iam_member" "user" {
   project       = var.gcp_project
   location      = google_bigquery_connection.db.location
   connection_id = google_bigquery_connection.db.connection_id
-  role          = "roles/viewer"
+  role          = "roles/bigquery.connectionUser"
   member        = each.value
 }
 

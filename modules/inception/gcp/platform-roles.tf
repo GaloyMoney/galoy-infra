@@ -56,6 +56,8 @@ resource "google_project_iam_custom_role" "platform_make" {
     "cloudsql.instances.list",
     "bigquery.connections.create",
     "bigquery.connections.get",
+    "bigquery.connections.getIamPolicy",
+    "bigquery.connections.setIamPolicy",
     "monitoring.timeSeries.list",
   ]
 }
