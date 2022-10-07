@@ -1,3 +1,9 @@
+clusterRole:
+  create: true
+  rules:
+  - apiGroups: [""]
+    resources: ["pods", "namespaces"]
+    verbs: ["get", "watch", "list"]
 agentCollector:
   enabled: false
 standaloneCollector:
@@ -67,7 +73,27 @@ config:
       timeout: 5s
       override: false
     k8sattributes:
+    k8sattributes/2:
+      auth_type: "serviceAccount"
       passthrough: true
+      filter:
+        node_from_env_var: KUBE_NODE_NAME
+
+      extract:
+        metadata:
+          - k8s.pod.name
+          - k8s.pod.uid
+          - k8s.deployment.name
+          - k8s.namespace.name
+          - k8s.node.name
+          - k8s.pod.start_time
+
+      pod_association:
+      - from: resource_attribute
+        name: k8s.pod.ip
+      - from: resource_attribute
+        name: k8s.pod.uid
+      - from: connection
   receivers:
     jaeger:
       protocols:
