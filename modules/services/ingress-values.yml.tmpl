@@ -1,4 +1,7 @@
 controller:
+  ingressClassResource:
+    default: true
+    watchIngressWithoutClass: true
   config:
     enable-opentracing: "true"
     jaeger-service-name: ${service_name}
