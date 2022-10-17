@@ -135,7 +135,7 @@ resource "google_container_node_pool" "default" {
   }
 
   node_config {
-    image_type   = "COS"
+    image_type   = "COS_CONTAINERD"
     machine_type = local.node_default_machine_type
     labels = {
       cluster_name = local.cluster_name
