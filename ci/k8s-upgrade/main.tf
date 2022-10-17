@@ -1,7 +1,7 @@
 data "google_container_engine_versions" "central1b" {
   provider       = google-beta
   location       = "us-central1"
-  version_prefix = "1.22."
+  version_prefix = "1.23."
   project        = "*"
 }
 
