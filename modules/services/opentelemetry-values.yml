@@ -62,7 +62,13 @@ config:
         value: "<redacted>"
       - key: code.function.params.rawHeaders
         action: update
-        value: "<redacted>"        
+        value: "<redacted>"
+      - key: code.function.params.key
+        action: update
+        value: "<redacted>"
+      - key: code.function.params.value
+        action: update
+        value: "<redacted>"
     # If set to null, will be overridden with values based on k8s resource limits
     memory_limiter: null
     resourcedetection:
