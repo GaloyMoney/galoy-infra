@@ -18,8 +18,6 @@ write_users
 bin/prep-inception.sh
 cleanup_inception_key
 
-bin/prep-platform.sh
-
 bastion_name="$(cd inception && terraform output bastion_name | jq -r)"
 bastion_zone="$(cd inception && terraform output bastion_zone | jq -r)"
 export BASTION_USER="sa_$(cat ${CI_ROOT}/gcloud-creds.json  | jq -r '.client_id')"
