@@ -15,7 +15,6 @@ init_bootstrap_gcp
 write_users
 
 bin/prep-inception.sh
-bin/prep-platform.sh
 
 bastion_name="$(cd inception && terraform output bastion_name | jq -r)"
 bastion_zone="$(cd inception && terraform output bastion_zone | jq -r)"
