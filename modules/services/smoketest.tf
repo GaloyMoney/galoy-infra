@@ -16,6 +16,13 @@ resource "kubernetes_role" "smoketest" {
     verbs      = ["get", "list"]
   }
 
+}
+
+resource "kubernetes_cluster_role" "smoketest" {
+  metadata {
+    name = local.smoketest_name
+  }
+
   rule {
     api_groups = ["kafka.strimzi.io"]
     resources  = ["kafkatopics"]
@@ -47,6 +54,24 @@ resource "kubernetes_role_binding" "smoketest" {
     api_group = "rbac.authorization.k8s.io"
     kind      = "Role"
     name      = kubernetes_role.smoketest.metadata[0].name
+  }
+
+  subject {
+    kind      = "ServiceAccount"
+    name      = local.smoketest_name
+    namespace = kubernetes_role.smoketest.metadata[0].namespace
+  }
+}
+
+resource "kubernetes_cluster_role_binding" "smoketest" {
+  metadata {
+    name = local.smoketest_name
+  }
+
+  role_ref {
+    api_group = "rbac.authorization.k8s.io"
+    kind      = "ClusterRole"
+    name      = kubernetes_cluster_role.smoketest.metadata[0].name
   }
 
   subject {
