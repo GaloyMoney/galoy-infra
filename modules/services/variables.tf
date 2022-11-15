@@ -14,11 +14,6 @@ variable "trace_sample_pct" {
   default = 100
 }
 
-variable "kubemonkey_notification_url" {
-  default   = ""
-  sensitive = true
-}
-
 variable "ingress_nginx_version" {
   default = "4.0.18"
 }
@@ -28,8 +23,6 @@ variable "cert_manager_version" {
 variable "letsencrypt_issuer_email" {}
 variable "local_deploy" { default = false }
 variable "small_footprint" { default = false }
-variable "kubemonkey_enabled" { default = false }
-variable "kubemonkey_time_zone" { default = "Etc/UTC" }
 variable "smoketest_cronjob" { default = false }
 
 locals {
@@ -37,7 +30,6 @@ locals {
   name_prefix                 = var.name_prefix
   smoketest_namespace         = "${local.name_prefix}-smoketest"
   otel_namespace              = "${local.name_prefix}-otel"
-  kubemonkey_namespace        = "${local.name_prefix}-kubemonkey"
   galoy_namespace             = "${local.name_prefix}-galoy"
   bitcoin_namespace           = "${var.name_prefix}-bitcoin"
   monitoring_namespace        = "${var.name_prefix}-monitoring"
@@ -56,15 +48,6 @@ locals {
   ingress_service_name        = "${var.name_prefix}-ingress"
   small_footprint             = var.small_footprint
   honeycomb_api_key           = var.honeycomb_api_key != "" ? var.honeycomb_api_key : jsondecode(var.secrets).honeycomb_api_key
-  kubemonkey_enabled          = var.kubemonkey_enabled
-  kubemonkey_time_zone        = var.kubemonkey_time_zone
-  kubemonkey_notification_url = var.kubemonkey_notification_url != "" ? var.kubemonkey_notification_url : jsondecode(var.secrets).kubemonkey_notification_url
-  kubemonkey_whitelisted_namespaces = [
-    local.galoy_namespace,
-    local.bitcoin_namespace,
-    local.monitoring_namespace,
-    local.addons_namespace,
-  ]
 }
 
 output "smoketest_kubeconfig" {
