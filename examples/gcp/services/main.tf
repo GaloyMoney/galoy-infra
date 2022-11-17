@@ -31,12 +31,10 @@ module "services" {
   source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/services?ref=5aed769"
   # source = "../../../modules/services"
 
-  name_prefix                 = var.name_prefix
-  letsencrypt_issuer_email    = var.letsencrypt_issuer_email
-  cluster_endpoint            = var.cluster_endpoint
-  cluster_ca_cert             = var.cluster_ca_cert
-  small_footprint             = true
-  kubemonkey_enabled          = true
-  honeycomb_api_key           = "dummy"
-  kubemonkey_notification_url = "dummy"
+  name_prefix              = var.name_prefix
+  letsencrypt_issuer_email = var.letsencrypt_issuer_email
+  cluster_endpoint         = var.cluster_endpoint
+  cluster_ca_cert          = var.cluster_ca_cert
+  small_footprint          = true
+  honeycomb_api_key        = "dummy"
 }
