@@ -15,12 +15,6 @@ resource "kubernetes_role" "smoketest" {
     resources  = ["secrets"]
     verbs      = ["get", "list"]
   }
-
-  rule {
-    api_groups = ["kafka.strimzi.io"]
-    resources  = ["kafkatopics"]
-    verbs      = ["get", "create", "delete"]
-  }
 }
 
 resource "kubernetes_service_account" "smoketest" {
