@@ -28,7 +28,7 @@ provider "helm" {
 }
 
 module "services" {
-  source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/services?ref=10bbf5e"
+  source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/services?ref=877efbe"
   # source = "../../../modules/services"
 
   name_prefix              = var.name_prefix
