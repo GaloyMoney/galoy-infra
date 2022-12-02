@@ -1,13 +1,14 @@
 locals {
   tag             = "${local.name_prefix}-bastion"
   cfssl_version   = "1.6.1"
-  bitcoin_version = "22.0"
+  bitcoin_version = "23.0"
   cepler_version  = "0.7.9"
   safe_version    = "1.7.0"
-  lnd_version     = "0.15.0"
+  lnd_version     = "0.15.5"
   kubectl_version = "1.21.9"
   k9s_version     = "0.25.18"
   bos_version     = "12.13.3"
+  kratos_version  = "0.10.1"
 }
 
 resource "google_compute_instance" "bastion" {
@@ -51,6 +52,7 @@ resource "google_compute_instance" "bastion" {
     k9s_version : local.k9s_version
     lnd_version : local.lnd_version
     bos_version : local.bos_version
+    kratos_version : local.kratos_version
   })
 
   depends_on = [

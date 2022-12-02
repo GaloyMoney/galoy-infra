@@ -72,6 +72,12 @@ mkdir k9s && cd k9s \
    && mv k9s /usr/local/bin \
    && cd .. && rm -rf k9s*
 
+mkdir kratos && cd kratos \
+   && wget https://github.com/ory/kratos/releases/download/v${kratos_version}/kratos_${kratos_version}-linux_64bit.tar.gz \
+   && tar -xvf kratos_${kratos_version}-linux_64bit.tar.gz \
+   && mv kratos /usr/local/bin \
+   && cd .. && rm -rf kratos*
+
 curl -sL https://deb.nodesource.com/setup_14.x | bash - \
   && apt-get install -y nodejs \
   && npm config set prefix '/usr' \
