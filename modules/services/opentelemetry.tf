@@ -19,7 +19,7 @@ resource "helm_release" "otel" {
   name       = "opentelemetry-collector"
   repository = "https://open-telemetry.github.io/opentelemetry-helm-charts"
   chart      = "opentelemetry-collector"
-  version    = "0.9.1"
+  version    = "0.40.7"
   namespace  = kubernetes_namespace.otel.metadata[0].name
 
   values = [
