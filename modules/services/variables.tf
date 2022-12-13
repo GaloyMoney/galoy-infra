@@ -17,6 +17,7 @@ variable "letsencrypt_issuer_email" {}
 variable "local_deploy" { default = false }
 variable "small_footprint" { default = false }
 variable "smoketest_cronjob" { default = false }
+variable "enable_tracing" { default = "true" }
 
 locals {
   local_deploy             = var.local_deploy
@@ -39,6 +40,7 @@ locals {
   jaeger_host              = "opentelemetry-collector.${local.otel_namespace}.svc.cluster.local"
   ingress_service_name     = "${var.name_prefix}-ingress"
   small_footprint          = var.small_footprint
+  enable_tracing           = var.enable_tracing
 }
 
 output "smoketest_kubeconfig" {

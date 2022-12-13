@@ -5,6 +5,10 @@ variable "letsencrypt_issuer_email" {
   default = "bot@galoy.io"
 }
 
+variable "enable_tracing" {
+  default = "true"
+}
+
 data "google_client_config" "default" {
   provider = google-beta
 }
@@ -36,4 +40,5 @@ module "services" {
   cluster_endpoint         = var.cluster_endpoint
   cluster_ca_cert          = var.cluster_ca_cert
   small_footprint          = true
+  enable_tracing           = var.enable_tracing
 }

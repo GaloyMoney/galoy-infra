@@ -3,7 +3,7 @@ controller:
     default: true
     watchIngressWithoutClass: true
   config:
-    enable-opentracing: "true"
+    enable-opentracing: ${enable_tracing}
     jaeger-service-name: ${service_name}
     jaeger-collector-host: ${jaeger_host}
     jaeger-propagation-format: "w3c"
