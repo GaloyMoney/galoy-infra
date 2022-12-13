@@ -6,13 +6,6 @@ variable "secrets" {
   default     = ""
   sensitive   = true
 }
-variable "honeycomb_api_key" {
-  default   = ""
-  sensitive = true
-}
-variable "trace_sample_pct" {
-  default = 100
-}
 
 variable "ingress_nginx_version" {
   default = "4.0.18"
@@ -44,10 +37,8 @@ locals {
   cert_manager_version     = var.cert_manager_version
   letsencrypt_issuer_email = var.letsencrypt_issuer_email
   jaeger_host              = "opentelemetry-collector.${local.otel_namespace}.svc.cluster.local"
-  trace_sample_pct         = var.trace_sample_pct
   ingress_service_name     = "${var.name_prefix}-ingress"
   small_footprint          = var.small_footprint
-  honeycomb_api_key        = var.honeycomb_api_key != "" ? var.honeycomb_api_key : jsondecode(var.secrets).honeycomb_api_key
 }
 
 output "smoketest_kubeconfig" {
