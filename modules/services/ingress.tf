@@ -21,10 +21,6 @@ resource "helm_release" "ingress_nginx" {
       service_name = local.ingress_service_name
     })
   ]
-
-  depends_on = [
-    helm_release.otel,
-  ]
 }
 
 resource "helm_release" "cert_manager" {
