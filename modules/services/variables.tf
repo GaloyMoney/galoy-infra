@@ -17,7 +17,7 @@ variable "letsencrypt_issuer_email" {}
 variable "local_deploy" { default = false }
 variable "small_footprint" { default = false }
 variable "smoketest_cronjob" { default = false }
-variable "enable_tracing" { default = "true" }
+variable "enable_tracing" { default = true }
 
 locals {
   local_deploy             = var.local_deploy

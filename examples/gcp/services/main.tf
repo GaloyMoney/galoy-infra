@@ -6,7 +6,7 @@ variable "letsencrypt_issuer_email" {
 }
 
 variable "enable_tracing" {
-  default = "true"
+  default = true
 }
 
 data "google_client_config" "default" {
