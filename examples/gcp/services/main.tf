@@ -1,13 +1,6 @@
 variable "name_prefix" {}
 variable "cluster_endpoint" {}
 variable "cluster_ca_cert" {}
-variable "letsencrypt_issuer_email" {
-  default = "bot@galoy.io"
-}
-
-variable "enable_tracing" {
-  default = true
-}
 
 data "google_client_config" "default" {
   provider = google-beta
@@ -35,10 +28,7 @@ module "services" {
   source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/services?ref=6ea964a"
   # source = "../../../modules/services"
 
-  name_prefix              = var.name_prefix
-  letsencrypt_issuer_email = var.letsencrypt_issuer_email
-  cluster_endpoint         = var.cluster_endpoint
-  cluster_ca_cert          = var.cluster_ca_cert
-  small_footprint          = true
-  enable_tracing           = var.enable_tracing
+  name_prefix      = var.name_prefix
+  cluster_endpoint = var.cluster_endpoint
+  cluster_ca_cert  = var.cluster_ca_cert
 }
