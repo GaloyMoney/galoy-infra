@@ -28,7 +28,7 @@ module "services" {
   source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/services?ref=6ea964a"
   # source = "../../../modules/services"
 
-  name_prefix              = var.name_prefix
-  cluster_endpoint         = var.cluster_endpoint
-  cluster_ca_cert          = var.cluster_ca_cert
+  name_prefix      = var.name_prefix
+  cluster_endpoint = var.cluster_endpoint
+  cluster_ca_cert  = var.cluster_ca_cert
 }
