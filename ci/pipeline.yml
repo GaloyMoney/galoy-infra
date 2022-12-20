@@ -1,12 +1,12 @@
 #@ load("@ytt:data", "data")
 
-#@ load("commons.lib.yml", 
+#@ load("commons.lib.yml",
 #@   "testflight_group_name",
 #@   "testflight_bootstrap_job_name",
 #@   "testflight_inception_job_name",
 #@   "testflight_platform_job_name",
 #@   "testflight_postgresql_job_name",
-#@   "testflight_services_job_name",
+#@   "testflight_smoketest_job_name",
 #@   "testflight_cleanup_job_name",
 #@   "testflight_cleanup_postgresql_job_name",
 #@   "bump_repos_job_name",
@@ -30,7 +30,7 @@ groups:
   - #@ testflight_bootstrap_job_name(cloud)
   - #@ testflight_inception_job_name(cloud)
   - #@ testflight_platform_job_name(cloud)
-  - #@ testflight_services_job_name(cloud)
+  - #@ testflight_smoketest_job_name(cloud)
   - #@ testflight_cleanup_job_name(cloud)
   #@ if cloud == "gcp":
   - #@ testflight_postgresql_job_name(cloud)
@@ -47,7 +47,7 @@ groups:
   - #@ testflight_bootstrap_job_name(cloud)
   - #@ testflight_inception_job_name(cloud)
   - #@ testflight_platform_job_name(cloud)
-  - #@ testflight_services_job_name(cloud)
+  - #@ testflight_smoketest_job_name(cloud)
   - #@ testflight_cleanup_job_name(cloud)
   #@ if cloud == "gcp":
   - #@ testflight_postgresql_job_name(cloud)

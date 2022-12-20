@@ -57,8 +57,8 @@ data "google_iam_policy" "tf_state_access" {
       ]
 
       condition {
-        title      = "${local.name_prefix}/services"
-        expression = "resource.name.startsWith(\"projects/_/buckets/${google_storage_bucket.tf_state.name}/objects/${local.name_prefix}/services\")"
+        title      = "${local.name_prefix}/smoketest"
+        expression = "resource.name.startsWith(\"projects/_/buckets/${google_storage_bucket.tf_state.name}/objects/${local.name_prefix}/smoketest\")"
       }
     }
   }

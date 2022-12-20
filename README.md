@@ -12,9 +12,8 @@ The final state is a regional gke cluster running on a private network with a ba
 - `bootstrap` - Enables required APIs and provisions the initial "inception" service account as well as the GCS bucket to store all terraform state required in all other phases. This step should be executed 1 time only and not automated.
 - `inception` - Provisions all security sensitive resourced like the vpc network, bastion, roles, service accounts etc.
 - `platform` - Provisions the gke cluster itself
-- `services` - Deploys the [ingress-nginx](https://github.com/kubernetes/ingress-nginx) and [cert-manager](https://cert-manager.io/docs/) charts onto the k8s cluster - basic dependencies for everything else that will be deployed to kubernetes.
 
-The `bootstrap`, `inception` and `platform` modules currently only support GCP while the `services` module is IaaS independent.
+The `bootstrap`, `inception` and `platform` modules currently only support GCP.
 In the future additional versions of the first 3 modules will be developped to support other IaaSes.
 
 The structure of the modules is intended to support continous delivery.

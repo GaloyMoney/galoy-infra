@@ -28,7 +28,7 @@ export ADDITIONAL_SSH_OPTS="-o StrictHostKeyChecking=no -i ${CI_ROOT}/login.ssh"
 gcloud compute os-login ssh-keys add --key-file=${CI_ROOT}/login.ssh.pub
 
 cp ${CI_ROOT}/gcloud-creds.json ./
-bin/prep-services.sh
+bin/prep-smoketest.sh
 
 set +e
 for i in {1..60}; do
@@ -38,4 +38,4 @@ for i in {1..60}; do
 done
 set -e
 
-gcloud compute ssh --ssh-key-file=${CI_ROOT}/login.ssh ${bastion_name} --zone=${bastion_zone} -- "cd repo/examples/gcp; export GOOGLE_APPLICATION_CREDENTIALS=\$(pwd)/gcloud-creds.json; echo yes | make initial-services && echo yes | make services"
+gcloud compute ssh --ssh-key-file=${CI_ROOT}/login.ssh ${bastion_name} --zone=${bastion_zone} -- "cd repo/examples/gcp; export GOOGLE_APPLICATION_CREDENTIALS=\$(pwd)/gcloud-creds.json; echo yes | make smoketest"

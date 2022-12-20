@@ -22,9 +22,9 @@ bastion_zone="$(cd inception && terraform output bastion_zone | jq -r)"
 export BASTION_USER="sa_$(cat ${CI_ROOT}/gcloud-creds.json  | jq -r '.client_id')"
 export ADDITIONAL_SSH_OPTS="-o StrictHostKeyChecking=no -i ${CI_ROOT}/login.ssh"
 
-bin/prep-services.sh
+bin/prep-smoketest.sh
 
-gcloud compute ssh --ssh-key-file=${CI_ROOT}/login.ssh ${bastion_name} --zone=${bastion_zone} -- "cd repo/examples/gcp; export GOOGLE_APPLICATION_CREDENTIALS=\$(pwd)/gcloud-creds.json; echo yes | make destroy-services"
+gcloud compute ssh --ssh-key-file=${CI_ROOT}/login.ssh ${bastion_name} --zone=${bastion_zone} -- "cd repo/examples/gcp; export GOOGLE_APPLICATION_CREDENTIALS=\$(pwd)/gcloud-creds.json; echo yes | make destroy-smoketest"
 
 echo yes | make destroy-platform
 echo yes | GOOGLE_CREDENTIALS=$(cat inception-sa-creds.json) make destroy-inception

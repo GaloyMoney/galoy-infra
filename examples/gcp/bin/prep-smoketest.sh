@@ -27,13 +27,13 @@ cluster_ca_cert="$(terraform output -json cluster_ca_cert | jq -r)"
 
 popd
 
-pushd services
+pushd smoketest
 
 cat <<EOF > terraform.tf
 terraform {
   backend "gcs" {
     bucket = "${tf_state_bucket_name}"
-    prefix = "${name_prefix}/services"
+    prefix = "${name_prefix}/smoketest"
   }
 }
 EOF

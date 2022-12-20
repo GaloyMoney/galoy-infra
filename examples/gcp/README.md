@@ -86,26 +86,3 @@ $ gcloud compute ssh ${bastion_name} --zone=${bastion_zone} --project=${gcp_proj
 <select 2fa method>
 $ <bastion-user>@<bastion-name>
 ```
-
-## Services phase
-
-The [`services`](./services/main.tf) phase will bring up a few global dependencies that are pre-requisits for the galoy helm charts to function.
-To bring them up you must first sync the local code to the bastion via:
-```
-bin/prep-services.sh
-```
-Once the code has been uploaded you should ssh onto the bastion and login to gcloud from there:
-```
-$ gcloud compute ssh ${bastion_name} --zone=${bastion_zone} --project=${gcp_project}
-$ gcloud auth login
-(...)
-$ kauth
-$ gcloud auth application-default login
-```
-Once you have completed the authentication you should be able to talk to k8s and execute the rollout of the services phase:
-```
-$ k get ns
-$ cd repo/examples/gcp
-$ make initial-services
-$ make services
-```
