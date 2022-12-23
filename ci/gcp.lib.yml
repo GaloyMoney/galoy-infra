@@ -5,7 +5,7 @@
 #@   "testflight_inception_job_name",
 #@   "testflight_platform_job_name",
 #@   "testflight_postgresql_job_name",
-#@   "testflight_services_job_name",
+#@   "testflight_smoketest_job_name",
 #@   "testflight_cleanup_job_name",
 #@   "testflight_cleanup_postgresql_job_name",
 #@   "bump_repos_job_name",
@@ -35,7 +35,7 @@ source:
   - modules/inception/gcp
   - modules/platform/gcp
   - modules/postgresql/gcp
-  - modules/services
+  - modules/smoketest/gcp
   uri: #@ data.values.git_uri
   branch: #@ data.values.git_branch
   private_key: #@ data.values.github_private_key
@@ -158,8 +158,8 @@ plan:
 on_failure: #@ slack_failure_notification()
 #@ end
 
-#@ def gcp_testflight_services_job():
-name: #@ testflight_services_job_name("gcp")
+#@ def gcp_testflight_smoketest_job():
+name: #@ testflight_smoketest_job_name("gcp")
 serial: true
 plan:
 - get: gcp-testflight-lock
@@ -177,7 +177,7 @@ plan:
   - get: gcp-testflight-uid
     passed:
     - #@ testflight_platform_job_name("gcp")
-- task: services
+- task: smoketest
   config:
     platform: linux
     image_resource: #@ task_image_config()
@@ -190,7 +190,7 @@ plan:
       path: testflight-uid
     params: #@ gcp_testflight_task_params()
     run:
-      path: pipeline-tasks/ci/tasks/gcp/services.sh
+      path: pipeline-tasks/ci/tasks/gcp/smoketest.sh
 - #@ slack_success_notification()
 on_failure: #@ slack_failure_notification()
 #@ end
@@ -238,22 +238,22 @@ serial: true
 plan:
 - get: gcp-testflight-lock
   passed:
-  - #@ testflight_services_job_name("gcp")
+  - #@ testflight_smoketest_job_name("gcp")
   - #@ testflight_cleanup_postgresql_job_name("gcp")
 - in_parallel:
   - get: #@ modules_resource_name("gcp")
     trigger: true
     passed:
-    - #@ testflight_services_job_name("gcp")
+    - #@ testflight_smoketest_job_name("gcp")
     - #@ testflight_cleanup_postgresql_job_name("gcp")
   - get: repo
     passed:
-    - #@ testflight_services_job_name("gcp")
+    - #@ testflight_smoketest_job_name("gcp")
     - #@ testflight_cleanup_postgresql_job_name("gcp")
   - { get: pipeline-tasks }
   - get: gcp-testflight-uid
     passed:
-    - #@ testflight_services_job_name("gcp")
+    - #@ testflight_smoketest_job_name("gcp")
     - #@ testflight_cleanup_postgresql_job_name("gcp")
 - task: teardown
   config:
@@ -435,7 +435,7 @@ source:
 - #@ gcp_testflight_bootstrap_job()
 - #@ gcp_testflight_inception_job()
 - #@ gcp_testflight_platform_job()
-- #@ gcp_testflight_services_job()
+- #@ gcp_testflight_smoketest_job()
 - #@ gcp_testflight_postgresql_job()
 - #@ gcp_testflight_cleanup_postgresql_job()
 - #@ gcp_testflight_cleanup_job()

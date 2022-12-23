@@ -20,8 +20,8 @@
 #@   return testflight_group_name(cloud) + "-postgresql"
 #@ end
 
-#@ def testflight_services_job_name(cloud):
-#@   return testflight_group_name(cloud) + "-services"
+#@ def testflight_smoketest_job_name(cloud):
+#@   return testflight_group_name(cloud) + "-smoketest"
 #@ end
 
 #@ def testflight_cleanup_postgresql_job_name(cloud):

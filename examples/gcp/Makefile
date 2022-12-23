@@ -14,13 +14,9 @@ platform:
 	cd platform \
 		&& $(TF) apply
 
-initial-services:
-	cd services \
+smoketest:
+	cd smoketest \
 		&& $(TF) init \
-		&& $(TF) apply -target module.services.helm_release.cert_manager
-
-services:
-	cd services \
 		&& $(TF) apply
 
 postgresql:
@@ -35,8 +31,8 @@ destroy-inception:
 		&& $(TF) state rm module.inception.google_storage_bucket_iam_policy.policy || true
 	cd inception && $(TF) destroy
 
-destroy-services:
-	cd services \
+destroy-smoketest:
+	cd smoketest \
 		&& $(TF) destroy
 
 destroy-platform:
@@ -51,4 +47,4 @@ destroy-postgresql:
 	cd postgresql \
 		&& $(TF) destroy
 
-.PHONY: bootstrap inception platform services postgresql
+.PHONY: bootstrap inception platform smoketest postgresql
