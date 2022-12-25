@@ -24,9 +24,9 @@ provider "helm" {
   }
 }
 
-module "services" {
-  source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/services?ref=44ded15"
-  # source = "../../../modules/services"
+module "smoketest" {
+  source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/smoketest?ref=44ded15"
+  # source = "../../../modules/smoketest"
 
   name_prefix      = var.name_prefix
   cluster_endpoint = var.cluster_endpoint
