@@ -24,9 +24,21 @@ resource "kubernetes_service_account" "smoketest" {
   }
 }
 
+resource "kubernetes_secret" "smoketest_token" {
+  metadata {
+    name      = "${local.smoketest_name}-token"
+    namespace = kubernetes_namespace.smoketest.metadata[0].name
+    annotations = {
+      "kubernetes.io/service-account.name" = kubernetes_service_account.smoketest.metadata[0].name
+    }
+  }
+
+  type = "kubernetes.io/service-account-token"
+}
+
 data "kubernetes_secret" "smoketest_token" {
   metadata {
-    name      = kubernetes_service_account.smoketest.default_secret_name
+    name      = kubernetes_secret.smoketest_token.metadata[0].name
     namespace = kubernetes_namespace.smoketest.metadata[0].name
   }
 }
