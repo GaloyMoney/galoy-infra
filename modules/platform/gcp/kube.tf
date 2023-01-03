@@ -130,7 +130,7 @@ resource "google_container_node_pool" "default" {
   }
 
   upgrade_settings {
-    max_surge       = 2
+    max_surge       = 3
     max_unavailable = 1
   }
 
