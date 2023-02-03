@@ -17,6 +17,7 @@ resource "kubernetes_role" "smoketest" {
   }
 }
 
+
 resource "kubernetes_service_account" "smoketest" {
   metadata {
     name      = local.smoketest_name
