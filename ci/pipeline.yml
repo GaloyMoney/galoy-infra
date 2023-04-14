@@ -18,10 +18,6 @@
 #@   "gcp_jobs",
 #@   "gcp_resources")
 
-#@ load("azure.lib.yml",
-#@   "azure_jobs",
-#@   "azure_resources")
-
 #@ supported_iaas = ["gcp"]
 groups:
 - name: all
