@@ -1,5 +1,6 @@
 locals {
   tag             = "${local.name_prefix}-bastion"
+  bria_version    = "0.0.5"
   cfssl_version   = "1.6.1"
   bitcoin_version = "24.0.1"
   cepler_version  = "0.7.9"
@@ -44,6 +45,7 @@ resource "google_compute_instance" "bastion" {
     zone : local.cluster_location,
     project : local.project,
     bastion_revoke_on_exit : local.bastion_revoke_on_exit
+    bria_version : local.bria_version,
     cfssl_version : local.cfssl_version,
     bitcoin_version : local.bitcoin_version
     cepler_version : local.cepler_version

@@ -40,6 +40,11 @@ mv ./kubectl /usr/local/bin
 
 curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
 
+mkdir bria && cd bria \
+  && wget https://github.com/GaloyMoney/bria/releases/download/${bria_version}/bria-x86_64-unknown-linux-musl-${bria_version}.tar.gz -O bria.tar.gz \
+  && tar --strip-components=1 -xf bria.tar.gz \
+  && mv bria /usr/local/bin && cd ../ && rm -rf ./bria
+
 wget -O- https://k14s.io/install.sh | bash
 
 wget https://github.com/bodymindarts/cepler/releases/download/v${cepler_version}/cepler-x86_64-unknown-linux-musl-${cepler_version}.tar.gz \
