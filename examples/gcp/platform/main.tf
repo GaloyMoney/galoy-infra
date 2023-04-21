@@ -20,7 +20,6 @@ module "platform" {
   node_service_account      = var.node_service_account
   node_default_machine_type = var.node_default_machine_type
   destroyable_postgres      = var.destroyable_postgres
-  deploy_auth_pg            = false
   deploy_shared_pg          = false
 }
 
