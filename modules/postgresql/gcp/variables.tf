@@ -11,7 +11,7 @@ variable "highly_available" {
   default = true
 }
 variable "tier" {
-  default = "db-g1-small"
+  default = "db-custom-1-3840"
 }
 variable "max_connections" { default = 0 }
 variable "big_query_viewers" {
