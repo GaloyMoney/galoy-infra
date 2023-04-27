@@ -21,7 +21,7 @@ RUN curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add - \
   && apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main" \
   && apt-get update && apt-get install -y terraform && apt-get clean
 
-ARG KUBECTL_VERSION=v1.23.5
+ARG KUBECTL_VERSION=v1.24.12
 ARG KUBECTL_SHASUM=715da05c56aa4f8df09cb1f9d96a2aa2c33a1232f6fd195e3ffce6e98a50a879
 RUN curl -LO https://dl.k8s.io/release/$KUBECTL_VERSION/bin/linux/amd64/kubectl \
   && echo $KUBECTL_SHASUM kubectl | sha256sum --check \
