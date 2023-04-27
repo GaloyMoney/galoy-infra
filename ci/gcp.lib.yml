@@ -215,6 +215,7 @@ plan:
     passed:
     - #@ testflight_inception_job_name("gcp")
 - task: postgresql
+  attempts: 4
   config:
     platform: linux
     image_resource: #@ task_image_config()
