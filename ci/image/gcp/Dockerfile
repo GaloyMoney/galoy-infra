@@ -8,6 +8,7 @@ RUN apt-get update \
   apt-transport-https ca-certificates \
   gnupg software-properties-common \
   vim jq rsync wget netcat \
+  unzip \
   && apt-get clean all
 
 ARG YQ_VERSION=v4.21.1
@@ -17,9 +18,11 @@ RUN wget https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/${YQ_BI
   && echo $YQ_SHASUM /usr/bin/yq | sha256sum --check \
   && chmod +x /usr/bin/yq
 
-RUN curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add - \
-  && apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main" \
-  && apt-get update && apt-get install -y terraform && apt-get clean
+ENV TERRAFORM_VERSION=1.4.5
+RUN wget https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip \
+    && unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip \
+    && mv terraform /usr/local/bin/ \
+    && rm terraform_${TERRAFORM_VERSION}_linux_amd64.zip
 
 ARG KUBECTL_VERSION=v1.24.12
 ARG KUBECTL_SHASUM=25875551d4242339bcc8cef0c18f0a0f631ea621f6fab1190a5aaab466634e7c
