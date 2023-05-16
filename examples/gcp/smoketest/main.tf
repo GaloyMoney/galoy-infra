@@ -32,3 +32,16 @@ module "smoketest" {
   cluster_endpoint = var.cluster_endpoint
   cluster_ca_cert  = var.cluster_ca_cert
 }
+
+terraform {
+  required_providers {
+    google-beta = {
+      source  = "hashicorp/google-beta"
+      version = "4.64.0"
+    }
+    google = {
+      source  = "hashicorp/google"
+      version = "4.64.0"
+    }
+  }
+}
