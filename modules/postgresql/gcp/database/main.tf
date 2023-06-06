@@ -3,6 +3,7 @@ variable "db_name" {}
 variable "admin_user_name" {}
 variable "user_name" {}
 variable "pg_instance_connection_name" {}
+variable "replication" {}
 variable "connection_users" {
   type = list(string)
 }
@@ -24,6 +25,24 @@ resource "postgresql_role" "user" {
   name     = var.user_name
   password = random_password.user.result
   login    = true
+}
+
+output "replicator_password" {
+  value = var.replication ? random_password.replicator[0].result : null
+}
+
+resource "random_password" "replicator" {
+  count   = var.replication ? 1 : 0
+  length  = 20
+  special = false
+}
+
+resource "postgresql_role" "replicator" {
+  count       = var.replication ? 1 : 0
+  name        = "${var.db_name}-replicator"
+  password    = random_password.replicator[0].result
+  login       = true
+  replication = true
 }
 
 resource "postgresql_database" "db" {
@@ -49,8 +68,31 @@ resource "postgresql_grant" "grant_all" {
   privileges = ["CONNECT", "CREATE", "TEMPORARY"]
 
   depends_on = [
-    postgresql_grant.revoke_public,
+    postgresql_grant.revoke_public
   ]
+}
+
+resource "postgresql_grant" "grant_connect_replicator" {
+  count       = var.replication ? 1 : 0
+  database    = postgresql_database.db.name
+  role        = postgresql_role.replicator[0].name
+  object_type = "database"
+
+  privileges = ["CONNECT"]
+
+  depends_on = [
+    postgresql_grant.revoke_public
+  ]
+}
+
+resource "postgresql_grant" "grant_select_replicator" {
+  count       = var.replication ? 1 : 0
+  database    = postgresql_database.db.name
+  role        = postgresql_role.replicator[0].name
+  schema      = "public"
+  object_type = "table"
+
+  privileges = ["SELECT"]
 }
 
 resource "random_password" "big_query" {
