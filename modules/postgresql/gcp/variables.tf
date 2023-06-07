@@ -14,6 +14,11 @@ variable "tier" {
   default = "db-custom-1-3840"
 }
 variable "max_connections" { default = 0 }
+variable "enable_detailed_logging" {
+  description = "Enable detailed logging for the PostgreSQL instance"
+  type        = bool
+  default     = false
+}
 variable "big_query_viewers" {
   default = []
   type    = list(string)

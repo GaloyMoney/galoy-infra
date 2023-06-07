@@ -27,6 +27,20 @@ resource "google_sql_database_instance" "instance" {
       }
     }
 
+    dynamic "database_flags" {
+      for_each = var.enable_detailed_logging ? [{
+        name  = "log_statement"
+        value = "all"
+        }, {
+        name  = "log_lock_waits"
+        value = "on"
+      }] : []
+      content {
+        name  = database_flags.value.name
+        value = database_flags.value.value
+      }
+    }
+
     backup_configuration {
       enabled                        = true
       point_in_time_recovery_enabled = true
