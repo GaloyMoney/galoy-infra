@@ -67,6 +67,7 @@ plan:
   - { get: pipeline-tasks }
   - { get: gcp-testflight-uid }
 - task: bootstrap
+  attempts: 4
   config:
     platform: linux
     image_resource: #@ task_image_config()
@@ -104,6 +105,7 @@ plan:
     passed:
     - #@ testflight_bootstrap_job_name("gcp")
 - task: inception
+  attempts: 4
   config:
     platform: linux
     image_resource: #@ task_image_config()
