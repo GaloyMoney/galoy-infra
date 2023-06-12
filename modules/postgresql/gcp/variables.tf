@@ -26,7 +26,11 @@ variable "big_query_viewers" {
 variable "databases" {
   type = list(string)
 }
-variable "replication" { default = true }
+variable "replication" {
+  description = "Enable logical replication for the PostgreSQL instance"
+  type        = bool
+  default     = true
+}
 
 locals {
   gcp_project       = var.gcp_project
