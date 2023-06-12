@@ -29,7 +29,7 @@ variable "databases" {
 variable "replication" {
   description = "Enable logical replication for the PostgreSQL instance"
   type        = bool
-  default     = true
+  default     = false
 }
 
 locals {
