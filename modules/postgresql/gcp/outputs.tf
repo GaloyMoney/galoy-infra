@@ -13,7 +13,17 @@ output "creds" {
       user     = module.database[db].user
       password = module.database[db].password
       conn     = "postgres://${module.database[db].user}:${module.database[db].password}@${google_sql_database_instance.instance.private_ip_address}:5432/${db}"
+      host     = google_sql_database_instance.instance.private_ip_address
     }
   }
+  sensitive = true
+}
+
+output "replicator" {
+  value = local.replication ? {
+    for db in local.databases : db => {
+      password = module.database[db].replicator_password
+    }
+  } : {}
   sensitive = true
 }

@@ -5,7 +5,7 @@ variable "destroyable_postgres" {
 }
 
 module "postgresql" {
-  source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/postgresql/gcp?ref=c553589"
+  source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/postgresql/gcp?ref=29dee10"
   # source = "../../../modules/postgresql/gcp"
 
   instance_name = "${var.name_prefix}-pg"
@@ -13,4 +13,5 @@ module "postgresql" {
   gcp_project   = var.gcp_project
   destroyable   = var.destroyable_postgres
   databases     = ["stablesats"]
+  replication   = true
 }

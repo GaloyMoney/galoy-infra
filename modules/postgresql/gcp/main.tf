@@ -41,6 +41,14 @@ resource "google_sql_database_instance" "instance" {
       }
     }
 
+    dynamic "database_flags" {
+      for_each = local.replication ? ["on"] : []
+      content {
+        name  = "cloudsql.logical_decoding"
+        value = "on"
+      }
+    }
+
     backup_configuration {
       enabled                        = true
       point_in_time_recovery_enabled = true
@@ -81,6 +89,7 @@ module "database" {
   user_name                   = "${each.value}-user"
   pg_instance_connection_name = google_sql_database_instance.instance.connection_name
   connection_users            = local.big_query_viewers
+  replication                 = local.replication
 }
 
 provider "postgresql" {
