@@ -29,6 +29,7 @@ source:
 #@ def gcp_modules():
 name: #@ modules_resource_name("gcp")
 type: git
+webhook_token: ((webhook.secret))
 source:
   paths:
   - modules/bootstrap/gcp
