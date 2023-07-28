@@ -6,7 +6,7 @@ locals {
   cepler_version  = "0.7.9"
   safe_version    = "1.7.0"
   lnd_version     = "0.15.5"
-  kubectl_version = "1.26.5"
+  kubectl_version = "1.27.2"
   k9s_version     = "0.25.18"
   bos_version     = "12.13.3"
   kratos_version  = "0.11.1"
