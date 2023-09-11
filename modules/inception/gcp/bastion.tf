@@ -1,4 +1,4 @@
-iocals {
+locals {
   tag             = "${local.name_prefix}-bastion"
   bria_version    = "0.1.56"
   cfssl_version   = "1.6.1"
