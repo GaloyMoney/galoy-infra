@@ -35,3 +35,5 @@ override.tf.json
 terraform.tf
 
 *-creds.json
+
+.direnv
