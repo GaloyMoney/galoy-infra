@@ -17,4 +17,4 @@ ${GITHUB_SSH_KEY}
 EOF
 GITHUB_SSH_KEY_BASE64=$(base64 -w 0 ./github.key) make vendir
 
-make_commit "Bump galoy-infra modules to '${MODULES_GIT_REF}'"
+make_commit "chore(deps): bump galoy-infra modules to '${MODULES_GIT_REF}'"
