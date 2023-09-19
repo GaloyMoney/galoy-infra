@@ -8,10 +8,11 @@ module "postgresql" {
   source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/postgresql/gcp?ref=2eb46c6"
   # source = "../../../modules/postgresql/gcp"
 
-  instance_name = "${var.name_prefix}-pg"
-  vpc_name      = "${var.name_prefix}-vpc"
-  gcp_project   = var.gcp_project
-  destroyable   = var.destroyable_postgres
-  databases     = ["stablesats"]
-  replication   = true
+  instance_name      = "${var.name_prefix}-pg"
+  vpc_name           = "${var.name_prefix}-vpc"
+  gcp_project        = var.gcp_project
+  destroyable        = var.destroyable_postgres
+  user_can_create_db = true
+  databases          = ["stablesats"]
+  replication        = true
 }

@@ -2,6 +2,7 @@ variable "gcp_project" {}
 variable "db_name" {}
 variable "admin_user_name" {}
 variable "user_name" {}
+variable "user_can_create_db" {}
 variable "pg_instance_connection_name" {}
 variable "replication" {}
 variable "connection_users" {
@@ -22,9 +23,10 @@ resource "random_password" "user" {
 }
 
 resource "postgresql_role" "user" {
-  name     = var.user_name
-  password = random_password.user.result
-  login    = true
+  name            = var.user_name
+  password        = random_password.user.result
+  login           = true
+  create_database = var.user_can_create_db
 }
 
 output "replicator_password" {

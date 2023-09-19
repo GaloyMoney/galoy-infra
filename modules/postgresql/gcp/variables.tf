@@ -7,6 +7,9 @@ variable "region" {
 variable "destroyable" {
   default = false
 }
+variable "user_can_create_db" {
+  default = false
+}
 variable "highly_available" {
   default = true
 }

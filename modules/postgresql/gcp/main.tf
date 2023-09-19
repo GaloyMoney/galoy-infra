@@ -87,6 +87,7 @@ module "database" {
   db_name                     = each.value
   admin_user_name             = google_sql_user.admin.name
   user_name                   = "${each.value}-user"
+  user_can_create_db          = var.user_can_create_db
   pg_instance_connection_name = google_sql_database_instance.instance.connection_name
   connection_users            = local.big_query_viewers
   replication                 = local.replication
