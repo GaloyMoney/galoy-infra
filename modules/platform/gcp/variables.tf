@@ -15,6 +15,9 @@ variable "kube_version" {
 variable "node_default_machine_type" {
   default = "n2-standard-4"
 }
+variable "destroyable_cluster" {
+  default = false
+}
 variable "postgres_tier" {
   default = "db-f1-micro"
 }
@@ -45,6 +48,7 @@ locals {
   lnd1_internal_ip          = "${local.network_prefix}.1.1"
   lnd2_internal_ip          = "${local.network_prefix}.1.2"
   kube_version              = var.kube_version
+  destroyable_cluster       = var.destroyable_cluster
   node_default_machine_type = var.node_default_machine_type
   nodes_service_account     = var.node_service_account
   min_default_node_count    = var.min_default_node_count

@@ -11,10 +11,11 @@ data "google_compute_subnetwork" "dmz" {
 resource "google_container_cluster" "primary" {
   provider = google-beta
 
-  min_master_version = local.kube_version
-  name               = local.cluster_name
-  description        = "Cluster hosting the ${local.name_prefix} apps"
-  project            = local.project
+  deletion_protection = local.destroyable_cluster
+  min_master_version  = local.kube_version
+  name                = local.cluster_name
+  description         = "Cluster hosting the ${local.name_prefix} apps"
+  project             = local.project
 
   location = local.cluster_location
   network  = data.google_compute_network.vpc.self_link

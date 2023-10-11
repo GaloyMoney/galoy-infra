@@ -10,6 +10,9 @@ variable "letsencrypt_issuer_email" {
 variable "destroyable_postgres" {
   default = false
 }
+variable "destroyable_cluster" {
+  default = false
+}
 
 module "platform" {
   source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/platform/gcp?ref=c4ac3ff"
@@ -19,6 +22,7 @@ module "platform" {
   gcp_project               = var.gcp_project
   node_service_account      = var.node_service_account
   node_default_machine_type = var.node_default_machine_type
+  destroyable_cluster       = var.destroyable_cluster
   destroyable_postgres      = var.destroyable_postgres
   deploy_shared_pg          = false
 }
