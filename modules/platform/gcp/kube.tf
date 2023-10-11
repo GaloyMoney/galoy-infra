@@ -11,7 +11,7 @@ data "google_compute_subnetwork" "dmz" {
 resource "google_container_cluster" "primary" {
   provider = google-beta
 
-  deletion_protection = local.destroyable_cluster
+  deletion_protection = !local.destroyable_cluster
   min_master_version  = local.kube_version
   name                = local.cluster_name
   description         = "Cluster hosting the ${local.name_prefix} apps"
