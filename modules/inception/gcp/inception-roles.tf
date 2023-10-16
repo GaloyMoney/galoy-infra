@@ -60,6 +60,7 @@ resource "google_project_iam_custom_role" "inception_destroy" {
     "compute.routers.delete",
     "compute.networks.delete",
     "compute.subnetworks.delete",
+    "compute.globalAddresses.deleteInternal",
     "iam.serviceAccounts.delete",
     "iam.roles.delete",
     "storage.buckets.delete",
