@@ -33,6 +33,7 @@ resource "google_project_iam_custom_role" "bootstrap" {
     "compute.firewalls.delete",
     "compute.instances.delete",
     "compute.instances.deleteAccessConfig",
+    "compute.networks.get",
     "compute.networks.delete",
     "compute.subnetworks.delete",
     "iam.serviceAccounts.delete",
