@@ -31,6 +31,8 @@ resource "google_project_iam_custom_role" "bootstrap" {
     "compute.projects.get",
     "compute.addresses.delete",
     "compute.firewalls.delete",
+    "compute.globalAddresses.deleteInternal",
+    "compute.globalAddresses.get",
     "compute.instances.delete",
     "compute.instances.deleteAccessConfig",
     "compute.networks.get",
