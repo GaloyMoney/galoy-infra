@@ -58,7 +58,6 @@ resource "google_project_iam_custom_role" "inception_destroy" {
     "compute.instances.delete",
     "compute.instances.deleteAccessConfig",
     "compute.routers.delete",
-    "compute.networks.get",
     "compute.networks.delete",
     "compute.subnetworks.delete",
     "compute.globalAddresses.deleteInternal",
