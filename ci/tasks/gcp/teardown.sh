@@ -27,6 +27,13 @@ bin/prep-smoketest.sh
 gcloud compute ssh --ssh-key-file=${CI_ROOT}/login.ssh ${bastion_name} --zone=${bastion_zone} -- "cd repo/examples/gcp; export GOOGLE_APPLICATION_CREDENTIALS=\$(pwd)/gcloud-creds.json; echo yes | make destroy-smoketest"
 
 echo yes | make destroy-platform
-echo yes | GOOGLE_CREDENTIALS=$(cat inception-sa-creds.json) make destroy-inception
+
+# Sometimes a resource deletion fails if a dependent resource is still being deleted
+for i in {1..5}; do
+  echo yes | GOOGLE_CREDENTIALS=$(cat inception-sa-creds.json) make destroy-inception && break
+  echo "Attempt $i failed. Retrying..."
+  sleep 10
+done
+
 echo yes | TF_VAR_tf_state_bucket_force_destroy=true make destroy-bootstrap
 
