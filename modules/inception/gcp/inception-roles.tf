@@ -64,6 +64,7 @@ resource "google_project_iam_custom_role" "inception_destroy" {
     "iam.serviceAccounts.delete",
     "iam.roles.delete",
     "storage.buckets.delete",
+    "servicenetworking.services.get",
     "servicenetworking.services.deleteConnection",
     "serviceusage.operations.get"
   ]
