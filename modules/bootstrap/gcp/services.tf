@@ -9,6 +9,7 @@ locals {
     "servicenetworking.googleapis.com",
     "sqladmin.googleapis.com",
     "bigqueryconnection.googleapis.com",
+    "bigquerydatatransfer.googleapis.com",
   ]
 }
 
