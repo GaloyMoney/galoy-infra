@@ -29,11 +29,15 @@ gcloud compute ssh --ssh-key-file=${CI_ROOT}/login.ssh ${bastion_name} --zone=${
 echo yes | make destroy-platform
 
 # Sometimes a resource deletion fails if a dependent resource is still being deleted
+success=0
 for i in {1..5}; do
-  echo yes | GOOGLE_CREDENTIALS=$(cat inception-sa-creds.json) make destroy-inception && break
-  echo "Attempt $i failed. Retrying..."
+  echo "Attempt $i to destroy inception"
+  echo yes | GOOGLE_CREDENTIALS=$(cat inception-sa-creds.json) make destroy-inception && success=1 && break
   sleep 10
 done
 
-echo yes | TF_VAR_tf_state_bucket_force_destroy=true make destroy-bootstrap
-
+if [ $success -eq 1 ]; then
+  echo yes | TF_VAR_tf_state_bucket_force_destroy=true make destroy-bootstrap
+else
+  exit 1
+fi
