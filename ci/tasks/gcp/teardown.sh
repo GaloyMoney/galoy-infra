@@ -36,8 +36,8 @@ for i in {1..5}; do
   sleep 10
 done
 
-if [ $success -eq 0 ]; then
-  exit 1
-else
+if [ $success -eq 1 ]; then
   echo yes | TF_VAR_tf_state_bucket_force_destroy=true make destroy-bootstrap
+else
+  exit 1
 fi
