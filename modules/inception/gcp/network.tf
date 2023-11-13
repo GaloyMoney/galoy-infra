@@ -37,4 +37,6 @@ resource "google_service_networking_connection" "service" {
   network                 = google_compute_network.vpc.id
   service                 = "servicenetworking.googleapis.com"
   reserved_peering_ranges = [google_compute_global_address.peering.name]
+
+  depends_on = [google_project_iam_member.inception_destroy]
 }
