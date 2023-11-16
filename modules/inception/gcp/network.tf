@@ -39,16 +39,4 @@ resource "google_service_networking_connection" "service" {
   reserved_peering_ranges = [google_compute_global_address.peering.name]
 
   depends_on = [google_project_iam_member.inception_destroy]
-
-  # Manually destroy VPC peering.
-  # This is because the dependency solver doesn't properly destroy.
-  # https://github.com/hashicorp/terraform-provider-google/issues/16275
-  provisioner "local-exec" {
-    when = destroy
-    command = join(" ", [
-      "gcloud compute networks peerings delete",
-      "servicenetworking-googleapis-com",
-      "--network ${google_compute_network.vpc.name}",
-    ])
-  }
 }
