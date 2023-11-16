@@ -28,6 +28,10 @@ gcloud compute ssh --ssh-key-file=${CI_ROOT}/login.ssh ${bastion_name} --zone=${
 
 echo yes | make destroy-platform
 
+set +e
+gcloud compute networks peerings delete servicenetworking-googleapis-com --network ${TF_VAR_name_prefix}-vpc --quiet
+set -e
+
 # Sometimes a resource deletion fails if a dependent resource is still being deleted
 success=0
 for i in {1..5}; do
