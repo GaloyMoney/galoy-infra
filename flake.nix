@@ -20,6 +20,7 @@
             nativeBuildInputs = [
               alejandra
               terraform
+              ytt
             ];
 
             shellHook = ''
