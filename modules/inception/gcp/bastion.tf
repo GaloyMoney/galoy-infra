@@ -101,3 +101,17 @@ resource "google_compute_firewall" "bastion_allow_iap_inbound" {
     ports    = [22]
   }
 }
+
+resource "google_project_iam_audit_config" "iap_audit_logs" {
+  project = local.project
+  service = "iap.googleapis.com"
+  audit_log_config {
+    log_type = "ADMIN_READ"
+  }
+  audit_log_config {
+    log_type = "DATA_READ"
+  }
+  audit_log_config {
+    log_type = "DATA_WRITE"
+  }
+}
