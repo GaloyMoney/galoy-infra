@@ -5,7 +5,7 @@ variable "destroyable_postgres" {
 }
 
 module "postgresql" {
-  source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/postgresql/gcp?ref=2c61f0b"
+  source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/postgresql/gcp?ref=9998394"
   # source = "../../../modules/postgresql/gcp"
 
   instance_name      = "${var.name_prefix}-pg"
