@@ -27,12 +27,12 @@ resource "kubernetes_role_binding" "lnd_tls_secret_reader" {
   role_ref {
     api_group = "rbac.authorization.k8s.io"
     kind      = "Role"
-    name      = kubernetes_role.concourse_k8s_secret_access.metadata[0].name
+    name      = kubernetes_role.lnd_tls_secret_reader.metadata[0].name
   }
 
   subject {
     kind      = "ServiceAccount"
-    name      = kubernetes_service_account.concourse_k8s_secret_access.metadata[0].name
+    name      = kubernetes_service_account.concourse.metadata[0].name
     namespace = local.concourse_namespace
   }
 }
@@ -40,7 +40,7 @@ resource "kubernetes_role_binding" "lnd_tls_secret_reader" {
 resource "kubernetes_secret" "concourse_k8s_access_token" {
   metadata {
     annotations = {
-      "kubernetes.io/service-account.name" = kubernetes_service_account.concourse_k8s_secret_access.metadata[0].name
+      "kubernetes.io/service-account.name" = kubernetes_service_account.concourse.metadata[0].name
     }
   }
 
