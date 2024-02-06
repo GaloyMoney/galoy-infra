@@ -1,4 +1,5 @@
 resource "kubernetes_service_account" "concourse" {
+  count = local.k8s_secret_reader_enabled ? 1 : 0
   metadata {
     name      = "concourse"
     namespace = local.concourse_namespace
@@ -6,6 +7,7 @@ resource "kubernetes_service_account" "concourse" {
 }
 
 resource "kubernetes_role" "lnd_tls_secret_reader" {
+  count = local.k8s_secret_reader_enabled ? 1 : 0
   metadata {
     name      = "lnd-tls-secret-reader"
     namespace = local.bitcoin_namespace
@@ -19,9 +21,10 @@ resource "kubernetes_role" "lnd_tls_secret_reader" {
 }
 
 resource "kubernetes_role_binding" "lnd_tls_secret_reader" {
+  count = local.k8s_secret_reader_enabled ? 1 : 0
   metadata {
     name      = "lnd-tls-secret-reader"
-    namespace = local.concourse_namespace
+    namespace = local.bitcoin_namespace
   }
 
   role_ref {
@@ -38,7 +41,9 @@ resource "kubernetes_role_binding" "lnd_tls_secret_reader" {
 }
 
 resource "kubernetes_secret" "concourse_k8s_access_token" {
+  count = local.k8s_secret_reader_enabled ? 1 : 0
   metadata {
+    namespace = local.concourse_namespace
     annotations = {
       "kubernetes.io/service-account.name" = kubernetes_service_account.concourse.metadata[0].name
     }
