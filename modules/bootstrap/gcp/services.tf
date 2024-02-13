@@ -9,6 +9,9 @@ locals {
     "servicenetworking.googleapis.com",
     "sqladmin.googleapis.com",
     "bigqueryconnection.googleapis.com",
+    "maps-backend.googleapis.com",
+    "maps-embed-backend.googleapis.com",
+    "static-maps-backend.googleapis.com"
   ]
 }
 
