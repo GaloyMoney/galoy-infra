@@ -64,6 +64,9 @@ resource "google_project_iam_custom_role" "platform_make" {
     "bigquery.connections.getIamPolicy",
     "bigquery.connections.setIamPolicy",
     "monitoring.timeSeries.list",
+    "apikeys.keys.create",
+    "apikeys.keys.get",
+    "apikeys.keys.getKeyString"
   ]
 }
 
@@ -90,5 +93,6 @@ resource "google_project_iam_custom_role" "platform_destroy" {
     "cloudsql.instances.delete",
     "cloudsql.users.delete",
     "bigquery.connections.delete",
+    "apikeys.keys.delete"
   ]
 }
