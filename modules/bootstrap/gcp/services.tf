@@ -11,7 +11,8 @@ locals {
     "bigqueryconnection.googleapis.com",
     "maps-backend.googleapis.com",
     "maps-embed-backend.googleapis.com",
-    "static-maps-backend.googleapis.com"
+    "static-maps-backend.googleapis.com",
+    "apikeys.googleapis.com"
   ]
 }
 
