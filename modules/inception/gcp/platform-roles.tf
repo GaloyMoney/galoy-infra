@@ -66,7 +66,8 @@ resource "google_project_iam_custom_role" "platform_make" {
     "monitoring.timeSeries.list",
     "apikeys.keys.create",
     "apikeys.keys.get",
-    "apikeys.keys.getKeyString"
+    "apikeys.keys.getKeyString",
+    "apikeys.keys.update"
   ]
 }
 
