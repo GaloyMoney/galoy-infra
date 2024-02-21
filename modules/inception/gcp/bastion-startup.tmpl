@@ -85,7 +85,7 @@ mkdir kratos && cd kratos \
    && mv kratos /usr/local/bin \
    && cd .. && rm -rf kratos*
 
-curl -sL https://deb.nodesource.com/setup_14.x | bash - \
+curl -sL https://deb.nodesource.com/setup_20.x | bash - \
   && apt-get install -y nodejs \
   && npm config set prefix '/usr' \
   && npm i -g balanceofsatoshis@${bos_version} \

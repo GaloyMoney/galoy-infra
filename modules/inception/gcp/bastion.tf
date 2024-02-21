@@ -3,12 +3,12 @@ locals {
   bria_version    = "0.1.78"
   cfssl_version   = "1.6.1"
   bitcoin_version = "24.0.1"
-  cepler_version  = "0.7.9"
+  cepler_version  = "0.7.15"
   safe_version    = "1.7.0"
-  lnd_version     = "0.15.5"
+  lnd_version     = "0.17.3-beta"
   kubectl_version = "1.27.5"
   k9s_version     = "0.25.18"
-  bos_version     = "12.13.3"
+  bos_version     = "17.8.0"
   kratos_version  = "0.11.1"
 }
 
