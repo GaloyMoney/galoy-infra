@@ -4,4 +4,3 @@ resource "google_project_iam_member" "dev_read_log" {
   role     = "roles/logging.viewer"
   member   = each.key
 }
-
