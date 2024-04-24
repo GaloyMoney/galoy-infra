@@ -302,7 +302,7 @@ plan:
     passed:
     - #@ testflight_postgresql_job_name("gcp")
 - task: teardown
-  attempts: 3
+  attempts: 6
   config:
     platform: linux
     image_resource: #@ task_image_config()
