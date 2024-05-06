@@ -1,6 +1,6 @@
 locals {
   tag             = "${local.name_prefix}-bastion"
-  bria_version    = "0.1.78"
+  bria_version    = "0.1.106"
   cfssl_version   = "1.6.1"
   bitcoin_version = "24.0.1"
   cepler_version  = "0.7.15"
