@@ -1,7 +1,7 @@
 resource "google_storage_bucket" "backups" {
   name                        = local.backups_bucket_name
   project                     = local.project
-  location                    = local.tf_state_bucket_location
+  location                    = local.backups_bucket_location
   uniform_bucket_level_access = true
 
   retention_policy {

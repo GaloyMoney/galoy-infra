@@ -29,6 +29,7 @@ variable "inception_sa" {}
 variable "tf_state_bucket_name" {}
 variable "buckets_location" {}
 variable "tf_state_bucket_policy" { default = null }
+variable "backups_bucket_location" {}
 
 variable "users" {
   type = list(object({
@@ -45,7 +46,7 @@ locals {
   tf_state_bucket_name     = var.tf_state_bucket_name
   tf_state_bucket_location = var.buckets_location
   backups_bucket_name      = "${local.name_prefix}-backups"
-  backups_bucket_location  = var.buckets_location
+  backups_bucket_location  = var.backups_bucket_location
   project                  = var.gcp_project
   inception_sa             = var.inception_sa
   log_viewers              = [for user in var.users : user.id if user.logs]
