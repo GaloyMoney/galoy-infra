@@ -100,6 +100,7 @@ resource "google_project_iam_custom_role" "platform_destroy" {
     "cloudsql.users.delete",
     "bigquery.connections.delete",
     "apikeys.keys.delete",
-    "monitoring.notificationChannels.delete"
+    "monitoring.notificationChannels.delete",
+    "monitoring.alertPolicies.delete",
   ]
 }
