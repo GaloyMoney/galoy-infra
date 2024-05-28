@@ -67,6 +67,7 @@ resource "google_project_iam_custom_role" "platform_make" {
     "monitoring.notificationChannels.get",
     "monitoring.notificationChannels.create",
     "monitoring.notificationChannels.update",
+    "monitoring.alertPolicies.get",
     "monitoring.alertPolicies.create",
     "monitoring.alertPolicies.update",
     "apikeys.keys.create",
