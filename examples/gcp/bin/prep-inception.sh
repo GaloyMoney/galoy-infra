@@ -29,7 +29,7 @@ terraform {
 EOF
 
 # Wait for the service account key to propagate
-sleep 2
+sleep 5
 
 terraform init
 terraform state show module.inception.google_storage_bucket.tf_state || \
