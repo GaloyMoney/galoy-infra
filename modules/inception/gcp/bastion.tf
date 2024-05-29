@@ -1,14 +1,13 @@
 locals {
   tag             = "${local.name_prefix}-bastion"
   bria_version    = "0.1.106"
-  cfssl_version   = "1.6.1"
-  bitcoin_version = "24.0.1"
+  bitcoin_version = "25.2"
   cepler_version  = "0.7.15"
-  safe_version    = "1.7.0"
-  lnd_version     = "0.17.3-beta"
-  kubectl_version = "1.27.5"
-  k9s_version     = "0.25.18"
-  bos_version     = "17.8.0"
+  safe_version    = "1.8.0"
+  lnd_version     = "0.17.4-beta"
+  kubectl_version = "1.27.14"
+  k9s_version     = "0.32.4"
+  bos_version     = "18.2.0"
   kratos_version  = "0.11.1"
 }
 
@@ -46,7 +45,6 @@ resource "google_compute_instance" "bastion" {
     project : local.project,
     bastion_revoke_on_exit : local.bastion_revoke_on_exit
     bria_version : local.bria_version,
-    cfssl_version : local.cfssl_version,
     bitcoin_version : local.bitcoin_version
     cepler_version : local.cepler_version
     safe_version : local.safe_version
