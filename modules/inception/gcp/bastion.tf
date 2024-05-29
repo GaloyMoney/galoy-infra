@@ -10,6 +10,11 @@ locals {
   bos_version     = "18.2.0"
   kratos_version  = "0.11.1"
 }
+data "google_compute_image" "bastion" {
+  family      = local.bastion_image_family
+  project     = local.bastion_image_project
+  most_recent = true
+}
 
 resource "google_compute_instance" "bastion" {
   project      = local.project
@@ -26,7 +31,7 @@ resource "google_compute_instance" "bastion" {
 
   boot_disk {
     initialize_params {
-      image = local.bastion_image
+      image = data.google_compute_image.bastion.self_link
     }
   }
 

@@ -12,8 +12,11 @@ variable "cluster_zone" {
 variable "bastion_machine_type" {
   default = "e2-micro"
 }
-variable "bastion_image" {
-  default = "ubuntu-os-cloud/ubuntu-2404-lts-amd64"
+variable "bastion_image_project" {
+  default = "ubuntu-os-cloud"
+}
+variable "bastion_image_family" {
+  default = "ubuntu-2404-lts-amd64"
 }
 variable "bastion_revoke_on_exit" {
   default = true
@@ -61,7 +64,8 @@ locals {
   cluster_location       = var.cluster_zone == "" ? local.region : "${local.region}-${var.cluster_zone}"
   bastion_zone           = "${local.region}-${var.primary_zone}"
   bastion_machine_type   = var.bastion_machine_type
-  bastion_image          = var.bastion_image
+  bastion_image_project  = var.bastion_image_project
+  bastion_image_family   = var.bastion_image_family
   bastion_revoke_on_exit = var.bastion_revoke_on_exit
   tf_state_bucket_policy = var.tf_state_bucket_policy
 }
