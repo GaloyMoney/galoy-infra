@@ -15,19 +15,19 @@ output "cluster_location" {
 }
 
 output "lnd1_ip" {
-  value = google_compute_address.lnd1.address
+  value = local.deploy_lnd_ips ? google_compute_address.lnd1[0].address : ""
 }
 
 output "lnd2_ip" {
-  value = google_compute_address.lnd2.address
+  value = local.deploy_lnd_ips ? google_compute_address.lnd2[0].address : ""
 }
 
 output "lnd1_internal_ip" {
-  value = google_compute_address.lnd1_internal_ip.address
+  value = local.deploy_lnd_ips ? google_compute_address.lnd1_internal_ip[0].address : ""
 }
 
 output "lnd2_internal_ip" {
-  value = google_compute_address.lnd2_internal_ip.address
+  value = local.deploy_lnd_ips ? google_compute_address.lnd2_internal_ip[0].address : ""
 }
 
 output "shared_pg_host" {
