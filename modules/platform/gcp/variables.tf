@@ -37,6 +37,9 @@ variable "min_default_node_count" {
 variable "max_default_node_count" {
   default = 3
 }
+variable "deploy_lnd_ips" {
+  default = true
+}
 
 locals {
   name_prefix               = var.name_prefix
@@ -58,4 +61,5 @@ locals {
   destroyable_postgres      = var.destroyable_postgres
   pg_ha                     = var.pg_ha
   deploy_shared_pg          = var.deploy_shared_pg
+  deploy_lnd_ips            = var.deploy_lnd_ips
 }
