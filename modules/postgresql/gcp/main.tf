@@ -16,8 +16,9 @@ resource "google_sql_database_instance" "instance" {
   deletion_protection = !local.destroyable
 
   settings {
-    tier              = local.tier
-    availability_type = local.highly_available ? "REGIONAL" : "ZONAL"
+    tier                        = local.tier
+    availability_type           = local.highly_available ? "REGIONAL" : "ZONAL"
+    deletion_protection_enabled = !local.destroyable
 
     dynamic "database_flags" {
       for_each = local.max_connections > 0 ? [local.max_connections] : []
