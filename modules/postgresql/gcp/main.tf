@@ -85,14 +85,15 @@ module "database" {
   for_each = toset(local.databases)
   source   = "./database"
 
-  gcp_project                 = local.gcp_project
-  db_name                     = each.value
-  admin_user_name             = google_sql_user.admin.name
-  user_name                   = "${each.value}-user"
-  user_can_create_db          = var.user_can_create_db
-  pg_instance_connection_name = google_sql_database_instance.instance.connection_name
-  connection_users            = local.big_query_viewers
-  replication                 = local.replication
+  gcp_project                   = local.gcp_project
+  db_name                       = each.value
+  admin_user_name               = google_sql_user.admin.name
+  user_name                     = "${each.value}-user"
+  user_can_create_db            = var.user_can_create_db
+  pg_instance_connection_name   = google_sql_database_instance.instance.connection_name
+  connection_users              = local.big_query_viewers
+  replication                   = local.replication
+  big_query_connection_location = local.big_query_connection_location
 }
 
 provider "postgresql" {

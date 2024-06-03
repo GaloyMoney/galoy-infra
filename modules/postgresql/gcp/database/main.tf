@@ -8,6 +8,7 @@ variable "replication" {}
 variable "connection_users" {
   type = list(string)
 }
+variable "big_query_connection_location" {}
 
 output "user" {
   value = postgresql_role.user.name
@@ -138,7 +139,7 @@ resource "google_bigquery_connection" "db" {
   project       = var.gcp_project
   friendly_name = "${var.db_name}-connection"
   description   = "Connection to ${var.db_name} database"
-  location      = "US"
+  location      = var.big_query_connection_location
 
   cloud_sql {
     instance_id = var.pg_instance_connection_name
