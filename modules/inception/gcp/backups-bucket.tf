@@ -8,6 +8,16 @@ resource "google_storage_bucket" "backups" {
     is_locked        = true
     retention_period = 2592000
   }
+
+  lifecycle_rule {
+    action {
+      type = "Delete"
+    }
+
+    condition {
+      age = 90
+    }
+  }
 }
 
 resource "google_service_account" "backups" {
