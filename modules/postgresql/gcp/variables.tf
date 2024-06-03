@@ -44,17 +44,17 @@ variable "big_query_connection_location" {
 }
 
 locals {
-  gcp_project            = var.gcp_project
-  vpc_name               = var.vpc_name
-  region                 = var.region
-  instance_name          = var.instance_name
-  destroyable            = var.destroyable
-  highly_available       = var.highly_available
-  tier                   = var.tier
-  max_connections        = var.max_connections
-  databases              = var.databases
-  big_query_viewers      = var.big_query_viewers
-  replication            = var.replication
-  provision_read_replica = var.provision_read_replica
+  gcp_project                   = var.gcp_project
+  vpc_name                      = var.vpc_name
+  region                        = var.region
+  instance_name                 = var.instance_name
+  destroyable                   = var.destroyable
+  highly_available              = var.highly_available
+  tier                          = var.tier
+  max_connections               = var.max_connections
+  databases                     = var.databases
+  big_query_viewers             = var.big_query_viewers
+  replication                   = var.replication
+  provision_read_replica        = var.provision_read_replica
   big_query_connection_location = var.big_query_connection_location
 }
