@@ -39,6 +39,9 @@ variable "provision_read_replica" {
   type        = bool
   default     = false
 }
+variable "big_query_connection_location" {
+  default = "US"
+}
 
 locals {
   gcp_project            = var.gcp_project
@@ -53,4 +56,5 @@ locals {
   big_query_viewers      = var.big_query_viewers
   replication            = var.replication
   provision_read_replica = var.provision_read_replica
+  big_query_connection_location = var.big_query_connection_location
 }
