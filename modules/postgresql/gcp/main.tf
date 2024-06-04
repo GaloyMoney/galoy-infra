@@ -11,7 +11,7 @@ resource "google_sql_database_instance" "instance" {
   name = "${local.instance_name}-${random_id.db_name_suffix.hex}"
 
   project             = local.gcp_project
-  database_version    = "POSTGRES_14"
+  database_version    = local.database_version
   region              = local.region
   deletion_protection = !local.destroyable
 
