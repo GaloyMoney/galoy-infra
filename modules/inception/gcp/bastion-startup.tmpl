@@ -74,8 +74,8 @@ wget https://github.com/lightningnetwork/lnd/releases/download/v${lnd_version}-b
    && rm -rf lnd-linux-amd64-v${lnd_version}-*
 
 mkdir k9s && cd k9s \
-   && wget https://github.com/derailed/k9s/releases/download/v${k9s_version}/k9s_Linux_x86_64.tar.gz \
-   && tar -xvf k9s_Linux_x86_64.tar.gz \
+   && wget https://github.com/derailed/k9s/releases/download/v${k9s_version}/k9s_Linux_amd64.tar.gz \
+   && tar -xvf k9s_Linux_amd64.tar.gz \
    && mv k9s /usr/local/bin \
    && cd .. && rm -rf k9s*
 
