@@ -7,6 +7,7 @@ resource "google_sql_database_instance" "replica" {
   database_version    = "POSTGRES_14"
   region              = local.region
   deletion_protection = !local.destroyable
+  depends_on          = [google_sql_database_instance.instance]
 
   settings {
     tier              = local.tier
