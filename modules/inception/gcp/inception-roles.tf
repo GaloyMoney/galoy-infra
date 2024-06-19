@@ -26,6 +26,7 @@ resource "google_project_iam_custom_role" "inception_make" {
     "compute.networks.get",
     "compute.networks.updatePolicy",
     "compute.regionOperations.get",
+    "compute.zoneOperations.get",
     "compute.subnetworks.create",
     "compute.subnetworks.get",
     "compute.subnetworks.use",
