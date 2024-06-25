@@ -1,7 +1,7 @@
 resource "google_sql_database_instance" "replica" {
   count                = local.provision_read_replica ? 1 : 0
   name                 = "${local.instance_name}-${random_id.db_name_suffix.hex}-replica"
-  master_instance_name = "${local.instance_name}-${random_id.db_name_suffix.hex}"
+  master_instance_name = google_sql_database_instance.instance.name
 
   project             = local.gcp_project
   database_version    = "POSTGRES_14"
