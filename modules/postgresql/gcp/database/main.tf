@@ -23,6 +23,10 @@ resource "random_password" "user" {
   special = false
 }
 
+resource "postgresql_extension" "database_migration_extension" {
+  name = "pglogical"
+}
+
 resource "postgresql_role" "user" {
   name            = var.user_name
   password        = random_password.user.result

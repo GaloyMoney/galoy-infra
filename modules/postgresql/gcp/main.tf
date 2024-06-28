@@ -20,6 +20,16 @@ resource "google_sql_database_instance" "instance" {
     availability_type           = local.highly_available ? "REGIONAL" : "ZONAL"
     deletion_protection_enabled = !local.destroyable
 
+    database_flags {
+      name  = "cloudsql.logical_decoding"
+      value = "on"
+    }
+
+    database_flags {
+      name  = "cloudsql.enable_pglogical"
+      value = "on"
+    }
+
     dynamic "database_flags" {
       for_each = local.max_connections > 0 ? [local.max_connections] : []
       content {
