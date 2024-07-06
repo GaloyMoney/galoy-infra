@@ -53,6 +53,7 @@ resource "postgresql_role" "replicator" {
   replication = true
 }
 
+
 resource "postgresql_database" "db" {
   name       = var.db_name
   owner      = var.admin_user_name
