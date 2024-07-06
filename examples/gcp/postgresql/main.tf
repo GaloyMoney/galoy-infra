@@ -16,10 +16,12 @@ output "private_ip" {
 
 output "instance_creds" {
   value = module.postgresql.instance_creds
+  sensitive = true
 }
 
 output "creds" {
   value = module.postgresql.creds
+  sensitive = true
 }
 
 module "postgresql" {
