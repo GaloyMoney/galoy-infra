@@ -123,7 +123,7 @@ provider "postgresql" {
 
 resource "postgresql_grant_role" "admin_replication" {
   role        = google_sql_user.admin.name
-  grant_role  = "rolreplication"
+  grant_role  = "replication"
 }
 
 terraform {
