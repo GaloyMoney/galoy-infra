@@ -26,7 +26,7 @@ output "creds" {
 
 module "postgresql" {
   # source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/postgresql/gcp?ref=1eb536b"
-  source = "../../../modules/postgresql/gcp"
+  source = "../../../../modules/postgresql/gcp"
 
   instance_name          = "${var.name_prefix}-pg"
   vpc_name               = "${var.vpc_name_prefix}-vpc"
