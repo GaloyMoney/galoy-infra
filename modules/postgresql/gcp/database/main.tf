@@ -24,7 +24,7 @@ resource "random_password" "user" {
 }
 
 resource "postgresql_extension" "database_migration_extension" {
-  name = "pglogical"
+  name     = "pglogical"
   database = var.db_name
 }
 

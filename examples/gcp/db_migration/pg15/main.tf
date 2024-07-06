@@ -15,12 +15,12 @@ output "private_ip" {
 }
 
 output "instance_creds" {
-  value = module.postgresql.instance_creds
+  value     = module.postgresql.instance_creds
   sensitive = true
 }
 
 output "creds" {
-  value = module.postgresql.creds
+  value     = module.postgresql.creds
   sensitive = true
 }
 
@@ -33,8 +33,8 @@ module "postgresql" {
   gcp_project            = var.gcp_project
   destroyable            = var.destroyable_postgres
   user_can_create_db     = true
-  databases              = [ "test" ]
+  databases              = []
   replication            = true
   provision_read_replica = false
-  database_version     = var.database_version
+  database_version       = var.database_version
 }
