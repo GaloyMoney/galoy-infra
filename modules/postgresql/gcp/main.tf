@@ -121,6 +121,11 @@ provider "postgresql" {
   superuser = false
 }
 
+resource "postgresql_grant_role" "admin_replication" {
+  role        = google_sql_user.admin.name
+  grant_role = "replicator"
+}
+
 terraform {
   required_providers {
     postgresql = {
