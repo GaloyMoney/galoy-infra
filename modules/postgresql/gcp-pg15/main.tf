@@ -7,12 +7,6 @@ resource "random_id" "db_name_suffix" {
   byte_length = 4
 }
 
-resource "postgresql_extension" "database_migration_extension_for_postgres_db" {
-  name     = "pglogical"
-  database = "postgres"
-}
-
-
 resource "google_sql_database_instance" "instance" {
   name = "${local.instance_name}-${random_id.db_name_suffix.hex}"
 
@@ -24,52 +18,6 @@ resource "google_sql_database_instance" "instance" {
   settings {
     tier                        = local.tier
     availability_type           = local.highly_available ? "REGIONAL" : "ZONAL"
-    deletion_protection_enabled = !local.destroyable
-
-    database_flags {
-      name  = "cloudsql.logical_decoding"
-      value = "on"
-    }
-
-    database_flags {
-      name  = "cloudsql.enable_pglogical"
-      value = "on"
-    }
-
-    dynamic "database_flags" {
-      for_each = local.max_connections > 0 ? [local.max_connections] : []
-      content {
-        name  = "max_connections"
-        value = local.max_connections
-      }
-    }
-
-    dynamic "database_flags" {
-      for_each = var.enable_detailed_logging ? [{
-        name  = "log_statement"
-        value = "all"
-        }, {
-        name  = "log_lock_waits"
-        value = "on"
-      }] : []
-      content {
-        name  = database_flags.value.name
-        value = database_flags.value.value
-      }
-    }
-
-    dynamic "database_flags" {
-      for_each = local.replication ? ["on"] : []
-      content {
-        name  = "cloudsql.logical_decoding"
-        value = "on"
-      }
-    }
-
-    backup_configuration {
-      enabled                        = true
-      point_in_time_recovery_enabled = true
-    }
 
     ip_configuration {
       ipv4_enabled                                  = false
@@ -95,21 +43,6 @@ resource "google_sql_user" "admin" {
   instance = google_sql_database_instance.instance.name
   password = random_password.admin.result
   project  = local.gcp_project
-}
-
-module "database" {
-  for_each = toset(local.databases)
-  source   = "./database"
-
-  gcp_project                   = local.gcp_project
-  db_name                       = each.value
-  admin_user_name               = google_sql_user.admin.name
-  user_name                     = "${each.value}-user"
-  user_can_create_db            = var.user_can_create_db
-  pg_instance_connection_name   = google_sql_database_instance.instance.connection_name
-  connection_users              = local.big_query_viewers
-  replication                   = local.replication
-  big_query_connection_location = local.big_query_connection_location
 }
 
 provider "postgresql" {
