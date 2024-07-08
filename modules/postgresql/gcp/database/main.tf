@@ -23,11 +23,6 @@ resource "random_password" "user" {
   special = false
 }
 
-resource "postgresql_extension" "database_migration_extension" {
-  name     = "pglogical"
-  database = var.db_name
-}
-
 resource "postgresql_role" "user" {
   name            = var.user_name
   password        = random_password.user.result
@@ -59,6 +54,11 @@ resource "postgresql_database" "db" {
   owner      = var.admin_user_name
   template   = "template0"
   lc_collate = "en_US.UTF8"
+}
+
+resource "postgresql_extension" "database_migration_extension" {
+  name     = "pglogical"
+  database = var.db_name
 }
 
 resource "postgresql_grant" "revoke_public" {
