@@ -121,11 +121,6 @@ provider "postgresql" {
   superuser = false
 }
 
-resource "postgresql_role" "admin_replication" {
-  name        = google_sql_user.admin.name
-  replication = true
-}
-
 terraform {
   required_providers {
     postgresql = {
