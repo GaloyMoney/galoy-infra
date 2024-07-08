@@ -59,6 +59,7 @@ resource "postgresql_database" "db" {
 resource "postgresql_extension" "database_migration_extension" {
   name     = "pglogical"
   database = var.db_name
+  depends_on = [ postgresql_database.db ]
 }
 
 resource "postgresql_grant" "revoke_public" {
