@@ -1,6 +1,7 @@
 variable "gcp_project" {}
 variable "vpc_name" {}
 variable "instance_name" {}
+variable "instance_admin_password" {}
 variable "region" {
   default = "us-east1"
 }
@@ -17,48 +18,23 @@ variable "tier" {
   default = "db-custom-1-3840"
 }
 variable "max_connections" { default = 0 }
-variable "enable_detailed_logging" {
-  description = "Enable detailed logging for the PostgreSQL instance"
-  type        = bool
-  default     = false
-}
 variable "database_version" {
   default = "POSTGRES_14"
-}
-variable "big_query_viewers" {
-  default = []
-  type    = list(string)
 }
 variable "databases" {
   type = list(string)
 }
-variable "replication" {
-  description = "Enable logical replication for the PostgreSQL instance"
-  type        = bool
-  default     = false
-}
-variable "provision_read_replica" {
-  description = "Provision read replica"
-  type        = bool
-  default     = false
-}
-variable "big_query_connection_location" {
-  default = "US"
-}
 
 locals {
-  gcp_project                   = var.gcp_project
-  vpc_name                      = var.vpc_name
-  region                        = var.region
-  instance_name                 = var.instance_name
-  database_version              = var.database_version
-  destroyable                   = var.destroyable
-  highly_available              = var.highly_available
-  tier                          = var.tier
-  max_connections               = var.max_connections
-  databases                     = var.databases
-  big_query_viewers             = var.big_query_viewers
-  replication                   = var.replication
-  provision_read_replica        = var.provision_read_replica
-  big_query_connection_location = var.big_query_connection_location
+  gcp_project             = var.gcp_project
+  vpc_name                = var.vpc_name
+  region                  = var.region
+  instance_name           = var.instance_name
+  instance_admin_password = var.instance_admin_password
+  database_version        = var.database_version
+  destroyable             = var.destroyable
+  highly_available        = var.highly_available
+  tier                    = var.tier
+  max_connections         = var.max_connections
+  databases               = var.databases
 }

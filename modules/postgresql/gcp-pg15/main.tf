@@ -33,22 +33,17 @@ resource "google_sql_database_instance" "instance" {
   }
 }
 
-resource "random_password" "admin" {
-  length  = 20
-  special = false
-}
-
 resource "google_sql_user" "admin" {
   name     = "${local.instance_name}-admin"
   instance = google_sql_database_instance.instance.name
-  password = random_password.admin.result
+  password = local.instance_admin_password
   project  = local.gcp_project
 }
 
 provider "postgresql" {
   host     = google_sql_database_instance.instance.private_ip_address
   username = google_sql_user.admin.name
-  password = random_password.admin.result
+  password = local.instance_admin_password
 
   # GCP doesn't let superuser mode https://cloud.google.com/sql/docs/postgres/users#superuser_restrictions
   superuser = false
