@@ -34,7 +34,7 @@ resource "google_sql_database_instance" "instance" {
 }
 
 resource "google_sql_user" "admin" {
-  name     = "${local.instance_name}-admin"
+  name     = "postgres"
   instance = google_sql_database_instance.instance.name
   password = local.instance_admin_password
   project  = local.gcp_project
