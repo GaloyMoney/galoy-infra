@@ -48,7 +48,7 @@ variable "big_query_connection_location" {
 variable "dms_upgradable" {
   description = "Instance is upgradable via Database Migration Service"
   type        = bool
-  default     = true 
+  default     = true
 }
 
 locals {
