@@ -21,6 +21,20 @@ resource "google_sql_database_instance" "instance" {
     deletion_protection_enabled = !local.destroyable
 
     dynamic "database_flags" {
+      for_each = local.dms_upgradable ? [{
+        name  = "cloudsql.logical_decoding"
+        value = "on"
+        }, {
+        name  = "cloudsql.enable_pglogical"
+        value = "on"
+      }] : []
+      content {
+        name  = database_flags.value.name
+        value = database_flags.value.value
+      }
+    }
+
+    dynamic "database_flags" {
       for_each = local.max_connections > 0 ? [local.max_connections] : []
       content {
         name  = "max_connections"
