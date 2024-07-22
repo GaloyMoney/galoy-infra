@@ -21,7 +21,7 @@ resource "google_sql_database_instance" "instance" {
     deletion_protection_enabled = !local.destroyable
 
     dynamic "database_flags" {
-      for_each = local.dms_upgradable ? [{
+      for_each = local.enable_logical_replication ? [{
         name  = "cloudsql.logical_decoding"
         value = "on"
         }, {

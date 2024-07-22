@@ -45,10 +45,10 @@ variable "provision_read_replica" {
 variable "big_query_connection_location" {
   default = "US"
 }
-variable "dms_upgradable" {
+variable "enable_logical_replication" {
   description = "Instance is upgradable via Database Migration Service"
   type        = bool
-  default     = true
+  default     = false
 }
 
 locals {
@@ -66,5 +66,5 @@ locals {
   replication                   = var.replication
   provision_read_replica        = var.provision_read_replica
   big_query_connection_location = var.big_query_connection_location
-  dms_upgradable                = var.dms_upgradable
+  enable_logical_replication    = var.enable_logical_replication
 }
