@@ -51,6 +51,12 @@ variable "upgradable" {
   default     = false
 }
 
+variable "database_port" {
+  description = "Instance is upgradable via Database Migration Service"
+  type        = number
+  default     = 5432
+}
+
 locals {
   gcp_project                   = var.gcp_project
   vpc_name                      = var.vpc_name
@@ -67,4 +73,5 @@ locals {
   provision_read_replica        = var.provision_read_replica
   big_query_connection_location = var.big_query_connection_location
   upgradable                    = var.upgradable
+  database_port                 = var.database_port
 }

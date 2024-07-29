@@ -13,6 +13,23 @@ resource "postgresql_extension" "pglogical" {
   database = "postgres"
 }
 
+resource "google_database_migration_service_connection_profile" "connection_profile" {
+  count                 = local.upgradable ? 1 : 0
+  location              = local.region
+  connection_profile_id = "${google_sql_database_instance.instance.name}-id"
+  display_name          = "${google_sql_database_instance.instance.name}-connection-profile"
+
+  postgresql {
+    cloud_sql_id = google_sql_database_instance.instance.name
+    host         = google_sql_database_instance.instance.private_ip_address
+    port         = local.database_port
+
+    username = google_sql_user.admin.name
+    password = google_sql_user.admin.password
+  }
+  depends_on = [google_sql_database_instance.instance]
+}
+
 resource "google_sql_database_instance" "instance" {
   name = "${local.instance_name}-${random_id.db_name_suffix.hex}"
 
@@ -119,6 +136,7 @@ module "database" {
 
 provider "postgresql" {
   host     = google_sql_database_instance.instance.private_ip_address
+  port     = local.database_port
   username = google_sql_user.admin.name
   password = random_password.admin.result
 
