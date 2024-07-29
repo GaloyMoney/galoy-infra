@@ -15,6 +15,7 @@ resource "postgresql_extension" "pglogical" {
 
 resource "google_database_migration_service_connection_profile" "connection_profile" {
   count                 = local.upgradable ? 1 : 0
+  project               = local.gcp_project
   location              = local.region
   connection_profile_id = "${google_sql_database_instance.instance.name}-id"
   display_name          = "${google_sql_database_instance.instance.name}-connection-profile"
