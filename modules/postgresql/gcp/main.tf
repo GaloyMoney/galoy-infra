@@ -7,6 +7,12 @@ resource "random_id" "db_name_suffix" {
   byte_length = 4
 }
 
+resource "postgresql_extension" "pglogical" {
+  count    = local.upgradable ? 1 : 0
+  name     = "pglogical"
+  database = "postgres"
+}
+
 resource "google_sql_database_instance" "instance" {
   name = "${local.instance_name}-${random_id.db_name_suffix.hex}"
 
@@ -21,7 +27,7 @@ resource "google_sql_database_instance" "instance" {
     deletion_protection_enabled = !local.destroyable
 
     dynamic "database_flags" {
-      for_each = local.enable_logical_replication ? [{
+      for_each = local.upgradable ? [{
         name  = "cloudsql.logical_decoding"
         value = "on"
         }, {
@@ -108,6 +114,7 @@ module "database" {
   connection_users              = local.big_query_viewers
   replication                   = local.replication
   big_query_connection_location = local.big_query_connection_location
+  upgradable                    = local.upgradable
 }
 
 provider "postgresql" {

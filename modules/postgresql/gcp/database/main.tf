@@ -5,6 +5,7 @@ variable "user_name" {}
 variable "user_can_create_db" {}
 variable "pg_instance_connection_name" {}
 variable "replication" {}
+variable "upgradable" {}
 variable "connection_users" {
   type = list(string)
 }
@@ -53,6 +54,13 @@ resource "postgresql_database" "db" {
   owner      = var.admin_user_name
   template   = "template0"
   lc_collate = "en_US.UTF8"
+}
+
+resource "postgresql_extension" "pglogical" {
+  count      = var.upgradable ? 1 : 0
+  name       = "pglogical"
+  database   = var.db_name
+  depends_on = [postgresql_database.db]
 }
 
 resource "postgresql_grant" "revoke_public" {
