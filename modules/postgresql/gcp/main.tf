@@ -51,7 +51,12 @@ resource "google_sql_database_instance" "instance" {
         }, {
         name  = "cloudsql.enable_pglogical"
         value = "on"
-      }] : []
+        }, {
+        # for exporting users after the database is migrated
+        name  = "cloudsql.pg_shadow_select_role"
+        value = "${local.instance_name}-admin"
+        }
+      ] : []
       content {
         name  = database_flags.value.name
         value = database_flags.value.value
