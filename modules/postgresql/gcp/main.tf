@@ -133,7 +133,7 @@ resource "null_resource" "grant_replication" {
       -p ${local.database_port} \
       -U ${google_sql_user.admin.name} \
       -d postgres \
-      -c "ALTER USER '${google_sql_user.admin.name}' WITH REPLICATION;"
+      -c 'ALTER USER "${google_sql_user.admin.name}" WITH REPLICATION;'
     EOT
   }
 
