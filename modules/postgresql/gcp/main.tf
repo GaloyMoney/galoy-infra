@@ -124,6 +124,22 @@ resource "google_sql_user" "admin" {
   project  = local.gcp_project
 }
 
+resource "null_resource" "grant_replication" {
+  count = local.upgradable ? 1 : 0
+  provisioner "local-exec" {
+    command = <<-EOT
+      PGPASSWORD='${google_sql_user.admin.password}' psql \
+      -h '${google_sql_database_instance.instance.private_ip_address}' \
+      -p ${local.database_port} \
+      -U ${google_sql_user.admin.name} \
+      -d postgres \
+      -c "ALTER USER '${google_sql_user.admin.name}' WITH REPLICATION;"
+    EOT
+  }
+
+  depends_on = [google_sql_database_instance.instance, google_sql_user.admin]
+}
+
 module "database" {
   for_each = toset(local.databases)
   source   = "./database"
