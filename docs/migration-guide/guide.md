@@ -60,6 +60,8 @@ The Migration was successful.
 
 # Step 6: Post-Migration Steps
 
+- [Verify Migration Job](https://cloud.google.com/database-migration/docs/postgres/quickstart#verify_the_migration_job) 
+
 > Once you migrated the database using DMS all objects and schema owner will become ‘cloudsqlexternalsync’ by default.
 
 1. Reassign Schema and Object Owners:
@@ -67,7 +69,7 @@ The Migration was successful.
 2. Migrate Users and Privileges:
    - Migration does not transfer privileges and users. Create users manually based on the old database.
 
-# Step 7: Syncing with terraform
+## Step 6.5: User creation with terraform
 
 [TODO]
 ![tf-state-list](./assets/tf-state.png)
