@@ -117,6 +117,30 @@ resource "random_password" "admin" {
   special = false
 }
 
+resource "random_password" "migration" {
+  length  = 20
+  special = false
+}
+
+resource "postgresql_role" "migration" {
+  name     = "${local.instance_name}-migration"
+  password = random_password.migration.result
+  login    = true
+}
+
+resource "postgresql_grant" "migration" {
+  database    = postgresql_database.db.name
+  role        = postgresql_role.big_query.name
+  object_type = "database"
+
+  privileges = ["CONNECT"]
+
+  depends_on = [
+    google_bigquery_connection.db,
+    postgresql_grant.grant_all
+  ]
+}
+
 resource "google_sql_user" "admin" {
   name     = "${local.instance_name}-admin"
   instance = google_sql_database_instance.instance.name
