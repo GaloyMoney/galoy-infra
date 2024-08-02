@@ -6,6 +6,10 @@ output "private_ip" {
   value = google_sql_database_instance.instance.private_ip_address
 }
 
+output "instance_creds" {
+  value = google_sql_user.admin
+}
+
 output "creds" {
   value = {
     for db in local.databases : db => {

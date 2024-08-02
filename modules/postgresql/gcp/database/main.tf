@@ -48,11 +48,18 @@ resource "postgresql_role" "replicator" {
   replication = true
 }
 
+
 resource "postgresql_database" "db" {
   name       = var.db_name
   owner      = var.admin_user_name
   template   = "template0"
   lc_collate = "en_US.UTF8"
+}
+
+resource "postgresql_extension" "database_migration_extension" {
+  name       = "pglogical"
+  database   = var.db_name
+  depends_on = [postgresql_database.db]
 }
 
 resource "postgresql_grant" "revoke_public" {

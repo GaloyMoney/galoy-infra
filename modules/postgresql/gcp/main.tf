@@ -7,6 +7,12 @@ resource "random_id" "db_name_suffix" {
   byte_length = 4
 }
 
+resource "postgresql_extension" "database_migration_extension_for_postgres_db" {
+  name     = "pglogical"
+  database = "postgres"
+}
+
+
 resource "google_sql_database_instance" "instance" {
   name = "${local.instance_name}-${random_id.db_name_suffix.hex}"
 
@@ -19,6 +25,16 @@ resource "google_sql_database_instance" "instance" {
     tier                        = local.tier
     availability_type           = local.highly_available ? "REGIONAL" : "ZONAL"
     deletion_protection_enabled = !local.destroyable
+
+    database_flags {
+      name  = "cloudsql.logical_decoding"
+      value = "on"
+    }
+
+    database_flags {
+      name  = "cloudsql.enable_pglogical"
+      value = "on"
+    }
 
     dynamic "database_flags" {
       for_each = local.max_connections > 0 ? [local.max_connections] : []
