@@ -45,6 +45,17 @@ variable "provision_read_replica" {
 variable "big_query_connection_location" {
   default = "US"
 }
+variable "upgradable" {
+  description = "Instance is upgradable via Database Migration Service"
+  type        = bool
+  default     = false
+}
+
+variable "database_port" {
+  description = "Instance is upgradable via Database Migration Service"
+  type        = number
+  default     = 5432
+}
 
 locals {
   gcp_project                   = var.gcp_project
@@ -61,4 +72,6 @@ locals {
   replication                   = var.replication
   provision_read_replica        = var.provision_read_replica
   big_query_connection_location = var.big_query_connection_location
+  upgradable                    = var.upgradable
+  database_port                 = var.database_port
 }
