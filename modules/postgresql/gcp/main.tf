@@ -167,7 +167,7 @@ resource "postgresql_grant" "grant_usage_postgres" {
   schema      = "pglogical"
   object_type = "schema"
 
-  privileges = ["USAGE"]
+  privileges = ["USAGE", "SELECT"]
 
   depends_on = [
     postgresql_extension.pglogical,
