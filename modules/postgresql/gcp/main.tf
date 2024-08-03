@@ -160,8 +160,23 @@ resource "postgresql_grant" "grant_usage_migration" {
   ]
 }
 
-# GRANT USAGE on SCHEMA pglogical to PUBLIC; on each database to migrate.
 resource "postgresql_grant" "grant_usage_pglogical" {
+  for_each    = local.upgradable ? toset(local.databases) : []
+  database    = each.value
+  role        = postgresql_role.migration[0].name
+  schema      = "pglogical"
+  object_type = "schema"
+
+  privileges = ["USAGE"]
+
+  depends_on = [
+    postgresql_extension.pglogical,
+    postgresql_role.migration
+  ]
+}
+
+# GRANT USAGE on SCHEMA pglogical to PUBLIC; on each database to migrate.
+resource "postgresql_grant" "grant_usage_public_pglogical" {
   for_each    = local.upgradable ? toset(local.databases) : []
   database    = each.value
   role        = "public"
