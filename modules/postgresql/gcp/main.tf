@@ -127,10 +127,23 @@ resource "random_password" "migration" {
 }
 
 resource "postgresql_role" "migration" {
-  count    = local.upgradable ? 1 : 0
-  name     = "${local.instance_name}-migration"
-  password = random_password.migration[0].result
-  login    = true
+  count       = local.upgradable ? 1 : 0
+  name        = "${local.instance_name}-migration"
+  password    = random_password.migration[0].result
+  login       = true
+  replication = true
+}
+
+# GRANT CONNECT all the database
+resource "postgresql_grant" "grant_connect" {
+  for_each    = local.upgradable ? toset(local.databases) : []
+  database    = each.value
+  role        = postgresql_role.migration[0].name
+  object_type = "database"
+  privileges  = ["CONNECT"]
+  depends_on = [
+    postgresql_role.migration
+  ]
 }
 
 # GRANT USAGE on SCHEMA SCHEMA to USER on all schemas (aside from the information schema and schemas starting with "pg_") on each database to migrate.
