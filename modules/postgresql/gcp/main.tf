@@ -25,8 +25,8 @@ resource "google_database_migration_service_connection_profile" "connection_prof
     host         = google_sql_database_instance.instance.private_ip_address
     port         = local.database_port
 
-    username = postgresql_role.migration.name
-    password = postgresql_role.migration.password
+    username = postgresql_role.migration[0].name
+    password = postgresql_role.migration[0].password
   }
   depends_on = [
     postgresql_role.migration,
