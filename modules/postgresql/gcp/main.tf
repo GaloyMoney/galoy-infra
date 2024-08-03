@@ -139,7 +139,7 @@ resource "postgresql_grant" "grant_connect_db_migration_user" {
   database    = each.value
   role        = postgresql_role.migration[0].name
   object_type = "database"
-  privileges  = ["CONNECT"]
+  privileges  = ["CONNECT" , "TEMPORARY"]
   depends_on = [
     postgresql_role.migration
   ]
