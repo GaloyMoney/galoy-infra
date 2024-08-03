@@ -160,6 +160,21 @@ resource "postgresql_grant" "grant_usage_migration" {
   ]
 }
 
+resource "postgresql_grant" "grant_usage_postgres" {
+  count       = local.upgradable ? 1 : 0
+  database    = "postgres"
+  role        = postgresql_role.migration[0].name
+  schema      = "pglogical"
+  object_type = "schema"
+
+  privileges = ["USAGE"]
+
+  depends_on = [
+    postgresql_extension.pglogical,
+    postgresql_role.migration
+  ]
+}
+
 resource "postgresql_grant" "grant_usage_pglogical" {
   for_each    = local.upgradable ? toset(local.databases) : []
   database    = each.value
