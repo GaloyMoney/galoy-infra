@@ -25,8 +25,8 @@ resource "google_database_migration_service_connection_profile" "connection_prof
     host         = google_sql_database_instance.instance.private_ip_address
     port         = local.database_port
 
-    username = google_sql_user.admin.name
-    password = google_sql_user.admin.password
+    username = google_sql_user.migration.name
+    password = google_sql_user.migration.password
   }
   depends_on = [google_sql_database_instance.instance]
 }
@@ -118,26 +118,74 @@ resource "random_password" "admin" {
 }
 
 resource "random_password" "migration" {
+  count   = local.upgradable ? 1 : 0
   length  = 20
   special = false
 }
 
 resource "postgresql_role" "migration" {
+  count    = local.upgradable ? 1 : 0
   name     = "${local.instance_name}-migration"
-  password = random_password.migration.result
+  password = random_password.migration[0].result
   login    = true
 }
 
-resource "postgresql_grant" "migration" {
-  database    = postgresql_database.db.name
-  role        = postgresql_role.big_query.name
-  object_type = "database"
-
-  privileges = ["CONNECT"]
+# GRANT USAGE on SCHEMA SCHEMA to USER on all schemas (aside from the information schema and schemas starting with "pg_") on each database to migrate.
+resource "postgresql_grant" "grant_usage_migration" {
+  for_each    = local.upgradable ? toset(local.databases) : []
+  database    = each.value
+  role        = postgresql_role.migration.name
+  schema      = "public"
+  object_type = "schema"
+  privileges  = ["USAGE"]
 
   depends_on = [
-    google_bigquery_connection.db,
-    postgresql_grant.grant_all
+    postgresql_role.migration
+  ]
+}
+
+# GRANT USAGE on SCHEMA pglogical to PUBLIC; on each database to migrate.
+resource "postgresql_grant" "grant_usage_pglogical" {
+  for_each    = local.upgradable ? toset(local.databases) : []
+  database    = each.value
+  role        = "public"
+  schema      = "pglogical"
+  object_type = "schema"
+
+  privileges = ["USAGE"]
+
+  depends_on = [
+    postgresql_role.migration
+  ]
+}
+
+# GRANT SELECT on ALL TABLES in SCHEMA pglogical to USER on all databases to get replication information from source databases.
+resource "postgresql_grant" "grant_select_pglogical" {
+  for_each    = local.upgradable ? toset(local.databases) : []
+  database    = each.value
+  role        = postgresql_role.migration.name
+  schema      = "pglogical"
+  object_type = "table"
+
+  privileges = ["SELECT"]
+
+  depends_on = [
+    postgresql_role.migration
+  ]
+}
+
+# GRANT SELECT on ALL TABLES in SCHEMA SCHEMA to USER on all schemas (aside from the information schema and schemas starting with "pg_") on each database to migrate.
+resource "postgresql_grant" "grant_select_public" {
+  for_each    = local.upgradable ? toset(local.databases) : []
+  database    = each.value
+  role        = postgresql_role.migration.name
+  schema      = "public"
+  object_type = "table"
+
+  privileges = ["SELECT"]
+
+  depends_on = [
+    postgresql_role.migration
   ]
 }
 
@@ -146,22 +194,6 @@ resource "google_sql_user" "admin" {
   instance = google_sql_database_instance.instance.name
   password = random_password.admin.result
   project  = local.gcp_project
-}
-
-resource "null_resource" "grant_replication" {
-  count = local.upgradable ? 1 : 0
-  provisioner "local-exec" {
-    command = <<-EOT
-      PGPASSWORD='${google_sql_user.admin.password}' psql \
-      -h '${google_sql_database_instance.instance.private_ip_address}' \
-      -p ${local.database_port} \
-      -U ${google_sql_user.admin.name} \
-      -d postgres \
-      -c 'ALTER USER "${google_sql_user.admin.name}" WITH REPLICATION;'
-    EOT
-  }
-
-  depends_on = [google_sql_database_instance.instance, google_sql_user.admin]
 }
 
 module "database" {
