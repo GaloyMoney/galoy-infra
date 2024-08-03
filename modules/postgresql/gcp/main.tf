@@ -137,7 +137,7 @@ resource "postgresql_role" "migration" {
 resource "postgresql_grant" "grant_usage_migration" {
   for_each    = local.upgradable ? toset(local.databases) : []
   database    = each.value
-  role        = postgresql_role.migration.name
+  role        = postgresql_role.migration[0].name
   schema      = "public"
   object_type = "schema"
   privileges  = ["USAGE"]
@@ -166,7 +166,7 @@ resource "postgresql_grant" "grant_usage_pglogical" {
 resource "postgresql_grant" "grant_select_pglogical" {
   for_each    = local.upgradable ? toset(local.databases) : []
   database    = each.value
-  role        = postgresql_role.migration.name
+  role        = postgresql_role.migration[0].name
   schema      = "pglogical"
   object_type = "table"
 
@@ -181,7 +181,7 @@ resource "postgresql_grant" "grant_select_pglogical" {
 resource "postgresql_grant" "grant_select_public" {
   for_each    = local.upgradable ? toset(local.databases) : []
   database    = each.value
-  role        = postgresql_role.migration.name
+  role        = postgresql_role.migration[0].name
   schema      = "public"
   object_type = "table"
 
