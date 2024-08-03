@@ -134,7 +134,6 @@ resource "postgresql_role" "migration" {
   replication = true
 }
 
-# GRANT CONNECT all the database
 resource "postgresql_grant" "grant_connect_db_migration_user" {
   for_each    = local.upgradable ? toset(local.migration_databases) : []
   database    = each.value
@@ -146,7 +145,6 @@ resource "postgresql_grant" "grant_connect_db_migration_user" {
   ]
 }
 
-# GRANT USAGE on SCHEMA SCHEMA to USER on all schemas (aside from the information schema and schemas starting with "pg_") on each database to migrate.
 resource "postgresql_grant" "grant_usage_public_schema_migration_user" {
   for_each    = local.upgradable ? toset(local.migration_databases) : []
   database    = each.value
@@ -176,7 +174,6 @@ resource "postgresql_grant" "grant_usage_pglogical_schema_migration_user" {
   ]
 }
 
-# GRANT USAGE on SCHEMA pglogical to PUBLIC; on each database to migrate.
 resource "postgresql_grant" "grant_usage_pglogical_schema_public_user" {
   for_each    = local.upgradable ? toset(local.migration_databases) : []
   database    = each.value
@@ -192,7 +189,6 @@ resource "postgresql_grant" "grant_usage_pglogical_schema_public_user" {
   ]
 }
 
-# GRANT SELECT on ALL TABLES in SCHEMA pglogical to USER on all databases to get replication information from source databases.
 resource "postgresql_grant" "grant_select_table_pglogical_schema_migration_user" {
   for_each    = local.upgradable ? toset(local.migration_databases) : []
   database    = each.value
@@ -208,7 +204,6 @@ resource "postgresql_grant" "grant_select_table_pglogical_schema_migration_user"
   ]
 }
 
-# GRANT SELECT on ALL TABLES in SCHEMA SCHEMA to USER on all schemas (aside from the information schema and schemas starting with "pg_") on each database to migrate.
 resource "postgresql_grant" "grant_select_table_public_schema_migration_user" {
   for_each    = local.upgradable ? toset(local.migration_databases) : []
   database    = each.value
