@@ -158,6 +158,7 @@ resource "postgresql_grant" "grant_usage_pglogical" {
   privileges = ["USAGE"]
 
   depends_on = [
+    postgresql_extension.pglogical,
     postgresql_role.migration
   ]
 }
@@ -173,7 +174,8 @@ resource "postgresql_grant" "grant_select_pglogical" {
   privileges = ["SELECT"]
 
   depends_on = [
-    postgresql_role.migration
+    postgresql_role.migration,
+    postgresql_extension.pglogical
   ]
 }
 
