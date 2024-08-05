@@ -25,10 +25,13 @@ resource "google_database_migration_service_connection_profile" "connection_prof
     host         = google_sql_database_instance.instance.private_ip_address
     port         = local.database_port
 
-    username = google_sql_user.admin.name
-    password = google_sql_user.admin.password
+    username = postgresql_role.migration[0].name
+    password = postgresql_role.migration[0].password
   }
-  depends_on = [google_sql_database_instance.instance]
+  depends_on = [
+    postgresql_role.migration,
+    google_sql_database_instance.instance
+  ]
 }
 
 resource "google_sql_database_instance" "instance" {
@@ -51,12 +54,7 @@ resource "google_sql_database_instance" "instance" {
         }, {
         name  = "cloudsql.enable_pglogical"
         value = "on"
-        }, {
-        # for exporting users after the database is migrated
-        name  = "cloudsql.pg_shadow_select_role"
-        value = "${local.instance_name}-admin"
-        }
-      ] : []
+      }] : []
       content {
         name  = database_flags.value.name
         value = database_flags.value.value
@@ -117,27 +115,109 @@ resource "random_password" "admin" {
   special = false
 }
 
+resource "random_password" "migration" {
+  count   = local.upgradable ? 1 : 0
+  length  = 20
+  special = false
+}
+
+resource "postgresql_role" "migration" {
+  count       = local.upgradable ? 1 : 0
+  name        = "${local.instance_name}-migration"
+  password    = random_password.migration[0].result
+  login       = true
+  replication = true
+}
+
+resource "postgresql_grant" "grant_connect_db_migration_user" {
+  for_each    = local.upgradable ? toset(local.migration_databases) : []
+  database    = each.value
+  role        = postgresql_role.migration[0].name
+  object_type = "database"
+  privileges  = ["CONNECT", "TEMPORARY"]
+  depends_on = [
+    postgresql_role.migration
+  ]
+}
+
+resource "postgresql_grant" "grant_usage_public_schema_migration_user" {
+  for_each    = local.upgradable ? toset(local.migration_databases) : []
+  database    = each.value
+  role        = postgresql_role.migration[0].name
+  schema      = "public"
+  object_type = "schema"
+  privileges  = ["USAGE"]
+
+  depends_on = [
+    postgresql_role.migration
+  ]
+}
+
+
+resource "postgresql_grant" "grant_usage_pglogical_schema_migration_user" {
+  for_each    = local.upgradable ? toset(local.migration_databases) : []
+  database    = each.value
+  role        = postgresql_role.migration[0].name
+  schema      = "pglogical"
+  object_type = "schema"
+
+  privileges = ["USAGE"]
+
+  depends_on = [
+    postgresql_extension.pglogical,
+    postgresql_role.migration
+  ]
+}
+
+resource "postgresql_grant" "grant_usage_pglogical_schema_public_user" {
+  for_each    = local.upgradable ? toset(local.migration_databases) : []
+  database    = each.value
+  role        = "public"
+  schema      = "pglogical"
+  object_type = "schema"
+
+  privileges = ["USAGE"]
+
+  depends_on = [
+    postgresql_extension.pglogical,
+    postgresql_role.migration
+  ]
+}
+
+resource "postgresql_grant" "grant_select_table_pglogical_schema_migration_user" {
+  for_each    = local.upgradable ? toset(local.migration_databases) : []
+  database    = each.value
+  role        = postgresql_role.migration[0].name
+  schema      = "pglogical"
+  object_type = "table"
+
+  privileges = ["SELECT"]
+
+  depends_on = [
+    postgresql_role.migration,
+    postgresql_extension.pglogical
+  ]
+}
+
+resource "postgresql_grant" "grant_select_table_public_schema_migration_user" {
+  for_each    = local.upgradable ? toset(local.migration_databases) : []
+  database    = each.value
+  role        = postgresql_role.migration[0].name
+  schema      = "public"
+  object_type = "table"
+
+  privileges = ["SELECT"]
+
+  depends_on = [
+    postgresql_role.migration
+  ]
+}
+
 resource "google_sql_user" "admin" {
   name     = "${local.instance_name}-admin"
   instance = google_sql_database_instance.instance.name
   password = random_password.admin.result
   project  = local.gcp_project
-}
-
-resource "null_resource" "grant_replication" {
-  count = local.upgradable ? 1 : 0
-  provisioner "local-exec" {
-    command = <<-EOT
-      PGPASSWORD='${google_sql_user.admin.password}' psql \
-      -h '${google_sql_database_instance.instance.private_ip_address}' \
-      -p ${local.database_port} \
-      -U ${google_sql_user.admin.name} \
-      -d postgres \
-      -c 'ALTER USER "${google_sql_user.admin.name}" WITH REPLICATION;'
-    EOT
-  }
-
-  depends_on = [google_sql_database_instance.instance, google_sql_user.admin]
 }
 
 module "database" {

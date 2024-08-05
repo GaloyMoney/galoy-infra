@@ -62,6 +62,7 @@ locals {
   tier                          = var.tier
   max_connections               = var.max_connections
   databases                     = var.databases
+  migration_databases           = concat(var.databases, ["postgres"])
   big_query_viewers             = var.big_query_viewers
   replication                   = var.replication
   provision_read_replica        = var.provision_read_replica

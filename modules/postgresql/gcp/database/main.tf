@@ -129,6 +129,7 @@ resource "postgresql_grant" "big_query_connect" {
     postgresql_grant.grant_all
   ]
 }
+
 resource "postgresql_grant" "big_query_select" {
   database    = postgresql_database.db.name
   role        = postgresql_role.big_query.name
