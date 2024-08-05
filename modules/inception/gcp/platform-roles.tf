@@ -73,7 +73,9 @@ resource "google_project_iam_custom_role" "platform_make" {
     "apikeys.keys.create",
     "apikeys.keys.get",
     "apikeys.keys.getKeyString",
-    "apikeys.keys.update"
+    "apikeys.keys.update",
+    "datamigration.connectionprofiles.create",
+    "datamigration.connectionprofiles.delete",
   ]
 }
 
