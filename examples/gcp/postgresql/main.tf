@@ -13,7 +13,8 @@ module "postgresql" {
   gcp_project            = var.gcp_project
   destroyable            = var.destroyable_postgres
   user_can_create_db     = true
-  databases              = []
+  databases              = ["test"]
   replication            = true
   provision_read_replica = true
+  upgradable             = true
 }
