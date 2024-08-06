@@ -13,6 +13,17 @@ resource "google_sql_database_instance" "replica" {
     availability_type = local.highly_available ? "REGIONAL" : "ZONAL"
 
     dynamic "database_flags" {
+      for_each = local.upgradable ? [{
+        name  = "cloudsql.enable_pglogical"
+        value = "on"
+      }] : []
+      content {
+        name  = database_flags.value.name
+        value = database_flags.value.value
+      }
+    }
+
+    dynamic "database_flags" {
       for_each = local.max_connections > 0 ? [local.max_connections] : []
       content {
         name  = "max_connections"
