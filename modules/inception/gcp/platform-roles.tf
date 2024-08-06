@@ -77,6 +77,7 @@ resource "google_project_iam_custom_role" "platform_make" {
     "datamigration.connectionprofiles.create",
     "datamigration.connectionprofiles.delete",
     "datamigration.connectionprofiles.get",
+    "datamigration.operations.get",
   ]
 }
 
