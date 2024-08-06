@@ -15,6 +15,6 @@ module "postgresql" {
   user_can_create_db     = true
   databases              = ["test"]
   replication            = true
-  provision_read_replica = true
+  provision_read_replica = false
   upgradable             = true
 }
