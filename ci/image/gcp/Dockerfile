@@ -7,7 +7,7 @@ RUN apt-get update \
   libtool autotools-dev autoconf libssl-dev libboost-all-dev \
   apt-transport-https ca-certificates \
   gnupg software-properties-common \
-  vim jq rsync wget netcat-traditional \
+  vim jq rsync wget netcat-openbsd \
   unzip \
   && apt-get clean all
 
