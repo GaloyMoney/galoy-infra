@@ -11,6 +11,9 @@ resource "postgresql_extension" "pglogical" {
   for_each = local.upgradable ? toset(local.migration_databases) : []
   name     = "pglogical"
   database = each.value
+  depends_on = [google_sql_database_instance.instance,
+    module.database
+  ]
 }
 
 resource "google_database_migration_service_connection_profile" "connection_profile" {
