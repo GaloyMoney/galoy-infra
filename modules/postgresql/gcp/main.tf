@@ -8,9 +8,9 @@ resource "random_id" "db_name_suffix" {
 }
 
 resource "postgresql_extension" "pglogical" {
-  count    = local.upgradable ? 1 : 0
+  for_each = local.upgradable ? toset(local.migration_databases) : []
   name     = "pglogical"
-  database = "postgres"
+  database = each.value
 }
 
 resource "google_database_migration_service_connection_profile" "connection_profile" {
@@ -214,10 +214,11 @@ resource "postgresql_grant" "grant_select_table_public_schema_migration_user" {
 }
 
 resource "google_sql_user" "admin" {
-  name     = "${local.instance_name}-admin"
-  instance = google_sql_database_instance.instance.name
-  password = random_password.admin.result
-  project  = local.gcp_project
+  name       = "${local.instance_name}-admin"
+  instance   = google_sql_database_instance.instance.name
+  password   = random_password.admin.result
+  project    = local.gcp_project
+  depends_on = [google_sql_database_instance.instance]
 }
 
 module "database" {
