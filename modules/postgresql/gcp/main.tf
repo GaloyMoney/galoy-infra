@@ -145,9 +145,6 @@ resource "postgresql_grant" "grant_connect_db_migration_user" {
   role        = postgresql_role.migration[0].name
   object_type = "database"
   privileges  = ["CONNECT", "TEMPORARY"]
-  depends_on = [
-    postgresql_role.migration
-  ]
 }
 
 resource "postgresql_grant" "grant_usage_public_schema_migration_user" {
@@ -157,10 +154,6 @@ resource "postgresql_grant" "grant_usage_public_schema_migration_user" {
   schema      = "public"
   object_type = "schema"
   privileges  = ["USAGE"]
-
-  depends_on = [
-    postgresql_role.migration
-  ]
 }
 
 resource "postgresql_grant" "grant_usage_pglogical_schema_migration_user" {
@@ -169,13 +162,7 @@ resource "postgresql_grant" "grant_usage_pglogical_schema_migration_user" {
   role        = postgresql_role.migration[0].name
   schema      = "pglogical"
   object_type = "schema"
-
   privileges = ["USAGE"]
-
-  depends_on = [
-    postgresql_extension.pglogical,
-    postgresql_role.migration
-  ]
 }
 
 resource "postgresql_grant" "grant_usage_pglogical_schema_public_user" {
@@ -184,13 +171,7 @@ resource "postgresql_grant" "grant_usage_pglogical_schema_public_user" {
   role        = "public"
   schema      = "pglogical"
   object_type = "schema"
-
   privileges = ["USAGE"]
-
-  depends_on = [
-    postgresql_extension.pglogical,
-    postgresql_role.migration
-  ]
 }
 
 resource "postgresql_grant" "grant_select_table_pglogical_schema_migration_user" {
@@ -199,13 +180,7 @@ resource "postgresql_grant" "grant_select_table_pglogical_schema_migration_user"
   role        = postgresql_role.migration[0].name
   schema      = "pglogical"
   object_type = "table"
-
   privileges = ["SELECT"]
-
-  depends_on = [
-    postgresql_role.migration,
-    postgresql_extension.pglogical
-  ]
 }
 
 resource "postgresql_grant" "grant_select_table_public_schema_migration_user" {
@@ -214,12 +189,7 @@ resource "postgresql_grant" "grant_select_table_public_schema_migration_user" {
   role        = postgresql_role.migration[0].name
   schema      = "public"
   object_type = "table"
-
   privileges = ["SELECT"]
-
-  depends_on = [
-    postgresql_role.migration
-  ]
 }
 
 resource "google_sql_user" "admin" {
