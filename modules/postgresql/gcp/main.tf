@@ -13,13 +13,6 @@ resource "postgresql_extension" "pglogical" {
   database = each.value
   depends_on = [
     google_sql_database_instance.instance,
-    postgresql_role.migration,
-    postgresql_grant.grant_connect_db_migration_user,
-    postgresql_grant.grant_usage_public_schema_migration_user,
-    postgresql_grant.grant_usage_pglogical_schema_migration_user,
-    postgresql_grant.grant_usage_pglogical_schema_public_user,
-    postgresql_grant.grant_select_table_pglogical_schema_migration_user,
-    postgresql_grant.grant_select_table_public_schema_migration_user
   ]
 }
 
