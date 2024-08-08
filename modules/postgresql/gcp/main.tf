@@ -12,8 +12,8 @@ resource "postgresql_extension" "pglogical" {
   name     = "pglogical"
   database = each.value
   depends_on = [google_sql_database_instance.instance,
-    module.database,
-    google_sql_user.admin
+    google_sql_user.admin,
+    module.postgresql.module.database[each.value].postgresql_database.db
   ]
 }
 
