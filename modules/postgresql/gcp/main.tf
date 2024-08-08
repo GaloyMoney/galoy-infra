@@ -163,6 +163,7 @@ resource "postgresql_grant" "grant_usage_pglogical_schema_migration_user" {
   schema      = "pglogical"
   object_type = "schema"
   privileges  = ["USAGE"]
+  depends_on = [ google_sql_database_instance.instance ]
 }
 
 resource "postgresql_grant" "grant_usage_pglogical_schema_public_user" {
@@ -172,6 +173,7 @@ resource "postgresql_grant" "grant_usage_pglogical_schema_public_user" {
   schema      = "pglogical"
   object_type = "schema"
   privileges  = ["USAGE"]
+  depends_on = [ google_sql_database_instance.instance ]
 }
 
 resource "postgresql_grant" "grant_select_table_pglogical_schema_migration_user" {
@@ -181,6 +183,7 @@ resource "postgresql_grant" "grant_select_table_pglogical_schema_migration_user"
   schema      = "pglogical"
   object_type = "table"
   privileges  = ["SELECT"]
+  depends_on = [ google_sql_database_instance.instance ]
 }
 
 resource "postgresql_grant" "grant_select_table_public_schema_migration_user" {
