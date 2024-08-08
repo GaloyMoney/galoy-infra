@@ -11,9 +11,15 @@ resource "postgresql_extension" "pglogical" {
   for_each = local.upgradable ? toset(local.migration_databases) : []
   name     = "pglogical"
   database = each.value
-  depends_on = [google_sql_database_instance.instance,
-    google_sql_user.admin,
-    module.postgresql.module.database[each.value].postgresql_database.db
+  depends_on = [
+    google_sql_database_instance.instance,
+    postgresql_role.migration,
+    postgresql_grant.grant_connect_db_migration_user,
+    postgresql_grant.grant_usage_public_schema_migration_user,
+    postgresql_grant.grant_usage_pglogical_schema_migration_user,
+    postgresql_grant.grant_usage_pglogical_schema_public_user,
+    postgresql_grant.grant_select_table_pglogical_schema_migration_user,
+    postgresql_grant.grant_select_table_public_schema_migration_user
   ]
 }
 
