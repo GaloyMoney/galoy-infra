@@ -162,8 +162,8 @@ resource "postgresql_grant" "grant_usage_pglogical_schema_migration_user" {
   role        = postgresql_role.migration[0].name
   schema      = "pglogical"
   object_type = "schema"
-  privileges = ["USAGE"]
-  depends_on = [ postgresql_extension.pglogical ]
+  privileges  = ["USAGE"]
+  depends_on  = [postgresql_extension.pglogical]
 }
 
 resource "postgresql_grant" "grant_usage_pglogical_schema_public_user" {
@@ -172,8 +172,8 @@ resource "postgresql_grant" "grant_usage_pglogical_schema_public_user" {
   role        = "public"
   schema      = "pglogical"
   object_type = "schema"
-  privileges = ["USAGE"]
-  depends_on = [ postgresql_extension.pglogical ]
+  privileges  = ["USAGE"]
+  depends_on  = [postgresql_grant.grant_usage_pglogical_schema_migration_user]
 }
 
 resource "postgresql_grant" "grant_select_table_pglogical_schema_migration_user" {
@@ -182,8 +182,8 @@ resource "postgresql_grant" "grant_select_table_pglogical_schema_migration_user"
   role        = postgresql_role.migration[0].name
   schema      = "pglogical"
   object_type = "table"
-  privileges = ["SELECT"]
-  depends_on = [ postgresql_extension.pglogical ]
+  privileges  = ["SELECT"]
+  depends_on  = [postgresql_grant.grant_usage_pglogical_schema_migration_user]
 }
 
 resource "postgresql_grant" "grant_select_table_public_schema_migration_user" {
@@ -192,7 +192,7 @@ resource "postgresql_grant" "grant_select_table_public_schema_migration_user" {
   role        = postgresql_role.migration[0].name
   schema      = "public"
   object_type = "table"
-  privileges = ["SELECT"]
+  privileges  = ["SELECT"]
 }
 
 resource "google_sql_user" "admin" {
