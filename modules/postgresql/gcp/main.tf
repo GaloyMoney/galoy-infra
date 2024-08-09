@@ -17,6 +17,7 @@ resource "postgresql_extension" "pglogical" {
   ]
 }
 
+
 resource "google_database_migration_service_connection_profile" "connection_profile" {
   count                 = local.upgradable ? 1 : 0
   project               = local.gcp_project
