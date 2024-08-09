@@ -158,7 +158,6 @@ resource "postgresql_grant" "grant_usage_public_schema_migration_user" {
   ]
 }
 
-
 resource "postgresql_grant" "grant_usage_pglogical_schema_migration_user" {
   for_each    = local.upgradable ? toset(local.migration_databases) : []
   database    = each.value
