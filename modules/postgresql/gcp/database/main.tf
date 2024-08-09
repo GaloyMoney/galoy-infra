@@ -56,13 +56,6 @@ resource "postgresql_database" "db" {
   lc_collate = "en_US.UTF8"
 }
 
-resource "postgresql_extension" "pglogical" {
-  count      = var.upgradable ? 1 : 0
-  name       = "pglogical"
-  database   = var.db_name
-  depends_on = [postgresql_database.db]
-}
-
 resource "postgresql_grant" "revoke_public" {
   database    = postgresql_database.db.name
   role        = "public"
