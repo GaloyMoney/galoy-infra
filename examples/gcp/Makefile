@@ -45,6 +45,8 @@ destroy-bootstrap:
 
 destroy-postgresql:
 	cd postgresql \
-		&& $(TF) destroy
+		&& $(TF) destroy \
+		&& tf state rm module.postgresql.google_sql_user.admin \
+		&& $(TF) destroy 
 
 .PHONY: bootstrap inception platform smoketest postgresql
