@@ -8,9 +8,13 @@ resource "random_id" "db_name_suffix" {
 }
 
 resource "postgresql_extension" "pglogical" {
-  count    = local.upgradable ? 1 : 0
+  for_each = local.upgradable ? toset(var.databases) : []
   name     = "pglogical"
-  database = "postgres"
+  database = each.value
+  depends_on = [
+    google_sql_database_instance.instance,
+    module.database
+  ]
 }
 
 resource "google_database_migration_service_connection_profile" "connection_profile" {
