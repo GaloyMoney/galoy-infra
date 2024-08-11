@@ -45,7 +45,7 @@ destroy-bootstrap:
 
 destroy-postgresql:
 	cd postgresql \
-		&& $(TF) destroy -auto-approve || true \
+		&& $(TF) destroy || true \
 		&& $(TF) state rm module.postgresql.google_sql_user.admin || true \
 		&& $(TF) destroy -auto-approve
 
