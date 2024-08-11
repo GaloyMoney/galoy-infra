@@ -1,6 +1,5 @@
 variable "name_prefix" {}
 variable "gcp_project" {}
-variable "vpc_name_prefix" {}
 variable "instance_admin_password" {}
 variable "database_version" {}
 variable "destroyable_postgres" {
@@ -21,11 +20,10 @@ output "instance_creds" {
 }
 
 module "postgresql" {
-  # source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/postgresql/gcp?ref=1eb536b"
   source = "../modules/postgresql/gcp-postgres-15"
 
   instance_name           = "${var.name_prefix}-pg"
-  vpc_name                = "${var.vpc_name_prefix}-vpc"
+  vpc_name                = "${var.name_prefix}-vpc"
   gcp_project             = var.gcp_project
   instance_admin_password = var.instance_admin_password
   destroyable             = var.destroyable_postgres
