@@ -29,6 +29,6 @@ module "postgresql" {
   gcp_project             = var.gcp_project
   instance_admin_password = var.instance_admin_password
   destroyable             = var.destroyable_postgres
-  databases               = ["test"]
+  databases               = []
   database_version        = var.database_version
 }
