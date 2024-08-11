@@ -22,7 +22,7 @@ output "instance_creds" {
 
 module "postgresql" {
   # source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/postgresql/gcp?ref=1eb536b"
-  source = "../../../../modules/postgresql/gcp-pg15"
+  source = "../modules/postgresql/gcp-postgres-15"
 
   instance_name           = "${var.name_prefix}-pg"
   vpc_name                = "${var.vpc_name_prefix}-vpc"
