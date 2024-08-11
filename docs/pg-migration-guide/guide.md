@@ -5,7 +5,6 @@
 Before proceeding, please review the [known limitations](https://cloud.google.com/database-migration/docs/postgres/known-limitations) of the Database Migration Service (DMS).
 
 # Step 1: Configure Source Instance
-1. Select the Instance to Upgrade:
 - Decide upon a instance to upgrade:
 
 	- We are choosing the rishi-pg14-volcano-staging-pg-a34e9984 instance, a PostgreSQL 14 instance managed via the `galoy-infra/modules/postgresql/gcp` Terraform module.
@@ -32,11 +31,16 @@ Before proceeding, please review the [known limitations](https://cloud.google.co
 # Step 4: Configure Destination
 - Configure New PostgreSQL Instance:
 	- **NOTE**: For simplicity keep the **prefix name** of source and destination same. 
-	- Use this Terraform [module](https://github.com/k3yss/galoy-infra/tree/work/keys/expose-sql-credentials/examples/gcp/db_migration/pg15) for configuration.
+	- A terraform module to create a new minimal POSTGRESQL instance can be found in `work/keys/minimal-pg-15` branch of the `galoy-infra` repo [link](https://github.com/GaloyMoney/galoy-infra/tree/work/keys/minimal-pg-15).
+    ```sh
+    $ git clone https://github.com/GaloyMoney/galoy-infra.git
+    $ cd galoy-infra
+    $ git switch work/keys/minimal-pg-15
+    $ cd postgres-15-barebone
+    $ terraform init
+    $ terraform apply
+    ``` 
 	- You can also use create a new instance via the Database migration tool, but I find it a little confusing and complicated.
-
-![Point-in-time](./assets/point-in-time.png)
-- This warning is probably irrevant for us, as we would be using terraform for the configuration. But something to look out **for**! 
 
 # Step 5: Start Database Migration Process 
 
@@ -49,16 +53,9 @@ Before proceeding, please review the [known limitations](https://cloud.google.co
 ![step-7](./assets/step-7.png)
 ![step-8](./assets/step-8.png)
 
-Once the replication delay is zero, promote the migration.
+### Once you see the **PROMOTE** option in the Database Migration Service, we would need to configure the destination database to be exactly as the source.
 
-![promote-migration](./assets/promote-migration.png)
-![migration-completed](./assets/migration-completed.png)
-
-The Migration was successful.
-
-![migration-successful](./assets/successful-migration.png)
-
-# Step 6: Post-Migration Steps
+# Step 6: Post-promotion Steps
 
 - [Verify Migration Job](https://cloud.google.com/database-migration/docs/postgres/quickstart#verify_the_migration_job) 
 
@@ -71,8 +68,14 @@ The Migration was successful.
 
 # Step 6.5: Terraform state sync and user creation
 
-## Method 1
-This method requires some downtime as we will promote the instance first. Once the migration is completed, promote your instance and follow the steps below to sync the Terraform state.
+### Step 0
+Before altering the state of the source instance we will backup the state so that we can use it later to delete the resources.
+
+```sh
+$ cd examples/gcp/
+$ mkdir postgres14-source
+$ cp -r postgresql/* postgres14-source/
+```
 
 ### Step 1
 Log in to the destination instance as the `postgres` user and change the name of the `cloudsqlexternalsync` user to your source database admin name:
@@ -106,6 +109,7 @@ module "postgresql" {
   replication            = false
   provision_read_replica = false
   upgradable             = false
+  backup                 = false
 }
 ```
 
@@ -155,11 +159,32 @@ import {
 > echo "<db-suffix>" | xxd -r -p | base64 | tr '/+' '_-' | tr -d '='
 > ```
 
-### Step 3 
+### Step 5 
 
 Finally, do a 
 
 ```sh
-tf apply
+terraform apply
 ```
-and the state should be synced with the new PostgreSQL instance.
+The destination instance should be exactly as with the source PostgreSQL instance.
+
+
+### Step 6
+Now go to the Database Migration Service and once the replication delay is zero, promote the migration.
+
+![promote-migration](./assets/promote-migration.png)
+![migration-completed](./assets/migration-completed.png)
+
+The Migration was successful.
+
+![migration-successful](./assets/successful-migration.png)
+
+# Step 7: Delete all the dangling resources
+- Delete the Database Migration Service 
+- Delete the source instance
+  ```sh
+  $ cd examples/gcp/postgres14-source
+  $ terraform destroy
+  $ terraform state rm module.postgresql.google_sql_user.admin 
+  $ terraform destroy
+  ```
