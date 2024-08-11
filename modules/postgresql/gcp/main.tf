@@ -141,6 +141,7 @@ resource "postgresql_grant" "grant_connect_db_migration_user" {
   object_type = "database"
   privileges  = ["CONNECT", "TEMPORARY"]
   depends_on = [
+    google_sql_database_instance.instance,
     postgresql_role.migration
   ]
 }
@@ -168,8 +169,8 @@ resource "postgresql_grant" "grant_usage_pglogical_schema_migration_user" {
   privileges  = ["USAGE"]
 
   depends_on = [
-    postgresql_extension.pglogical,
     postgresql_role.migration,
+    postgresql_extension.pglogical,
     postgresql_grant.grant_usage_public_schema_migration_user
   ]
 }
@@ -184,8 +185,8 @@ resource "postgresql_grant" "grant_usage_pglogical_schema_public_user" {
   privileges = ["USAGE"]
 
   depends_on = [
-    postgresql_extension.pglogical,
     postgresql_role.migration,
+    postgresql_extension.pglogical,
     postgresql_grant.grant_usage_pglogical_schema_migration_user
   ]
 }
