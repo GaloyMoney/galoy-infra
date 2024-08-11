@@ -47,6 +47,6 @@ destroy-postgresql:
 	cd postgresql \
 		&& $(TF) destroy || true \
 		&& $(TF) state rm module.postgresql.google_sql_user.admin || true \
-		&& $(TF) destroy 
+		&& $(TF) destroy -auto-approve
 
 .PHONY: bootstrap inception platform smoketest postgresql

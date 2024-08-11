@@ -8,7 +8,7 @@ resource "random_id" "db_name_suffix" {
 }
 
 resource "postgresql_extension" "pglogical" {
-  for_each = local.upgradable ? toset(var.databases) : []
+  for_each = local.upgradable ? toset(local.migration_databases) : []
   name     = "pglogical"
   database = each.value
   depends_on = [
