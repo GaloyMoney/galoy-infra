@@ -155,7 +155,7 @@ resource "postgresql_grant" "grant_usage_public_schema_migration_user" {
 
   depends_on = [
     postgresql_role.migration,
-    postgresqlpostgresql_grant.grant_connect_db_migration_user
+    postgresql_grant.grant_connect_db_migration_user
   ]
 }
 
