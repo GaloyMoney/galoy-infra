@@ -45,8 +45,15 @@ variable "provision_read_replica" {
 variable "big_query_connection_location" {
   default = "US"
 }
-variable "upgradable" {
-  description = "Instance is upgradable via Database Migration Service"
+
+variable "source_db_upgradable" {
+  description = "Configure source destination instance to be upgradable via Database Migration Service"
+  type        = bool
+  default     = false
+}
+
+variable "destination_db_upgradable" {
+  description = "Configure destination instance which can be used via Database Migration Service"
   type        = bool
   default     = false
 }
@@ -67,6 +74,7 @@ locals {
   replication                   = var.replication
   provision_read_replica        = var.provision_read_replica
   big_query_connection_location = var.big_query_connection_location
-  upgradable                    = var.upgradable
+  source_db_upgradable          = var.source_db_upgradable
+  destination_db_upgradable     = var.destination_db_upgradable
   database_port                 = 5432
 }

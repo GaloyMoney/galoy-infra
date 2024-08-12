@@ -5,7 +5,6 @@ variable "user_name" {}
 variable "user_can_create_db" {}
 variable "pg_instance_connection_name" {}
 variable "replication" {}
-variable "upgradable" {}
 variable "connection_users" {
   type = list(string)
 }

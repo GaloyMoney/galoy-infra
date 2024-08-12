@@ -13,7 +13,7 @@ resource "google_sql_database_instance" "replica" {
     availability_type = local.highly_available ? "REGIONAL" : "ZONAL"
 
     dynamic "database_flags" {
-      for_each = local.upgradable ? [{
+      for_each = local.source_db_upgradable ? [{
         name  = "cloudsql.enable_pglogical"
         value = "on"
       }] : []
