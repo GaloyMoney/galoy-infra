@@ -21,14 +21,7 @@ Before proceeding, please review the [known limitations](https://cloud.google.co
 
 - A connection profile is configured via the terraform module mentioned above when we enable the `upgradable` flag.
 
-
-# Step 3: Configure Connectivity
-[**VPC-Peering Reference**](https://cloud.google.com/database-migration/docs/postgres/configure-connectivity-vpc-peering)
-
-- For the connectivity we would be using the internal vpc that we already employ, so we don't need to do anything else.
-
-
-# Step 4: Configure Destination
+# Step 3: Configure Destination
 - Configure New PostgreSQL Instance:
 	- **NOTE**: For simplicity keep the **prefix name** of source and destination same. 
 	- A terraform module to create a new minimal POSTGRESQL instance can be found in `work/keys/minimal-pg-15` branch of the `galoy-infra` repo [link](https://github.com/GaloyMoney/galoy-infra/tree/work/keys/minimal-pg-15).
@@ -42,7 +35,7 @@ Before proceeding, please review the [known limitations](https://cloud.google.co
     ``` 
 	- You can also use create a new instance via the Database migration tool, but I find it a little confusing and complicated.
 
-# Step 5: Start Database Migration Process 
+# Step 4: Start Database Migration Process 
 
 ![step-1](./assets/step-1.png)
 ![step-2](./assets/step-2.png)
@@ -55,7 +48,7 @@ Before proceeding, please review the [known limitations](https://cloud.google.co
 
 ### Once you see the **PROMOTE** option in the Database Migration Service, we would need to configure the destination database to be exactly as the source.
 
-# Step 6: Post-promotion Steps
+# Step 5: Post-promotion Steps
 
 - [Verify Migration Job](https://cloud.google.com/database-migration/docs/postgres/quickstart#verify_the_migration_job) 
 
@@ -66,7 +59,7 @@ Before proceeding, please review the [known limitations](https://cloud.google.co
 2. Migrate Users and Privileges:
    - Migration does not transfer privileges and users. Create users manually based on the old database.
 
-# Step 6.5: Terraform state sync and user creation
+# Step 5.5: Terraform state sync and user creation
 
 ### Step 0
 Before altering the state of the source instance we will backup the state so that we can use it later to delete the resources.
