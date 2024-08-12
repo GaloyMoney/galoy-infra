@@ -96,8 +96,8 @@ resource "google_sql_database_instance" "instance" {
     }
 
     backup_configuration {
-      enabled                        = local.backup
-      point_in_time_recovery_enabled = local.backup
+      enabled                        = true
+      point_in_time_recovery_enabled = true
     }
 
     ip_configuration {

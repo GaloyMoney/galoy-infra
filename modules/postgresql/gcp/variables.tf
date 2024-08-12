@@ -51,12 +51,6 @@ variable "upgradable" {
   default     = false
 }
 
-variable "backup" {
-  description = "Backup is enabled for the PostgreSQL instance"
-  type        = bool
-  default     = true
-}
-
 locals {
   gcp_project                   = var.gcp_project
   vpc_name                      = var.vpc_name
@@ -75,5 +69,4 @@ locals {
   big_query_connection_location = var.big_query_connection_location
   upgradable                    = var.upgradable
   database_port                 = 5432
-  backup                        = var.backup
 }
