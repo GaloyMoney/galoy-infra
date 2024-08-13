@@ -17,7 +17,6 @@ resource "postgresql_extension" "pglogical" {
   ]
 }
 
-
 resource "google_database_migration_service_connection_profile" "connection_profile" {
   count                 = local.upgradable ? 1 : 0
   project               = local.gcp_project
@@ -132,6 +131,7 @@ resource "postgresql_role" "migration" {
   password    = random_password.migration[0].result
   login       = true
   replication = true
+  depends_on  = [google_sql_database_instance.instance]
 }
 
 resource "postgresql_grant" "grant_connect_db_migration_user" {
@@ -141,6 +141,8 @@ resource "postgresql_grant" "grant_connect_db_migration_user" {
   object_type = "database"
   privileges  = ["CONNECT", "TEMPORARY"]
   depends_on = [
+    google_sql_database_instance.instance,
+    module.database,
     postgresql_role.migration
   ]
 }
@@ -154,7 +156,9 @@ resource "postgresql_grant" "grant_usage_public_schema_migration_user" {
   privileges  = ["USAGE"]
 
   depends_on = [
-    postgresql_role.migration
+    postgresql_role.migration,
+    module.database,
+    postgresql_grant.grant_connect_db_migration_user
   ]
 }
 
@@ -164,12 +168,13 @@ resource "postgresql_grant" "grant_usage_pglogical_schema_migration_user" {
   role        = postgresql_role.migration[0].name
   schema      = "pglogical"
   object_type = "schema"
-
-  privileges = ["USAGE"]
+  privileges  = ["USAGE"]
 
   depends_on = [
+    postgresql_role.migration,
+    module.database,
     postgresql_extension.pglogical,
-    postgresql_role.migration
+    postgresql_grant.grant_usage_public_schema_migration_user
   ]
 }
 
@@ -183,8 +188,10 @@ resource "postgresql_grant" "grant_usage_pglogical_schema_public_user" {
   privileges = ["USAGE"]
 
   depends_on = [
+    postgresql_role.migration,
+    module.database,
     postgresql_extension.pglogical,
-    postgresql_role.migration
+    postgresql_grant.grant_usage_pglogical_schema_migration_user
   ]
 }
 
@@ -199,7 +206,9 @@ resource "postgresql_grant" "grant_select_table_pglogical_schema_migration_user"
 
   depends_on = [
     postgresql_role.migration,
-    postgresql_extension.pglogical
+    module.database,
+    postgresql_extension.pglogical,
+    postgresql_grant.grant_usage_pglogical_schema_public_user
   ]
 }
 
@@ -213,7 +222,9 @@ resource "postgresql_grant" "grant_select_table_public_schema_migration_user" {
   privileges = ["SELECT"]
 
   depends_on = [
-    postgresql_role.migration
+    postgresql_role.migration,
+    module.database,
+    postgresql_grant.grant_select_table_pglogical_schema_migration_user
   ]
 }
 
