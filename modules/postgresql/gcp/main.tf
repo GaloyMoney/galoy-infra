@@ -8,7 +8,7 @@ resource "random_id" "db_name_suffix" {
 }
 
 resource "postgresql_extension" "pglogical" {
-  for_each = local.source_db_upgradable ? toset(local.migration_databases) : []
+  for_each = local.prep_upgrade_as_source_db ? toset(local.migration_databases) : []
   name     = "pglogical"
   database = each.value
   depends_on = [
@@ -18,7 +18,7 @@ resource "postgresql_extension" "pglogical" {
 }
 
 resource "google_database_migration_service_connection_profile" "connection_profile" {
-  count                 = local.source_db_upgradable ? 1 : 0
+  count                 = local.prep_upgrade_as_source_db ? 1 : 0
   project               = local.gcp_project
   location              = local.region
   connection_profile_id = "${google_sql_database_instance.instance.name}-id"
@@ -52,7 +52,7 @@ resource "google_sql_database_instance" "instance" {
     deletion_protection_enabled = !local.destroyable
 
     dynamic "database_flags" {
-      for_each = local.source_db_upgradable ? [{
+      for_each = local.prep_upgrade_as_source_db ? [{
         name  = "cloudsql.logical_decoding"
         value = "on"
         }, {
@@ -96,8 +96,8 @@ resource "google_sql_database_instance" "instance" {
     }
 
     backup_configuration {
-      enabled                        = local.destination_db_upgradable ? false : true
-      point_in_time_recovery_enabled = local.destination_db_upgradable ? false : true
+      enabled                        = local.prep_upgrade_as_destination_db ? false : true
+      point_in_time_recovery_enabled = local.prep_upgrade_as_destination_db ? false : true
     }
 
     ip_configuration {
@@ -120,13 +120,13 @@ resource "random_password" "admin" {
 }
 
 resource "random_password" "migration" {
-  count   = local.source_db_upgradable ? 1 : 0
+  count   = local.prep_upgrade_as_source_db ? 1 : 0
   length  = 20
   special = false
 }
 
 resource "postgresql_role" "migration" {
-  count       = local.source_db_upgradable ? 1 : 0
+  count       = local.prep_upgrade_as_source_db ? 1 : 0
   name        = "${local.instance_name}-migration"
   password    = random_password.migration[0].result
   login       = true
@@ -135,7 +135,7 @@ resource "postgresql_role" "migration" {
 }
 
 resource "postgresql_grant" "grant_connect_db_migration_user" {
-  for_each    = local.source_db_upgradable ? toset(local.migration_databases) : []
+  for_each    = local.prep_upgrade_as_source_db ? toset(local.migration_databases) : []
   database    = each.value
   role        = postgresql_role.migration[0].name
   object_type = "database"
@@ -148,7 +148,7 @@ resource "postgresql_grant" "grant_connect_db_migration_user" {
 }
 
 resource "postgresql_grant" "grant_usage_public_schema_migration_user" {
-  for_each    = local.source_db_upgradable ? toset(local.migration_databases) : []
+  for_each    = local.prep_upgrade_as_source_db ? toset(local.migration_databases) : []
   database    = each.value
   role        = postgresql_role.migration[0].name
   schema      = "public"
@@ -163,7 +163,7 @@ resource "postgresql_grant" "grant_usage_public_schema_migration_user" {
 }
 
 resource "postgresql_grant" "grant_usage_pglogical_schema_migration_user" {
-  for_each    = local.source_db_upgradable ? toset(local.migration_databases) : []
+  for_each    = local.prep_upgrade_as_source_db ? toset(local.migration_databases) : []
   database    = each.value
   role        = postgresql_role.migration[0].name
   schema      = "pglogical"
@@ -179,7 +179,7 @@ resource "postgresql_grant" "grant_usage_pglogical_schema_migration_user" {
 }
 
 resource "postgresql_grant" "grant_usage_pglogical_schema_public_user" {
-  for_each    = local.source_db_upgradable ? toset(local.migration_databases) : []
+  for_each    = local.prep_upgrade_as_source_db ? toset(local.migration_databases) : []
   database    = each.value
   role        = "public"
   schema      = "pglogical"
@@ -196,7 +196,7 @@ resource "postgresql_grant" "grant_usage_pglogical_schema_public_user" {
 }
 
 resource "postgresql_grant" "grant_select_table_pglogical_schema_migration_user" {
-  for_each    = local.source_db_upgradable ? toset(local.migration_databases) : []
+  for_each    = local.prep_upgrade_as_source_db ? toset(local.migration_databases) : []
   database    = each.value
   role        = postgresql_role.migration[0].name
   schema      = "pglogical"
@@ -213,7 +213,7 @@ resource "postgresql_grant" "grant_select_table_pglogical_schema_migration_user"
 }
 
 resource "postgresql_grant" "grant_select_table_public_schema_migration_user" {
-  for_each    = local.source_db_upgradable ? toset(local.migration_databases) : []
+  for_each    = local.prep_upgrade_as_source_db ? toset(local.migration_databases) : []
   database    = each.value
   role        = postgresql_role.migration[0].name
   schema      = "public"
@@ -229,7 +229,7 @@ resource "postgresql_grant" "grant_select_table_public_schema_migration_user" {
 }
 
 resource "google_sql_user" "admin" {
-  name     = local.destination_db_upgradable ? "postgres" : "${local.instance_name}-admin"
+  name     = local.prep_upgrade_as_destination_db ? "postgres" : "${local.instance_name}-admin"
   instance = google_sql_database_instance.instance.name
   password = random_password.admin.result
   project  = local.gcp_project

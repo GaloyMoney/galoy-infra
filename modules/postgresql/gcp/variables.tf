@@ -46,35 +46,35 @@ variable "big_query_connection_location" {
   default = "US"
 }
 
-variable "source_db_upgradable" {
+variable "prep_upgrade_as_source_db" {
   description = "Configure source destination instance to be upgradable via Database Migration Service"
   type        = bool
   default     = false
 }
 
-variable "destination_db_upgradable" {
+variable "prep_upgrade_as_destination_db" {
   description = "Configure destination instance which can be used via Database Migration Service"
   type        = bool
   default     = false
 }
 
 locals {
-  gcp_project                   = var.gcp_project
-  vpc_name                      = var.vpc_name
-  region                        = var.region
-  instance_name                 = var.instance_name
-  database_version              = var.database_version
-  destroyable                   = var.destroyable
-  highly_available              = var.highly_available
-  tier                          = var.tier
-  max_connections               = var.max_connections
-  databases                     = var.databases
-  migration_databases           = concat(var.databases, ["postgres"])
-  big_query_viewers             = var.big_query_viewers
-  replication                   = var.replication
-  provision_read_replica        = var.provision_read_replica
-  big_query_connection_location = var.big_query_connection_location
-  source_db_upgradable          = var.source_db_upgradable
-  destination_db_upgradable     = var.destination_db_upgradable
-  database_port                 = 5432
+  gcp_project                    = var.gcp_project
+  vpc_name                       = var.vpc_name
+  region                         = var.region
+  instance_name                  = var.instance_name
+  database_version               = var.database_version
+  destroyable                    = var.destroyable
+  highly_available               = var.highly_available
+  tier                           = var.tier
+  max_connections                = var.max_connections
+  databases                      = var.databases
+  migration_databases            = concat(var.databases, ["postgres"])
+  big_query_viewers              = var.big_query_viewers
+  replication                    = var.replication
+  provision_read_replica         = var.provision_read_replica
+  big_query_connection_location  = var.big_query_connection_location
+  prep_upgrade_as_source_db      = var.prep_upgrade_as_source_db
+  prep_upgrade_as_destination_db = var.prep_upgrade_as_destination_db
+  database_port                  = 5432
 }
