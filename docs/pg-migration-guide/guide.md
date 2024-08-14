@@ -83,7 +83,7 @@ prep_upgrade_as_destination_db = true
 ![step-7](./assets/step-7.png)
 ![step-8](./assets/step-8.png)
 
-### Once you see the **PROMOTE** option in the Database Migration Service, we would need to configure the destination database to be exactly as the source, see the next step on how to do it.
+### Once you see the **PROMOTE** option in the Database Migration Service, **do not** promote the instance yet, we would configure the destination database to be exactly as the source in the next step, then promote the instance.
 
 # Step 4: Pre-promotion 
 
@@ -94,17 +94,16 @@ prep_upgrade_as_destination_db = true
 
 ### Step 4.5: Handing the non-migrated settings and syncing state via `terraform`
 
-### Step 0
+#### Step 4.5.0
 Before altering the state of the source instance we will backup the state so that we can use it later to delete the resources.
 
 ```sh
 $ cd <path-to-your-state-file>
 $ mkdir migration_postgres14-source
 $ cp terraform.tfstate migration_postgres14-source/
-$ cp main.tf migration_postgres14-source/
 ```
 
-### Step 1
+#### Step 4.5.1
 - Go to Users tab and delete the **`<database-admin-user>`** 
 - Log in to the `destination instance` as the `postgres` user and change the name of the `cloudsqlexternalsync` user to the **`<database-admin-user>`** that we deleted earlier, so that we can use that to connect to the database:
 
@@ -114,7 +113,7 @@ ALTER USER "cloudsqlexternalsync" RENAME TO "<database-admin-user>";
 
 Also, via the `google cloud console`, assign a password for the admin user, for simplicity you can keep it the same as the source instance so you don't have to handle imports, the further guide assumes you have used the same password.
 
-### Step 2
+#### Step 4.5.2
 
 Modify your source destination's `main.tf` to reflect the new destination instance by changing:
 - Change the `database_version` to `"POSTGRES_15"` and
@@ -142,7 +141,7 @@ module "postgresql" {
 }
 ```
 
-### Step 3
+#### Step 4.5.3
 Remove the state of the old instance, run the below command:
 
 ```sh
@@ -156,7 +155,7 @@ module.postgresql.data.google_compute_network.vpc
 module.postgresql.random_password.admin
 ```
 
-### Step 4
+#### Step 4.5.4
 Create an `import.tf` file with the following content:
 
 ```hcl
@@ -178,7 +177,7 @@ import {
 
  `echo "<db-suffix>" | xxd -r -p | base64 | tr '/+' '_-' | tr -d '='`
 
-### Step 5 
+#### Step 4.5.5 
 
 Finally, do a 
 
@@ -188,7 +187,7 @@ terraform apply
 The destination instance should be exactly as with the source PostgreSQL instance, expect backups which we will enable after promotion.
 
 
-### Step 6
+# Step 5: Promote the instance
 Now go to the Database Migration Service and once the replication delay is zero, promote the migration.
 
 ![promote-migration](./assets/promote-migration.png)
@@ -198,7 +197,7 @@ Now go to the Database Migration Service and once the replication delay is zero,
 
 ![migration-successful](./assets/successful-migration.png)
 
-### Step 7:  Enable backup
+# Step 6: Enable backup
 Disable `prep_upgrade_as_destination_db` flag, 
 
 ```hcl
