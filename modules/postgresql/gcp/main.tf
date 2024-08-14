@@ -229,7 +229,7 @@ resource "postgresql_grant" "grant_select_table_public_schema_migration_user" {
 }
 
 resource "google_sql_user" "admin" {
-  name     = local.prep_upgrade_as_destination_db ? "postgres" : "${local.instance_name}-admin"
+  name     = "${local.instance_name}-admin"
   instance = google_sql_database_instance.instance.name
   password = random_password.admin.result
   project  = local.gcp_project
