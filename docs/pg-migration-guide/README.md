@@ -10,7 +10,7 @@ Before proceeding, please review the [known limitations](https://cloud.google.co
 
   ![decide-source](./assets/decide-source-instance.png)
 
-- On the terraform file of the decided instance, enable the `source_db_upgradable` flag
+- On the terraform file of the decided instance, enable the `prep_upgrade_as_source_db` flag
 
 ```hcl
 module "postgresql_migration_source" {  
@@ -27,11 +27,11 @@ replication            = true
 provision_read_replica = true  
 database_version       = "POSTGRES_14"  
 // Enable it as follows
-source_db_upgradable   = true
+prep_upgrade_as_source_db   = true
 }
 ```
 
-The `source_db_upgradable` flag configures the source database and creates a connection profile with the migration user as required by the Database Migration Service.
+The `prep_upgrade_as_source_db` flag configures the source database and creates a connection profile with the migration user as required by the Database Migration Service.
 
 - ** The full specification of how the source instance needs to be configured can be found [Here](https://cloud.google.com/database-migration/docs/postgres/configure-source-database#configure-your-source-instance-postgres)
 - **  The specification for connection profile can be found [here](https://cloud.google.com/database-migration/docs/postgres/create-source-connection-profile)
