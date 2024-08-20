@@ -25,12 +25,12 @@ resource "google_database_migration_service_connection_profile" "connection_prof
   count                 = local.prep_upgrade_as_source_db ? 1 : 0
   project               = local.gcp_project
   location              = local.region
-  connection_profile_id = "${google_sql_database_instance.instance.name}-id"
+  connection_profile_id = local.pre_promotion ? "${google_sql_database_instance.destination_instance[0].name}-id" : "${google_sql_database_instance.instance.name}-id"
   display_name          = "${google_sql_database_instance.instance.name}-connection-profile"
 
   postgresql {
-    cloud_sql_id = google_sql_database_instance.instance.name
-    host         = google_sql_database_instance.instance.private_ip_address
+    cloud_sql_id = local.pre_promotion ? google_sql_database_instance.destination_instance[0].name : google_sql_database_instance.instance.name
+    host         = local.pre_promotion ? google_sql_database_instance.destination_instance[0].private_ip_address : google_sql_database_instance.instance.private_ip_address
     port         = local.database_port
 
     username = postgresql_role.migration[0].name
