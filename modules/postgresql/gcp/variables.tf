@@ -52,6 +52,12 @@ variable "prep_upgrade_as_source_db" {
   default     = false
 }
 
+variable "pre_promotion" {
+  description = "Configure the destination instance which becomes the source after the terraform to act nicely with the migration service"
+  type        = bool
+  default     = false
+}
+
 locals {
   gcp_project                   = var.gcp_project
   vpc_name                      = var.vpc_name
@@ -69,5 +75,6 @@ locals {
   provision_read_replica        = var.provision_read_replica
   big_query_connection_location = var.big_query_connection_location
   prep_upgrade_as_source_db     = var.prep_upgrade_as_source_db
+  pre_promotion                 = var.pre_promotion
   database_port                 = 5432
 }

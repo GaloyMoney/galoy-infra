@@ -12,7 +12,7 @@ resource "random_id" "db_name_suffix_destination" {
 }
 
 resource "postgresql_extension" "pglogical" {
-  for_each = local.prep_upgrade_as_source_db ? toset(local.migration_databases) : []
+  for_each = local.pre_promotion ? [] : local.prep_upgrade_as_source_db ? toset(local.migration_databases) : []
   name     = "pglogical"
   database = each.value
   depends_on = [
@@ -36,10 +36,6 @@ resource "google_database_migration_service_connection_profile" "connection_prof
     username = postgresql_role.migration[0].name
     password = postgresql_role.migration[0].password
   }
-  depends_on = [
-    postgresql_role.migration,
-    google_sql_database_instance.instance
-  ]
 }
 
 resource "google_sql_database_instance" "instance" {
@@ -216,7 +212,7 @@ resource "postgresql_role" "migration" {
 }
 
 resource "postgresql_grant" "grant_connect_db_migration_user" {
-  for_each    = local.prep_upgrade_as_source_db ? toset(local.migration_databases) : []
+  for_each    = local.pre_promotion ? [] : local.prep_upgrade_as_source_db ? toset(local.migration_databases) : []
   database    = each.value
   role        = postgresql_role.migration[0].name
   object_type = "database"
@@ -224,12 +220,11 @@ resource "postgresql_grant" "grant_connect_db_migration_user" {
   depends_on = [
     google_sql_database_instance.instance,
     module.database,
-    postgresql_role.migration
   ]
 }
 
 resource "postgresql_grant" "grant_usage_public_schema_migration_user" {
-  for_each    = local.prep_upgrade_as_source_db ? toset(local.migration_databases) : []
+  for_each    = local.pre_promotion ? [] : local.prep_upgrade_as_source_db ? toset(local.migration_databases) : []
   database    = each.value
   role        = postgresql_role.migration[0].name
   schema      = "public"
@@ -237,14 +232,13 @@ resource "postgresql_grant" "grant_usage_public_schema_migration_user" {
   privileges  = ["USAGE"]
 
   depends_on = [
-    postgresql_role.migration,
     module.database,
     postgresql_grant.grant_connect_db_migration_user
   ]
 }
 
 resource "postgresql_grant" "grant_usage_pglogical_schema_migration_user" {
-  for_each    = local.prep_upgrade_as_source_db ? toset(local.migration_databases) : []
+  for_each    = local.pre_promotion ? [] : local.prep_upgrade_as_source_db ? toset(local.migration_databases) : []
   database    = each.value
   role        = postgresql_role.migration[0].name
   schema      = "pglogical"
@@ -252,7 +246,6 @@ resource "postgresql_grant" "grant_usage_pglogical_schema_migration_user" {
   privileges  = ["USAGE"]
 
   depends_on = [
-    postgresql_role.migration,
     module.database,
     postgresql_extension.pglogical,
     postgresql_grant.grant_usage_public_schema_migration_user
@@ -260,7 +253,7 @@ resource "postgresql_grant" "grant_usage_pglogical_schema_migration_user" {
 }
 
 resource "postgresql_grant" "grant_usage_pglogical_schema_public_user" {
-  for_each    = local.prep_upgrade_as_source_db ? toset(local.migration_databases) : []
+  for_each    = local.pre_promotion ? [] : local.prep_upgrade_as_source_db ? toset(local.migration_databases) : []
   database    = each.value
   role        = "public"
   schema      = "pglogical"
@@ -269,7 +262,6 @@ resource "postgresql_grant" "grant_usage_pglogical_schema_public_user" {
   privileges = ["USAGE"]
 
   depends_on = [
-    postgresql_role.migration,
     module.database,
     postgresql_extension.pglogical,
     postgresql_grant.grant_usage_pglogical_schema_migration_user
@@ -277,7 +269,7 @@ resource "postgresql_grant" "grant_usage_pglogical_schema_public_user" {
 }
 
 resource "postgresql_grant" "grant_select_table_pglogical_schema_migration_user" {
-  for_each    = local.prep_upgrade_as_source_db ? toset(local.migration_databases) : []
+  for_each    = local.pre_promotion ? [] : local.prep_upgrade_as_source_db ? toset(local.migration_databases) : []
   database    = each.value
   role        = postgresql_role.migration[0].name
   schema      = "pglogical"
@@ -286,7 +278,6 @@ resource "postgresql_grant" "grant_select_table_pglogical_schema_migration_user"
   privileges = ["SELECT"]
 
   depends_on = [
-    postgresql_role.migration,
     module.database,
     postgresql_extension.pglogical,
     postgresql_grant.grant_usage_pglogical_schema_public_user
@@ -294,7 +285,7 @@ resource "postgresql_grant" "grant_select_table_pglogical_schema_migration_user"
 }
 
 resource "postgresql_grant" "grant_select_table_public_schema_migration_user" {
-  for_each    = local.prep_upgrade_as_source_db ? toset(local.migration_databases) : []
+  for_each    = local.pre_promotion ? [] : local.prep_upgrade_as_source_db ? toset(local.migration_databases) : []
   database    = each.value
   role        = postgresql_role.migration[0].name
   schema      = "public"
@@ -303,7 +294,6 @@ resource "postgresql_grant" "grant_select_table_public_schema_migration_user" {
   privileges = ["SELECT"]
 
   depends_on = [
-    postgresql_role.migration,
     module.database,
     postgresql_grant.grant_select_table_pglogical_schema_migration_user
   ]
