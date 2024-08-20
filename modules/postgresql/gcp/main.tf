@@ -7,6 +7,10 @@ resource "random_id" "db_name_suffix" {
   byte_length = 4
 }
 
+resource "random_id" "db_name_suffix_destination" {
+  byte_length = 4
+}
+
 resource "postgresql_extension" "pglogical" {
   for_each = local.prep_upgrade_as_source_db ? toset(local.migration_databases) : []
   name     = "pglogical"
@@ -96,8 +100,85 @@ resource "google_sql_database_instance" "instance" {
     }
 
     backup_configuration {
-      enabled                        = local.prep_upgrade_as_destination_db ? false : true
-      point_in_time_recovery_enabled = local.prep_upgrade_as_destination_db ? false : true
+      enabled                        = true
+      point_in_time_recovery_enabled = true
+    }
+
+    ip_configuration {
+      ipv4_enabled                                  = false
+      private_network                               = data.google_compute_network.vpc.id
+      enable_private_path_for_google_cloud_services = true
+    }
+  }
+
+  timeouts {
+    create = "45m"
+    update = "45m"
+    delete = "45m"
+  }
+}
+
+resource "google_sql_database_instance" "destination_instance" {
+  name  = "${local.instance_name}-${random_id.db_name_suffix_destination.hex}"
+  count = local.prep_upgrade_as_source_db ? 1 : 0
+
+  project             = local.gcp_project
+  database_version    = local.database_version
+  region              = local.region
+  deletion_protection = !local.destroyable
+
+  settings {
+    tier                        = local.tier
+    availability_type           = local.highly_available ? "REGIONAL" : "ZONAL"
+    deletion_protection_enabled = !local.destroyable
+
+    dynamic "database_flags" {
+      for_each = local.prep_upgrade_as_source_db ? [{
+        name  = "cloudsql.logical_decoding"
+        value = "on"
+        }, {
+        name  = "cloudsql.enable_pglogical"
+        value = "on"
+      }] : []
+      content {
+        name  = database_flags.value.name
+        value = database_flags.value.value
+      }
+    }
+
+    dynamic "database_flags" {
+      for_each = local.max_connections > 0 ? [local.max_connections] : []
+      content {
+        name  = "max_connections"
+        value = local.max_connections
+      }
+    }
+
+    dynamic "database_flags" {
+      for_each = var.enable_detailed_logging ? [{
+        name  = "log_statement"
+        value = "all"
+        }, {
+        name  = "log_lock_waits"
+        value = "on"
+      }] : []
+      content {
+        name  = database_flags.value.name
+        value = database_flags.value.value
+      }
+    }
+
+    dynamic "database_flags" {
+      for_each = local.replication ? ["on"] : []
+      content {
+        name  = "cloudsql.logical_decoding"
+        value = "on"
+      }
+    }
+
+    backup_configuration {
+      enabled                        = false
+      point_in_time_recovery_enabled = false
     }
 
     ip_configuration {
