@@ -4,7 +4,7 @@ resource "google_sql_database_instance" "replica" {
   master_instance_name = google_sql_database_instance.instance.name
 
   project             = local.gcp_project
-  database_version    = "POSTGRES_14"
+  database_version    = local.database_version
   region              = local.region
   deletion_protection = !local.destroyable
 
