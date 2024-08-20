@@ -25,6 +25,9 @@ variable "enable_detailed_logging" {
 variable "database_version" {
   default = "POSTGRES_14"
 }
+variable "destination_database_version" {
+  default = "POSTGRES_14"
+}
 variable "big_query_viewers" {
   default = []
   type    = list(string)
@@ -64,6 +67,7 @@ locals {
   region                        = var.region
   instance_name                 = var.instance_name
   database_version              = var.database_version
+  destination_database_version  = var.destination_database_version
   destroyable                   = var.destroyable
   highly_available              = var.highly_available
   tier                          = var.tier

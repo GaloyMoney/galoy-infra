@@ -119,7 +119,7 @@ resource "google_sql_database_instance" "destination_instance" {
   count = local.prep_upgrade_as_source_db ? 1 : 0
 
   project             = local.gcp_project
-  database_version    = "POSTGRES_15"
+  database_version    = local.destination_database_version
   region              = local.region
   deletion_protection = !local.destroyable
 
