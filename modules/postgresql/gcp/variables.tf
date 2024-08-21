@@ -26,7 +26,7 @@ variable "database_version" {
   default = "POSTGRES_14"
 }
 variable "destination_database_version" {
-  default = "POSTGRES_14"
+  default = "POSTGRES_15"
 }
 variable "big_query_viewers" {
   default = []
