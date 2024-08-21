@@ -115,6 +115,5 @@ resource "google_project_iam_custom_role" "platform_destroy" {
     "monitoring.alertPolicies.delete",
     "datamigration.connectionprofiles.delete",
     "biqguery.datasets.delete",
-    "biqguery.tables.delete",
   ]
 }
