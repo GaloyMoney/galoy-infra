@@ -59,6 +59,13 @@ resource "google_project_iam_custom_role" "platform_make" {
     "cloudsql.users.create",
     "cloudsql.users.list",
     "cloudsql.instances.list",
+    "bigquery.datasets.create",
+    "bigquery.datasets.update",
+    "bigquery.datasets.get",
+    "bigquery.tables.create",
+    "bigquery.tables.get",
+    "bigquery.tables.update",
+    "bigquery.tables.updateData",
     "bigquery.connections.create",
     "bigquery.connections.get",
     "bigquery.connections.getIamPolicy",
@@ -75,7 +82,6 @@ resource "google_project_iam_custom_role" "platform_make" {
     "apikeys.keys.getKeyString",
     "apikeys.keys.update",
     "datamigration.connectionprofiles.create",
-    "datamigration.connectionprofiles.delete",
     "datamigration.connectionprofiles.get",
     "datamigration.operations.get",
   ]
@@ -107,5 +113,8 @@ resource "google_project_iam_custom_role" "platform_destroy" {
     "apikeys.keys.delete",
     "monitoring.notificationChannels.delete",
     "monitoring.alertPolicies.delete",
+    "datamigration.connectionprofiles.delete",
+    "biqguery.datasets.delete",
+    "biqguery.tables.delete",
   ]
 }
