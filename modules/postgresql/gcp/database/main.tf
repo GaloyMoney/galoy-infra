@@ -137,6 +137,7 @@ resource "postgresql_grant" "big_query_select" {
 }
 
 resource "google_bigquery_connection" "db" {
+  count         = length(var.connection_users) > 0 ? 1 : 0
   project       = var.gcp_project
   friendly_name = "${var.db_name}-connection"
   description   = "Connection to ${var.db_name} database"
@@ -156,8 +157,8 @@ resource "google_bigquery_connection" "db" {
 resource "google_bigquery_connection_iam_member" "user" {
   for_each      = toset(var.connection_users)
   project       = var.gcp_project
-  location      = google_bigquery_connection.db.location
-  connection_id = google_bigquery_connection.db.connection_id
+  location      = google_bigquery_connection.db[0].location
+  connection_id = google_bigquery_connection.db[0].connection_id
   role          = "roles/bigquery.connectionUser"
   member        = each.value
 }
