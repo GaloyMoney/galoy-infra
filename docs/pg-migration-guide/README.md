@@ -31,44 +31,14 @@ prep_upgrade_as_source_db   = true
 }
 ```
 
-The `prep_upgrade_as_source_db` flag configures the source database and creates a connection profile with the migration user as required by the Database Migration Service.
+The `prep_upgrade_as_source_db` flag configures the source database, initialises a new postgres destination and creates a connection profile with the migration user as required by the Database Migration Service.
 
 - ** The full specification of how the source instance needs to be configured can be found [Here](https://cloud.google.com/database-migration/docs/postgres/configure-source-database#configure-your-source-instance-postgres)
 - **  The specification for connection profile can be found [here](https://cloud.google.com/database-migration/docs/postgres/create-source-connection-profile)
 
+# Step 2: Start Database Migration Process 
 
-# Step 2: Create a Destination instance
-**NOTE**: For simplicity keep the **prefix name** of source and destination same. 
-
-- Create a new instance using the `modules/postgresql/gcp` terraform module, with the following specifications:
-- `prep_upgrade_as_destination_db` flag set to `true` 
-- `read_replica` flag set to `false`
-- The destination instance should contain no databases 
-
-
-
-```hcl
-module "postgresql_migration_destination" {  
-source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/postgresql/gcp?ref=<git_ref>"  
-# source = "../../../modules/postgresql/gcp"  
-  
-instance_name             = "${var.name_prefix}-pg"  
-vpc_name                  = "${var.name_prefix}-vpc"  
-gcp_project               = var.gcp_project  
-destroyable               = var.destroyable_postgres  
-user_can_create_db        = true  
-# should contain no databse
-databases                 = []  
-replication               = true  
-provision_read_replica    = false  
-destination_db_upgradable = true  
-database_version          = "POSTGRES_15"  
-# enable this for disabling backups
-prep_upgrade_as_destination_db = true
-}
-```
-
-# Step 3: Start Database Migration Process 
+### Go to the [Database Migration Service Console](https://console.cloud.google.com/dbmigration/migrations)
 
 ![step-1](./assets/step-1.png)
 #### Select the connection profile which would be named in the format `<source-db-instance-name>-connection-profile`
@@ -85,16 +55,16 @@ prep_upgrade_as_destination_db = true
 
 ### Once you see the **PROMOTE** option in the Database Migration Service, **do not** promote the instance yet, we would configure the destination database to be exactly as the source in the next step, then promote the instance.
 
-# Step 4: Pre-promotion 
+# Step 3: Pre-promotion 
 
 - You should verify if all the data has migrated successfully, a generic guide to do it can be found [here](https://cloud.google.com/database-migration/docs/postgres/quickstart#verify_the_migration_job) 
 
 >    -  Migration does not transfer privileges and users. Create users manually based on the old database.
 >    - Once you migrated the database using DMS all objects and schema owner will become `cloudsqlexternalsync` by default.
 
-### Step 4.5: Handing the non-migrated settings and syncing state via `terraform`
+### Step 3.5: Handing the non-migrated settings and syncing state via `terraform`
 
-#### Step 4.5.0
+#### Step 3.5.0
 Before altering the state of the source instance we will backup the state so that we can use it later to delete the resources.
 
 ```sh
@@ -103,7 +73,7 @@ $ mkdir migration_postgres14-source
 $ cp terraform.tfstate migration_postgres14-source/
 ```
 
-#### Step 4.5.1
+#### Step 3.5.1
 - Go to Users tab and delete the **`<database-admin-user>`** 
 - Log in to the `destination instance` as the `postgres` user and change the name of the `cloudsqlexternalsync` user to the **`<database-admin-user>`** that we deleted earlier, so that we can use that to connect to the database:
 
@@ -113,12 +83,12 @@ ALTER USER "cloudsqlexternalsync" RENAME TO "<database-admin-user>";
 
 Also, via the `google cloud console`, assign a password for the admin user, for simplicity you can keep it the same as the source instance so you don't have to handle imports, the further guide assumes you have used the same password.
 
-#### Step 4.5.2
+#### Step 3.5.2
 
 Modify your source destination's `main.tf` to reflect the new destination instance by changing:
 - Change the `database_version` to `"POSTGRES_15"` and
 - Set the `prep_upgrade_as_source_db` to `false` or remove the `prep_upgrade_as_source_db` as by default it has the `false` value 
-- Set `prep_upgrade_as_destination_db` to `true`, as we need the backups disabled; (we need to enable them later):
+- Set `pre_promotion` to `true`, as we need the backups disabled; (we need to enable them later):
 
 ```hcl
 module "postgresql" {
@@ -133,59 +103,46 @@ module "postgresql" {
   databases              = ["test"]
   highly_available       = false
   replication            = true
+  // version change
   database_version       = "POSTGRES_15"
   # We can enable this flag now
   provision_read_replica = true
   # We still need the backups disabled as the instance is a read-replica
-  prep_upgrade_as_destination_db = true
+  pre_promotion          = true
 }
 ```
 
-#### Step 4.5.3
-Remove the state of the old instance, run the below command:
+#### Step 3.5.3
+Manipulate the old state to reflect the new state by running the two scripts located at `galoy-infra/examples/gcp/bin`
 
 ```sh
-terraform state rm -backup=backup.tfstate $(terraform state list | grep -vE "google_compute_network.vpc|random_password.admin")
+$ ./terraform-db-swap.sh
+# This will ask for your terraform module name
+# And swap the state between the newer and old instance
+$ ./terraform-state-rm.sh
+# This will ask for your terraform module name, give it the same name as you gave before
+# This will remove all the conflicting state which terraform will try to remove manually
 ```
 
-Final state:
-```sh
-terraform state list
-module.postgresql.data.google_compute_network.vpc
-module.postgresql.random_password.admin
-```
 
-#### Step 4.5.4
-Create an `import.tf` file with the following content:
-
-```hcl
-import {
-  to = module.postgresql.random_id.db_name_suffix
-  id = "<b64_url of your db_name_suffix>"
-}
-
-import {
-  to = module.postgresql.google_sql_database_instance.instance
-  id = "projects/volcano-staging/instances/<instance-name>"
-}
-
-import {
-  to = module.postgresql.module.database["test"].postgresql_database.db
-  id = "test"
-}
-```
-
- `echo "<db-suffix>" | xxd -r -p | base64 | tr '/+' '_-' | tr -d '='`
-
-#### Step 4.5.5 
+#### Step 3.5.4 
 
 Finally, do a 
 
 ```sh
 terraform apply
 ```
-The destination instance should be exactly as with the source PostgreSQL instance, expect backups which we will enable after promotion.
+The destination instance should be exactly as with the source PostgreSQL instance, expect backups which we will enable after promotion, and database artifacts which we will fix in the next step.
 
+
+#### Step 3.5.5 
+
+Change the owners of the tables and schemas to the correct owner using the psql command:
+
+```sh
+#TODO after the dry run
+
+```
 
 # Step 5: Promote the instance
 Now go to the Database Migration Service and once the replication delay is zero, promote the migration.
@@ -198,7 +155,7 @@ Now go to the Database Migration Service and once the replication delay is zero,
 ![migration-successful](./assets/successful-migration.png)
 
 # Step 6: Enable backup
-Disable `prep_upgrade_as_destination_db` flag, 
+Disable `pre_promotion` flag, 
 
 ```hcl
 module "postgresql" {
@@ -216,7 +173,7 @@ module "postgresql" {
   replication            = true
   provision_read_replica = true
   # Enable backups now
-  prep_upgrade_as_destination_db = false 
+  pre_promotion          = false # <-we can also remove this line completely
 }
 ```
 Do a `terraform apply`
@@ -227,4 +184,12 @@ Do a `terraform apply`
 ![delete-dms](./assets/delete-dms.png)
 - Delete the external-replica that was used for performing the replication.
 ![delete-external-replica](./assets/external-replica-delete.png)
-- Use the backed-up state from **Step 0** and do a `terraform destroy` on it to destroy all the old resources.
+- Delete the rest of the resources, which includes:
+  -  source instance
+  -  connection-profile
+  
+  You can delete them manually by going to [connection profile console](https://console.cloud.google.com/dbmigration/connection-profiles) and [cloud sql console](https://console.cloud.google.com/sql/instances)
+  
+  or 
+  
+  use the backed-up state from earlier and do a `terraform destroy` on it to destroy the resources. (While testing it was found that the first method was faster and less error prone)
