@@ -116,7 +116,7 @@ resource "google_sql_database_instance" "instance" {
 }
 
 resource "google_sql_database_instance" "destination_instance" {
-  name  = "${local.instance_name}-${random_id.db_name_suffix_destination.hex}"
+  name  = "${local.instance_name}-${random_id.db_name_suffix_destination[0].hex}"
   count = local.prep_upgrade_as_source_db ? 1 : 0
 
   project             = local.gcp_project
