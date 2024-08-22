@@ -17,3 +17,10 @@ terraform state rm "module.$module_name.postgresql_grant.grant_usage_public_sche
 terraform state rm "module.$module_name.google_sql_database_instance.destination_instance"
 terraform state rm "module.$module_name.random_id.db_name_suffix_destination"
 
+# remove connection profile
+terraform state rm "module.$module_name.google_database_migration_service_connection_profile.connection_profile"
+
+# remove migration user
+terraform state rm "module.$module_name.postgresql_role.migration"
+terraform state rm "module.$module_name.random_password.migration"
+
