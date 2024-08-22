@@ -12,7 +12,7 @@ resource "random_id" "db_name_suffix_destination" {
 }
 
 resource "postgresql_extension" "pglogical" {
-  for_each = local.pre_promotion ? [] : local.prep_upgrade_as_source_db ? toset(local.migration_databases) : []
+  for_each = local.prep_upgrade_as_source_db ? toset(local.migration_databases) : []
   name     = "pglogical"
   database = each.value
   depends_on = [
@@ -25,12 +25,12 @@ resource "google_database_migration_service_connection_profile" "connection_prof
   count                 = local.prep_upgrade_as_source_db ? 1 : 0
   project               = local.gcp_project
   location              = local.region
-  connection_profile_id = local.pre_promotion ? "${google_sql_database_instance.destination_instance[0].name}-id" : "${google_sql_database_instance.instance.name}-id"
+  connection_profile_id = "${google_sql_database_instance.instance.name}-id"
   display_name          = "${google_sql_database_instance.instance.name}-connection-profile"
 
   postgresql {
-    cloud_sql_id = local.pre_promotion ? google_sql_database_instance.destination_instance[0].name : google_sql_database_instance.instance.name
-    host         = local.pre_promotion ? google_sql_database_instance.destination_instance[0].private_ip_address : google_sql_database_instance.instance.private_ip_address
+    cloud_sql_id = google_sql_database_instance.instance.name
+    host         = google_sql_database_instance.instance.private_ip_address
     port         = local.database_port
 
     username = postgresql_role.migration[0].name
@@ -212,7 +212,7 @@ resource "postgresql_role" "migration" {
 }
 
 resource "postgresql_grant" "grant_connect_db_migration_user" {
-  for_each    = local.pre_promotion ? [] : local.prep_upgrade_as_source_db ? toset(local.migration_databases) : []
+  for_each    = local.prep_upgrade_as_source_db ? toset(local.migration_databases) : []
   database    = each.value
   role        = postgresql_role.migration[0].name
   object_type = "database"
@@ -224,7 +224,7 @@ resource "postgresql_grant" "grant_connect_db_migration_user" {
 }
 
 resource "postgresql_grant" "grant_usage_public_schema_migration_user" {
-  for_each    = local.pre_promotion ? [] : local.prep_upgrade_as_source_db ? toset(local.migration_databases) : []
+  for_each    = local.prep_upgrade_as_source_db ? toset(local.migration_databases) : []
   database    = each.value
   role        = postgresql_role.migration[0].name
   schema      = "public"
@@ -238,7 +238,7 @@ resource "postgresql_grant" "grant_usage_public_schema_migration_user" {
 }
 
 resource "postgresql_grant" "grant_usage_pglogical_schema_migration_user" {
-  for_each    = local.pre_promotion ? [] : local.prep_upgrade_as_source_db ? toset(local.migration_databases) : []
+  for_each    = local.prep_upgrade_as_source_db ? toset(local.migration_databases) : []
   database    = each.value
   role        = postgresql_role.migration[0].name
   schema      = "pglogical"
@@ -253,7 +253,7 @@ resource "postgresql_grant" "grant_usage_pglogical_schema_migration_user" {
 }
 
 resource "postgresql_grant" "grant_usage_pglogical_schema_public_user" {
-  for_each    = local.pre_promotion ? [] : local.prep_upgrade_as_source_db ? toset(local.migration_databases) : []
+  for_each    = local.prep_upgrade_as_source_db ? toset(local.migration_databases) : []
   database    = each.value
   role        = "public"
   schema      = "pglogical"
@@ -269,7 +269,7 @@ resource "postgresql_grant" "grant_usage_pglogical_schema_public_user" {
 }
 
 resource "postgresql_grant" "grant_select_table_pglogical_schema_migration_user" {
-  for_each    = local.pre_promotion ? [] : local.prep_upgrade_as_source_db ? toset(local.migration_databases) : []
+  for_each    = local.prep_upgrade_as_source_db ? toset(local.migration_databases) : []
   database    = each.value
   role        = postgresql_role.migration[0].name
   schema      = "pglogical"
@@ -285,7 +285,7 @@ resource "postgresql_grant" "grant_select_table_pglogical_schema_migration_user"
 }
 
 resource "postgresql_grant" "grant_select_table_public_schema_migration_user" {
-  for_each    = local.pre_promotion ? [] : local.prep_upgrade_as_source_db ? toset(local.migration_databases) : []
+  for_each    = local.prep_upgrade_as_source_db ? toset(local.migration_databases) : []
   database    = each.value
   role        = postgresql_role.migration[0].name
   schema      = "public"
