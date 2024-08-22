@@ -25,9 +25,11 @@ get_input() {
 
 # Get source PostgreSQL instance details
 get_input "Enter the source PostgreSQL instance IP" source_ip
-get_input "Enter the source PostgreSQL instance port" source_port
 get_input "Enter the PostgreSQL user" pg_user
 get_input "Enter the PostgreSQL password" pg_password "true"
+
+# Set the default port
+source_port=5432
 
 # Set PostgreSQL connection options
 PG_OPTS="-h $source_ip -p $source_port -U $pg_user"
