@@ -24,3 +24,6 @@ terraform state rm "module.$module_name.google_database_migration_service_connec
 terraform state rm "module.$module_name.postgresql_role.migration"
 terraform state rm "module.$module_name.random_password.migration"
 
+# remove admin user
+terraform state rm "module.$module_name.google_sql_user.admin"
+
