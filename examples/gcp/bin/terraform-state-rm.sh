@@ -15,3 +15,5 @@ terraform state rm "module.$module_name.postgresql_grant.grant_usage_public_sche
 
 # remove the old instance from state to prevent conflicts
 terraform state rm "module.$module_name.google_sql_database_instance.destination_instance"
+terraform state rm "module.$module_name.random_id.db_name_suffix_destination"
+
