@@ -7,6 +7,11 @@ resource "random_id" "db_name_suffix" {
   byte_length = 4
 }
 
+resource "random_id" "db_name_suffix_destination" {
+  count       = local.prep_upgrade_as_source_db ? 1 : 0
+  byte_length = 4
+}
+
 resource "postgresql_extension" "pglogical" {
   for_each = local.prep_upgrade_as_source_db ? toset(local.migration_databases) : []
   name     = "pglogical"
@@ -32,10 +37,6 @@ resource "google_database_migration_service_connection_profile" "connection_prof
     username = postgresql_role.migration[0].name
     password = postgresql_role.migration[0].password
   }
-  depends_on = [
-    postgresql_role.migration,
-    google_sql_database_instance.instance
-  ]
 }
 
 resource "google_sql_database_instance" "instance" {
@@ -96,8 +97,85 @@ resource "google_sql_database_instance" "instance" {
     }
 
     backup_configuration {
-      enabled                        = local.prep_upgrade_as_destination_db ? false : true
-      point_in_time_recovery_enabled = local.prep_upgrade_as_destination_db ? false : true
+      enabled                        = !local.pre_promotion
+      point_in_time_recovery_enabled = !local.pre_promotion
+    }
+
+    ip_configuration {
+      ipv4_enabled                                  = false
+      private_network                               = data.google_compute_network.vpc.id
+      enable_private_path_for_google_cloud_services = true
+    }
+  }
+
+  timeouts {
+    create = "45m"
+    update = "45m"
+    delete = "45m"
+  }
+}
+
+resource "google_sql_database_instance" "destination_instance" {
+  name  = "${local.instance_name}-${random_id.db_name_suffix_destination.hex}"
+  count = local.prep_upgrade_as_source_db ? 1 : 0
+
+  project             = local.gcp_project
+  database_version    = local.destination_database_version
+  region              = local.region
+  deletion_protection = !local.destroyable
+
+  settings {
+    tier                        = local.tier
+    availability_type           = local.highly_available ? "REGIONAL" : "ZONAL"
+    deletion_protection_enabled = !local.destroyable
+
+    dynamic "database_flags" {
+      for_each = local.prep_upgrade_as_source_db ? [{
+        name  = "cloudsql.logical_decoding"
+        value = "on"
+        }, {
+        name  = "cloudsql.enable_pglogical"
+        value = "on"
+      }] : []
+      content {
+        name  = database_flags.value.name
+        value = database_flags.value.value
+      }
+    }
+
+    dynamic "database_flags" {
+      for_each = local.max_connections > 0 ? [local.max_connections] : []
+      content {
+        name  = "max_connections"
+        value = local.max_connections
+      }
+    }
+
+    dynamic "database_flags" {
+      for_each = var.enable_detailed_logging ? [{
+        name  = "log_statement"
+        value = "all"
+        }, {
+        name  = "log_lock_waits"
+        value = "on"
+      }] : []
+      content {
+        name  = database_flags.value.name
+        value = database_flags.value.value
+      }
+    }
+
+    dynamic "database_flags" {
+      for_each = local.replication ? ["on"] : []
+      content {
+        name  = "cloudsql.logical_decoding"
+        value = "on"
+      }
+    }
+
+    backup_configuration {
+      enabled                        = false
+      point_in_time_recovery_enabled = false
     }
 
     ip_configuration {
@@ -143,7 +221,6 @@ resource "postgresql_grant" "grant_connect_db_migration_user" {
   depends_on = [
     google_sql_database_instance.instance,
     module.database,
-    postgresql_role.migration
   ]
 }
 
@@ -156,7 +233,6 @@ resource "postgresql_grant" "grant_usage_public_schema_migration_user" {
   privileges  = ["USAGE"]
 
   depends_on = [
-    postgresql_role.migration,
     module.database,
     postgresql_grant.grant_connect_db_migration_user
   ]
@@ -171,7 +247,6 @@ resource "postgresql_grant" "grant_usage_pglogical_schema_migration_user" {
   privileges  = ["USAGE"]
 
   depends_on = [
-    postgresql_role.migration,
     module.database,
     postgresql_extension.pglogical,
     postgresql_grant.grant_usage_public_schema_migration_user
@@ -188,7 +263,6 @@ resource "postgresql_grant" "grant_usage_pglogical_schema_public_user" {
   privileges = ["USAGE"]
 
   depends_on = [
-    postgresql_role.migration,
     module.database,
     postgresql_extension.pglogical,
     postgresql_grant.grant_usage_pglogical_schema_migration_user
@@ -205,7 +279,6 @@ resource "postgresql_grant" "grant_select_table_pglogical_schema_migration_user"
   privileges = ["SELECT"]
 
   depends_on = [
-    postgresql_role.migration,
     module.database,
     postgresql_extension.pglogical,
     postgresql_grant.grant_usage_pglogical_schema_public_user
@@ -222,7 +295,6 @@ resource "postgresql_grant" "grant_select_table_public_schema_migration_user" {
   privileges = ["SELECT"]
 
   depends_on = [
-    postgresql_role.migration,
     module.database,
     postgresql_grant.grant_select_table_pglogical_schema_migration_user
   ]
