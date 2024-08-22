@@ -96,7 +96,7 @@ resource "google_sql_database_instance" "instance" {
     }
 
     backup_configuration {
-      enabled                        = !local.pre_promotion 
+      enabled                        = !local.pre_promotion
       point_in_time_recovery_enabled = !local.pre_promotion
     }
 
