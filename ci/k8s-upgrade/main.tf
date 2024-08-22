@@ -1,6 +1,6 @@
 data "google_container_engine_versions" "central1b" {
   provider       = google-beta
-  location       = "us-central1"
+  location       = "europe-west6"
   version_prefix = "1.27."
   project        = "galoy-infra-testflight"
 }

@@ -19,13 +19,9 @@
           {
             nativeBuildInputs = [
               alejandra
-              terraform
+              opentofu
               ytt
             ];
-
-            shellHook = ''
-              alias tf=terraform
-            '';
           };
 
         formatter = alejandra;
