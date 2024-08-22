@@ -8,6 +8,7 @@ resource "random_id" "db_name_suffix" {
 }
 
 resource "random_id" "db_name_suffix_destination" {
+  count       = local.prep_upgrade_as_source_db ? 1 : 0
   byte_length = 4
 }
 
