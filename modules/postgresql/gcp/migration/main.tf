@@ -1,4 +1,15 @@
+variable "region" {}
+variable "database_port" {}
+variable "instance_name" {}
+variable "destroyable" {}
+variable "tier" {}
+variable "highly_available" {}
+variable "enable_detailed_logging" {}
+variable "replication" {}
+variable "destination_database_version" {}
 variable "migration_databases" {}
+variable "max_connections" {}
+variable "gcp_project" {}
 
 resource "random_id" "db_name_suffix_destination" {
   byte_length = 4
@@ -9,24 +20,23 @@ resource "postgresql_extension" "pglogical" {
   name     = "pglogical"
   database = each.value
   depends_on = [
-    google_sql_database_instance.instance,
     module.database
   ]
 }
 
 resource "google_database_migration_service_connection_profile" "connection_profile" {
-  project               = local.gcp_project
-  location              = local.region
+  project               = var.gcp_project
+  location              = var.region
   connection_profile_id = "${google_sql_database_instance.instance.name}-id"
   display_name          = "${google_sql_database_instance.instance.name}-connection-profile"
 
   postgresql {
     cloud_sql_id = google_sql_database_instance.instance.name
     host         = google_sql_database_instance.instance.private_ip_address
-    port         = local.database_port
+    port         = var.database_port
 
-    username = postgresql_role.migration[0].name
-    password = postgresql_role.migration[0].password
+    username = postgresql_role.migration.name
+    password = postgresql_role.migration.password
   }
 }
 
@@ -36,21 +46,19 @@ resource "random_password" "migration" {
 }
 
 resource "postgresql_role" "migration" {
-  name        = "${local.instance_name}-migration"
-  password    = random_password.migration[0].result
+  name        = "${var.instance_name}-migration"
+  password    = random_password.migration.result
   login       = true
   replication = true
-  depends_on  = [google_sql_database_instance.instance]
 }
 
 resource "postgresql_grant" "grant_connect_db_migration_user" {
   for_each    = toset(var.migration_databases)
   database    = each.value
-  role        = postgresql_role.migration[0].name
+  role        = postgresql_role.migration.name
   object_type = "database"
   privileges  = ["CONNECT", "TEMPORARY"]
   depends_on = [
-    google_sql_database_instance.instance,
     module.database,
   ]
 }
@@ -58,7 +66,7 @@ resource "postgresql_grant" "grant_connect_db_migration_user" {
 resource "postgresql_grant" "grant_usage_public_schema_migration_user" {
   for_each    = toset(var.migration_databases)
   database    = each.value
-  role        = postgresql_role.migration[0].name
+  role        = postgresql_role.migration.name
   schema      = "public"
   object_type = "schema"
   privileges  = ["USAGE"]
@@ -72,7 +80,7 @@ resource "postgresql_grant" "grant_usage_public_schema_migration_user" {
 resource "postgresql_grant" "grant_usage_pglogical_schema_migration_user" {
   for_each    = toset(var.migration_databases)
   database    = each.value
-  role        = postgresql_role.migration[0].name
+  role        = postgresql_role.migration.name
   schema      = "pglogical"
   object_type = "schema"
   privileges  = ["USAGE"]
@@ -103,7 +111,7 @@ resource "postgresql_grant" "grant_usage_pglogical_schema_public_user" {
 resource "postgresql_grant" "grant_select_table_pglogical_schema_migration_user" {
   for_each    = toset(var.migration_databases)
   database    = each.value
-  role        = postgresql_role.migration[0].name
+  role        = postgresql_role.migration.name
   schema      = "pglogical"
   object_type = "table"
 
@@ -119,7 +127,7 @@ resource "postgresql_grant" "grant_select_table_pglogical_schema_migration_user"
 resource "postgresql_grant" "grant_select_table_public_schema_migration_user" {
   for_each    = toset(var.migration_databases)
   database    = each.value
-  role        = postgresql_role.migration[0].name
+  role        = postgresql_role.migration.name
   schema      = "public"
   object_type = "table"
 
@@ -134,7 +142,7 @@ resource "postgresql_grant" "grant_select_table_public_schema_migration_user" {
 resource "postgresql_grant" "grant_select_sequence_public_schema_migration_user" {
   for_each    = toset(var.migration_databases)
   database    = each.value
-  role        = postgresql_role.migration[0].name
+  role        = postgresql_role.migration.name
   schema      = "public"
   object_type = "sequence"
 
@@ -147,37 +155,23 @@ resource "postgresql_grant" "grant_select_sequence_public_schema_migration_user"
 }
 
 resource "google_sql_database_instance" "destination_instance" {
-  name = "${local.instance_name}-${random_id.db_name_suffix_destination[0].hex}"
+  name = "${var.instance_name}-${random_id.db_name_suffix_destination.hex}"
 
-  project             = local.gcp_project
-  database_version    = local.destination_database_version
-  region              = local.region
-  deletion_protection = !local.destroyable
+  project             = var.gcp_project
+  database_version    = var.destination_database_version
+  region              = var.region
+  deletion_protection = !var.destroyable
 
   settings {
-    tier                        = local.tier
-    availability_type           = local.highly_available ? "REGIONAL" : "ZONAL"
-    deletion_protection_enabled = !local.destroyable
+    tier                        = var.tier
+    availability_type           = var.highly_available ? "REGIONAL" : "ZONAL"
+    deletion_protection_enabled = !var.destroyable
 
     dynamic "database_flags" {
-      for_each = var.prep_upgrade_as_source_db ? [{
-        name  = "cloudsql.logical_decoding"
-        value = "on"
-        }, {
-        name  = "cloudsql.enable_pglogical"
-        value = "on"
-      }] : []
-      content {
-        name  = database_flags.value.name
-        value = database_flags.value.value
-      }
-    }
-
-    dynamic "database_flags" {
-      for_each = local.max_connections > 0 ? [local.max_connections] : []
+      for_each = var.max_connections > 0 ? [var.max_connections] : []
       content {
         name  = "max_connections"
-        value = local.max_connections
+        value = var.max_connections
       }
     }
 
@@ -196,7 +190,7 @@ resource "google_sql_database_instance" "destination_instance" {
     }
 
     dynamic "database_flags" {
-      for_each = local.replication ? ["on"] : []
+      for_each = var.replication ? ["on"] : []
       content {
         name  = "cloudsql.logical_decoding"
         value = "on"

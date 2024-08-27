@@ -111,9 +111,21 @@ module "database" {
 }
 
 module "migration" {
-  count               = local.prep_upgrade_as_source_db ? 1 : 0
-  source              = "./migration"
-  migration_databases = local.migration_databases
+  count                        = local.prep_upgrade_as_source_db ? 1 : 0
+  source                       = "./migration"
+  region                       = local.region
+  database_port                = local.database_port
+  instance_name                = local.instance_name
+  destroyable                  = local.destroyable
+  tier                         = local.tier
+  highly_available             = local.highly_available
+  enable_detailed_logging      = var.enable_detailed_logging
+  replication                  = local.replication
+  destination_database_version = local.destination_database_version
+  migration_databases          = local.migration_databases
+  max_connections              = local.max_connections
+  gcp_project                  = local.gcp_project
+  depends_on                   = [google_sql_database_instance.instance]
 }
 
 provider "postgresql" {
