@@ -154,7 +154,7 @@ resource "google_sql_user" "postgres" {
   name     = "postgres"
   instance = google_sql_database_instance.destination_instance.name
   password = random_password.postgres.result
-  project  = local.gcp_project
+  project  = var.gcp_project
 }
 
 resource "google_database_migration_service_connection_profile" "destination_connection_profile" {
