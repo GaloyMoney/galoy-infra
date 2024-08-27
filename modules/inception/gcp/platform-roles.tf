@@ -24,6 +24,7 @@ resource "google_project_iam_custom_role" "platform_make" {
     "compute.globalAddresses.create",
     "compute.globalAddresses.get",
     "compute.globalAddresses.use",
+    "compute.addresses.setLabels",
     "compute.globalForwardingRules.create",
     "compute.globalForwardingRules.get",
     "compute.globalOperations.get",

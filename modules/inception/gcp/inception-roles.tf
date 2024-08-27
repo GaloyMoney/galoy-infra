@@ -21,7 +21,6 @@ resource "google_project_iam_custom_role" "inception_make" {
     "compute.instances.getIamPolicy",
     "compute.instances.setIamPolicy",
     "compute.globalAddresses.setLabels",
-    "compute.addresses.setLabels",
     "compute.routers.get",
     "compute.routers.create",
     "compute.routers.update",
