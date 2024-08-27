@@ -24,7 +24,7 @@ resource "postgresql_extension" "pglogical" {
   database = each.value
 }
 
-resource "google_database_migration_service_connection_profile" "connection_profile" {
+resource "google_database_migration_service_connection_profile" "source_connection_profile" {
   project               = var.gcp_project
   location              = var.region
   connection_profile_id = "${var.source_destination_cloud_sql_id}-id"
@@ -145,6 +145,35 @@ resource "postgresql_grant" "grant_select_sequence_public_schema_migration_user"
   ]
 }
 
+resource "random_password" "postgres" {
+  length  = 20
+  special = false
+}
+
+resource "google_sql_user" "postgres" {
+  name     = "postgres"
+  instance = google_sql_database_instance.destination_instance.name
+  password = random_password.postgres.result
+  project  = local.gcp_project
+}
+
+resource "google_database_migration_service_connection_profile" "destination_connection_profile" {
+  project               = var.gcp_project
+  location              = var.region
+  connection_profile_id = "${google_sql_database_instance.destination_instance}-id"
+  display_name          = "${google_sql_database_instance.destination_instance}-connection-profile"
+
+  postgresql {
+    cloud_sql_id = google_sql_database_instance.destination_instance
+    host         = google_sql_database_instance.destination_instance.private_ip_address
+    port         = var.database_port
+
+    username = google_sql_user.postgres.name
+    password = random_password.postgres.result
+  }
+}
+
+#google_sql_database_instance.instance.name
 resource "google_sql_database_instance" "destination_instance" {
   name = "${var.instance_name}-${random_id.db_name_suffix_destination.hex}"
 
