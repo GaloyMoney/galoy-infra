@@ -160,11 +160,11 @@ resource "google_sql_user" "postgres" {
 resource "google_database_migration_service_connection_profile" "destination_connection_profile" {
   project               = var.gcp_project
   location              = var.region
-  connection_profile_id = "${google_sql_database_instance.destination_instance}-id"
-  display_name          = "${google_sql_database_instance.destination_instance}-connection-profile"
+  connection_profile_id = "${google_sql_database_instance.destination_instance.name}-id"
+  display_name          = "${google_sql_database_instance.destination_instance.name}-connection-profile"
 
   postgresql {
-    cloud_sql_id = google_sql_database_instance.destination_instance
+    cloud_sql_id = google_sql_database_instance.destination_instance.name
     host         = google_sql_database_instance.destination_instance.private_ip_address
     port         = var.database_port
 
