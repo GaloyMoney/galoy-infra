@@ -27,11 +27,11 @@ resource "postgresql_extension" "pglogical" {
 resource "google_database_migration_service_connection_profile" "connection_profile" {
   project               = var.gcp_project
   location              = var.region
-  connection_profile_id = "${google_sql_database_instance.instance.name}-id"
-  display_name          = "${google_sql_database_instance.instance.name}-connection-profile"
+  connection_profile_id = "${var.source_destination_cloud_sql_id}-id"
+  display_name          = "${var.source_destination_cloud_sql_id}-connection-profile"
 
   postgresql {
-    cloud_sql_id = google_sql_database_instance.instance.name
+    cloud_sql_id = var.source_destination_cloud_sql_id
     host         = var.private_ip_address
     port         = var.database_port
 

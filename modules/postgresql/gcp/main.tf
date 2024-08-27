@@ -127,7 +127,7 @@ module "migration" {
   gcp_project                     = local.gcp_project
   private_network                 = data.google_compute_network.vpc.id
   private_ip_address              = google_sql_database_instance.instance.private_ip_address
-  source_destination_cloud_sql_id = google_sql_database_instance.instance.private_ip_address
+  source_destination_cloud_sql_id = google_sql_database_instance.instance.name
   depends_on                      = [google_sql_database_instance.instance, module.database]
 }
 
