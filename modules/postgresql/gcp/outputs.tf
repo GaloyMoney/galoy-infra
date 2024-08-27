@@ -29,3 +29,10 @@ output "replicator" {
   } : {}
   sensitive = true
 }
+
+output "admin-creds" {
+  value = {
+    user     = google_sql_user.admin.name
+    password = random_password.admin.result
+  }
+}

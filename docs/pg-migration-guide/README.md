@@ -38,23 +38,15 @@ The `prep_upgrade_as_source_db` flag configures the source database, initialises
 
 # Step 2: Start Database Migration Process 
 
-### Go to the [Database Migration Service Console](https://console.cloud.google.com/dbmigration/migrations)
+> Reference for [Database Migration Service](https://cloud.google.com/sdk/gcloud/reference/database-migration/migration-jobs)
 
-![step-1](./assets/step-1.png)
-#### Select the connection profile which would be named in the format `<source-db-instance-name>-connection-profile`
-![step-2](./assets/step-2.png)
-#### Select the destination instance in this step that we created in `step 2`
-![step-3](./assets/step-3.png)
-#### Select the pre-existing vpc in this step
-![step-4](./assets/step-4.png)
-#### Test your migration
-![step-5](./assets/step-5.png)
-![step-6](./assets/step-6.png)
-![step-7](./assets/step-7.png)
-![step-8](./assets/step-8.png)
+```sh
+$ gcloud database-migration migration-jobs create (MIGRATION_JOB : --region=REGION) --destination=DESTINATION --source=SOURCE --type=TYPE [--no-async] [--commit-id=COMMIT_ID] [--conversion-workspace=CONVERSION_WORKSPACE] [--display-name=DISPLAY_NAME] [--dump-parallel-level=DUMP_PARALLEL_LEVEL] [--dump-path=DUMP_PATH] [--dump-type=DUMP_TYPE] [--filter=FILTER] [--labels=[KEY=VALUE,…]] [--cmek-key=CMEK_KEY : --cmek-keyring=CMEK_KEYRING --cmek-project=CMEK_PROJECT] [--peer-vpc=PEER_VPC     | --static-ip     | [--vm-ip=VM_IP --vm-port=VM_PORT --vpc=VPC : --vm=VM]] [--sqlserver-databases=databaseName,[…] : --sqlserver-encrypted-databases=SQLSERVER_ENCRYPTED_DATABASES] [GCLOUD_WIDE_FLAG …]
 
-### Once you see the **PROMOTE** option in the Database Migration Service, **do not** promote the instance yet, we would configure the destination database to be exactly as the source in the next step, then promote the instance.
-
+$ gcloud database-migration migration-jobs create <db-migration-name> --region=<your-region> --source=<source-name> --destination=<destination-name> --type=CONTINUOUS 
+$ gcloud database-migration migration-jobs verify MIGRATION_JOB --region=us-central1
+$ gcloud database-migration migration-jobs start MIGRATION_JOB --region=us-central1
+```
 # Step 3: Pre-promotion 
 
 - You should verify if all the data has migrated successfully, a generic guide to do it can be found [here](https://cloud.google.com/database-migration/docs/postgres/quickstart#verify_the_migration_job) 
@@ -64,17 +56,7 @@ The `prep_upgrade_as_source_db` flag configures the source database, initialises
 
 ### Step 3.5: Handing the non-migrated settings and syncing state via `terraform`
 
-#### Step 3.5.0
-Before altering the state of the source instance we will backup the state so that we can use it later to delete the resources.
-
-```sh
-$ cd <path-to-your-state-file>
-$ mkdir migration_postgres14-source
-$ cp terraform.tfstate migration_postgres14-source/
-```
-
 #### Step 3.5.1
-- Go to Users tab and delete the **`<database-admin-user>`** 
 - Log in to the `destination instance` as the `postgres` user and change the name of the `cloudsqlexternalsync` user to the **`<database-admin-user>`** that we deleted earlier, so that we can use that to connect to the database:
 
 ```sql
