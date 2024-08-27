@@ -15,7 +15,7 @@ variable "destroyable_cluster" {
 }
 
 module "platform" {
-  source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/platform/gcp?ref=2ee2544"
+  source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/platform/gcp?ref=07f7cc5"
   # source = "../../../modules/platform/gcp"
 
   name_prefix               = var.name_prefix
