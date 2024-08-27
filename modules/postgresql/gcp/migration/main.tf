@@ -221,3 +221,12 @@ resource "google_sql_database_instance" "destination_instance" {
     delete = "45m"
   }
 }
+
+terraform {
+  required_providers {
+    postgresql = {
+      source  = "cyrilgdn/postgresql"
+      version = "1.22.0"
+    }
+  }
+}
