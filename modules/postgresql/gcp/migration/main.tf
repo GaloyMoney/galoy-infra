@@ -10,6 +10,9 @@ variable "destination_database_version" {}
 variable "migration_databases" {}
 variable "max_connections" {}
 variable "gcp_project" {}
+variable "private_network" {}
+variable "private_ip_address" {}
+variable "source_destination_cloud_sql_id" {}
 
 resource "random_id" "db_name_suffix_destination" {
   byte_length = 4
@@ -19,9 +22,6 @@ resource "postgresql_extension" "pglogical" {
   for_each = toset(var.migration_databases)
   name     = "pglogical"
   database = each.value
-  depends_on = [
-    module.database
-  ]
 }
 
 resource "google_database_migration_service_connection_profile" "connection_profile" {
@@ -32,7 +32,7 @@ resource "google_database_migration_service_connection_profile" "connection_prof
 
   postgresql {
     cloud_sql_id = google_sql_database_instance.instance.name
-    host         = google_sql_database_instance.instance.private_ip_address
+    host         = var.private_ip_address
     port         = var.database_port
 
     username = postgresql_role.migration.name
@@ -58,9 +58,6 @@ resource "postgresql_grant" "grant_connect_db_migration_user" {
   role        = postgresql_role.migration.name
   object_type = "database"
   privileges  = ["CONNECT", "TEMPORARY"]
-  depends_on = [
-    module.database,
-  ]
 }
 
 resource "postgresql_grant" "grant_usage_public_schema_migration_user" {
@@ -72,7 +69,6 @@ resource "postgresql_grant" "grant_usage_public_schema_migration_user" {
   privileges  = ["USAGE"]
 
   depends_on = [
-    module.database,
     postgresql_grant.grant_connect_db_migration_user
   ]
 }
@@ -86,7 +82,6 @@ resource "postgresql_grant" "grant_usage_pglogical_schema_migration_user" {
   privileges  = ["USAGE"]
 
   depends_on = [
-    module.database,
     postgresql_extension.pglogical,
     postgresql_grant.grant_usage_public_schema_migration_user
   ]
@@ -102,7 +97,6 @@ resource "postgresql_grant" "grant_usage_pglogical_schema_public_user" {
   privileges = ["USAGE"]
 
   depends_on = [
-    module.database,
     postgresql_extension.pglogical,
     postgresql_grant.grant_usage_pglogical_schema_migration_user
   ]
@@ -118,7 +112,6 @@ resource "postgresql_grant" "grant_select_table_pglogical_schema_migration_user"
   privileges = ["SELECT"]
 
   depends_on = [
-    module.database,
     postgresql_extension.pglogical,
     postgresql_grant.grant_usage_pglogical_schema_public_user
   ]
@@ -134,7 +127,6 @@ resource "postgresql_grant" "grant_select_table_public_schema_migration_user" {
   privileges = ["SELECT"]
 
   depends_on = [
-    module.database,
     postgresql_grant.grant_select_table_pglogical_schema_migration_user
   ]
 }
@@ -149,7 +141,6 @@ resource "postgresql_grant" "grant_select_sequence_public_schema_migration_user"
   privileges = ["SELECT"]
 
   depends_on = [
-    module.database,
     postgresql_grant.grant_select_table_pglogical_schema_migration_user
   ]
 }
@@ -204,7 +195,7 @@ resource "google_sql_database_instance" "destination_instance" {
 
     ip_configuration {
       ipv4_enabled                                  = false
-      private_network                               = data.google_compute_network.vpc.id
+      private_network                               = var.private_network
       enable_private_path_for_google_cloud_services = true
     }
   }

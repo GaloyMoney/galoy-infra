@@ -111,21 +111,24 @@ module "database" {
 }
 
 module "migration" {
-  count                        = local.prep_upgrade_as_source_db ? 1 : 0
-  source                       = "./migration"
-  region                       = local.region
-  database_port                = local.database_port
-  instance_name                = local.instance_name
-  destroyable                  = local.destroyable
-  tier                         = local.tier
-  highly_available             = local.highly_available
-  enable_detailed_logging      = var.enable_detailed_logging
-  replication                  = local.replication
-  destination_database_version = local.destination_database_version
-  migration_databases          = local.migration_databases
-  max_connections              = local.max_connections
-  gcp_project                  = local.gcp_project
-  depends_on                   = [google_sql_database_instance.instance]
+  count                           = local.prep_upgrade_as_source_db ? 1 : 0
+  source                          = "./migration"
+  region                          = local.region
+  database_port                   = local.database_port
+  instance_name                   = local.instance_name
+  destroyable                     = local.destroyable
+  tier                            = local.tier
+  highly_available                = local.highly_available
+  enable_detailed_logging         = var.enable_detailed_logging
+  replication                     = local.replication
+  destination_database_version    = local.destination_database_version
+  migration_databases             = local.migration_databases
+  max_connections                 = local.max_connections
+  gcp_project                     = local.gcp_project
+  private_network                 = data.google_compute_network.vpc.id
+  private_ip_address              = google_sql_database_instance.instance.private_ip_address
+  source_destination_cloud_sql_id = google_sql_database_instance.instance.private_ip_address
+  depends_on                      = [google_sql_database_instance.instance, module.database]
 }
 
 provider "postgresql" {
