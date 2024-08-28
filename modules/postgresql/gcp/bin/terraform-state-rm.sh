@@ -4,9 +4,21 @@ module_prefix=${2}
 
 pushd ${1}
 
+# Function to check if a command exists
+command_exists() {
+  command -v "$1" >/dev/null 2>&1
+}
+
+# Set the command to use, defaulting to 'terraform' if 'tofu' is not available
+if command_exists tofu; then
+  cmd="tofu"
+else
+  cmd="terraform"
+fi
+
 # remove logical replication stuff
-tofu state rm "${module_prefix}.migration"
+$cmd state rm "${module_prefix}.migration"
 
 # remove admin user
-tofu state rm "${module_prefix}.google_sql_user.admin"
+$cmd state rm "${module_prefix}.google_sql_user.admin"
 popd
