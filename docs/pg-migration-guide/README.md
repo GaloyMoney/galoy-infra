@@ -40,17 +40,47 @@ The `prep_upgrade_as_source_db` flag configures the source database, initialises
 
 > Reference for [Database Migration Service](https://cloud.google.com/sdk/gcloud/reference/database-migration/migration-jobs)
 
+Before proceeding with the DMS creation we will expose the required things by gcloud using the output block, add these output blocks to your main terraform file.
 ```sh
+output "source_connection_profile_id" {
+description = "The ID of the source connection profile"
+value       = <postgres-module-name>.connection_profile_credentials["source_connection_profile_id"]
+}
+
+output "destination_connection_profile_id" {
+description = "The ID of the destination connection profile"
+value       = <postgres-module-name>.connection_profile_credentials["destination_connection_profile_id"]
+}
+
+output "vpc" {
+value = <postgres-module-name>.vpc
+}
+```
+
+
+```sh
+# run the create-dms.sh script located in modules/postgresql/gcp/bin
+$ ./create-dms.sh
+> Enter the region: us-east1
+> Enter the job name: test-job
+
+$ gcloud database-migration migration-jobs demote-destination test-job --region=us-east1
+
+$ gcloud database-migration migration-jobs start test-job --region=us-east1
+
+# Use the describe command to check the status of the migration-job
+$ gcloud database-migration migration-jobs describe test-job --region=us-east1
+
+$ gcloud database-migration migration-jobs promote test-job --region=us-east1
+
+
+
+
 gcloud database-migration migration-jobs create my-migration-job --region=us-east1 --type=CONTINUOUS --source=volcano-staging-pg-ecfccd07-id --destination=volcano-staging-pg-f038f9fe-id  --peer-vpc=projects/volcano-staging/global/networks/volcan-staging-vpc
 gcloud database-migration migration-jobs create my-migration-job-2 --region=us-east1 --type=CONTINUOUS --source=volcano-staging-pg-ecfccd07-id --destination=volcano-staging-pg-f038f9fe-id  --peer-vpc=projects/volcano-staging/global/networks/volcano-staging-vpc
-gcloud database-migration migration-jobs describe  my-migration-job-2 --region=us-east1
 gcloud database-migration migration-jobs  start my-migration-job-2 --region=us-east1
-gcloud database-migration migration-jobs promote  my-migration-job-2 --region=us-east1
 gcloud database-migration migration-jobs describe  my-migration-job-2 --region=us-east1
 gcloud database-migration migration-jobs delete my-migration-job-2 --region=us-east1
-$ gcloud database-migration migration-jobs create <db-migration-name> --region=<your-region> --source=<source-name> --destination=<destination-name> --type=CONTINUOUS
-$ gcloud database-migration migration-jobs verify MIGRATION_JOB --region=us-central1
-$ gcloud database-migration migration-jobs start MIGRATION_JOB --region=us-central1
 ```
 # Step 3: Pre-promotion
 
