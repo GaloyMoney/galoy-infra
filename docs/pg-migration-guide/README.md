@@ -44,20 +44,28 @@ Before proceeding with the DMS creation we will expose the required things by gc
 ```sh
 output "source_connection_profile_id" {
 description = "The ID of the source connection profile"
-value       = <postgres-module-name>.connection_profile_credentials["source_connection_profile_id"]
+value       = module.postgresql_migration_source.connection_profile_credentials["source_connection_profile_id"]
 }
 
 output "destination_connection_profile_id" {
 description = "The ID of the destination connection profile"
-value       = <postgres-module-name>.connection_profile_credentials["destination_connection_profile_id"]
+value       = module.postgresql_migration_source.connection_profile_credentials["destination_connection_profile_id"]
 }
 
 output "vpc" {
-value = <postgres-module-name>.vpc
+value = module.postgresql_migration_source.vpc
+}
+
+output "migration_destination_database_creds" {
+value = module.postgresql_migration_source.migration_destination_database_creds
+sensitive = true
+}
+
+output "source-instance-admin-creds" {
+value     = module.postgresql_migration_source.admin-creds
+sensitive = true
 }
 ```
-
-
 ```sh
 # run the create-dms.sh script located in modules/postgresql/gcp/bin
 $ ./create-dms.sh
@@ -131,13 +139,33 @@ $ gcloud database-migration migration-jobs promote test-job --region=us-east1
 #### Step 3.5.1
 - Log in to the `destination instance` as the `postgres` user and change the name of the `cloudsqlexternalsync` user to the **`<database-admin-user>`** that we deleted earlier, so that we can use that to connect to the database:
 
-```sql
+```sh
+tf output -json source-instance-admin-creds | jq -r .user
+rishi_galoy_io@volcano-staging-bastion:~/galoy-infra/examples/gcp/postgresql$ psql postgres://postgres:R2s8jSPpPceX7aj56xUN@10.86.1.61:5432/postgres
+psql (16.4 (Ubuntu 16.4-0ubuntu0.24.04.1), server 15.7)
+SSL connection (protocol: TLSv1.3, cipher: TLS_AES_256_GCM_SHA384, compression: off)
+Type "help" for help.
+
+postgres=> USET  ALTER^C
+postgres=> ALTER USER "cloudsqlexternalsync" RENAME TO "volcano-staging-pg-admin"
+postgres=> ALTER USER "volcano-staging-pg-admin" WITH PASSWORD "6Y2R6uAYxooKW5FN1bqC"
 ALTER USER "cloudsqlexternalsync" RENAME TO "<database-admin-user>";
 ```
 
 Also, via the `google cloud console`, assign a password for the admin user, for simplicity you can keep it the same as the source instance so you don't have to handle imports, the further guide assumes you have used the same password.
 
 #### Step 3.5.2
+Manipulate the old state to reflect the new state by running the two scripts located at `galoy-infra/examples/gcp/bin`
+
+```sh
+$ ./terraform-db-swap.sh
+# This will ask for your terraform module name
+# And swap the state between the newer and old instance
+$ ./terraform-state-rm.sh
+# This will ask for your terraform module name, give it the same name as you gave before
+# This will remove all the conflicting state which terraform will try to remove manually
+```
+#### Step 3.5.3
 
 Modify your source destination's `main.tf` to reflect the new destination instance by changing:
 - Change the `database_version` to `"POSTGRES_15"` and
@@ -166,17 +194,6 @@ module "postgresql" {
 }
 ```
 
-#### Step 3.5.3
-Manipulate the old state to reflect the new state by running the two scripts located at `galoy-infra/examples/gcp/bin`
-
-```sh
-$ ./terraform-db-swap.sh
-# This will ask for your terraform module name
-# And swap the state between the newer and old instance
-$ ./terraform-state-rm.sh
-# This will ask for your terraform module name, give it the same name as you gave before
-# This will remove all the conflicting state which terraform will try to remove manually
-```
 
 
 #### Step 3.5.4
