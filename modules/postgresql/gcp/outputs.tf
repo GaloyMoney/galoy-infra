@@ -29,3 +29,27 @@ output "replicator" {
   } : {}
   sensitive = true
 }
+
+output "admin-creds" {
+  value = {
+    user     = google_sql_user.admin.name
+    password = random_password.admin.result
+  }
+}
+
+output "connection_profile_credentials" {
+  value = local.prep_upgrade_as_source_db ? {
+    source_connection_profile_id      = module.migration[0].source_connection_profile_id
+    destination_connection_profile_id = module.migration[0].destination_connection_profile_id
+  } : {}
+}
+
+output "vpc" {
+  value = "projects/${local.gcp_project}/global/networks/${local.vpc_name}"
+}
+
+output "migration_destination_database_creds" {
+  value = local.prep_upgrade_as_source_db ? {
+    conn = "postgres://postgres:${module.migration[0].postgres_user_password}@${module.migration[0].destination_instance_private_ip_address}:5432/postgres"
+  } : {}
+}
