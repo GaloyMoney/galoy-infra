@@ -40,29 +40,29 @@ The `prep_upgrade_as_source_db` flag configures the source database, initialises
 
 > Reference for [Database Migration Service](https://cloud.google.com/sdk/gcloud/reference/database-migration/migration-jobs)
 
-Before proceeding with the DMS creation we will expose the required things by gcloud using the output block, add these output blocks to your main terraform file.
+Before proceeding with the DMS creation we will expose the required things by gcloud using the `output` block, add these output blocks to your main terraform file.
 ```sh
 output "source_connection_profile_id" {
 description = "The ID of the source connection profile"
-value       = module.postgresql_migration_source.connection_profile_credentials["source_connection_profile_id"]
+value       = <module-name>.connection_profile_credentials["source_connection_profile_id"]
 }
 
 output "destination_connection_profile_id" {
 description = "The ID of the destination connection profile"
-value       = module.postgresql_migration_source.connection_profile_credentials["destination_connection_profile_id"]
+value       = <module-name>.connection_profile_credentials["destination_connection_profile_id"]
 }
 
 output "vpc" {
-value = module.postgresql_migration_source.vpc
+value = <module-name>.vpc
 }
 
 output "migration_destination_database_creds" {
-value = module.postgresql_migration_source.migration_destination_database_creds
+value = <module-name>.migration_destination_database_creds
 sensitive = true
 }
 
 output "source-instance-admin-creds" {
-value     = module.postgresql_migration_source.admin-creds
+value     = <module-name>.admin-creds
 sensitive = true
 }
 ```
@@ -118,14 +118,16 @@ The destination instance is being demoted. Run the following command after the p
 
 # The script will specify which command you need to run after the demotion is completed.
 **gcloud database-migration migration-jobs start "test-migration" --region="us-east1"**
+```
 
-# Run the start command that is prompted
+> Run the start command that is prompted
+
+```sh
 $ gcloud database-migration migration-jobs start "test-migration" --region="us-east1"
 
 # Use the describe command to check the status of the migration-job
 $ gcloud database-migration migration-jobs describe "test-job" --region=us-east1
 
-$ gcloud database-migration migration-jobs promote test-job --region=us-east1
 ```
 # Step 3: Pre-promotion
 
@@ -217,9 +219,11 @@ Change the owners of the tables and schemas to the correct owner using the psql 
 ```
 
 # Step 5: Promote the instance
-Now go to the Database Migration Service and once the replication delay is zero, promote the migration.
+Now go to the [Database Migration Service](https://console.cloud.google.com/dbmigration/migrations) and once the replication delay is zero, promote the migration.
 
-![promote-migration](./assets/promote-migration.png)
+```sh
+$ gcloud database-migration migration-jobs promote test-job --region=us-east1
+```
 ![migration-completed](./assets/migration-completed.png)
 
 #### The Migration was successful.
@@ -252,21 +256,22 @@ Do a `terraform apply`
 
 # Step 7: Delete all the dangling resources
 
-- Delete the Database Migration Service that we used for migration.
-![delete-dms](./assets/delete-dms.png)
-- Delete the external-replica that was used for performing the replication.
-![delete-external-replica](./assets/external-replica-delete.png)
-- Delete the rest of the resources, which includes:
-  -  source instance
-  -  connection-profile
-
+### Delete the Database Migration Service that we used for migration.
 ```sh
-$  gcloud sql instances list
-$  gcloud sql instances delete <instance-name>
+$ gcloud database-migration migration-jobs describe "test-job" --region=us-east1
 ```
 
-  You can delete them manually by going to [connection profile console](https://console.cloud.google.com/dbmigration/connection-profiles) and [cloud sql console](https://console.cloud.google.com/sql/instances)
+### Delete the source and external replica instance
+```sh
+$  gcloud sql instances list
+$  gcloud sql instances delete <source-instance-id>
+$  gcloud sql instances delete <external-replica-instance-id>
+```
 
-  or
+### Delete the source connection profile
+```sh
+$ gcloud database-migration connection-profiles list
 
-  use the backed-up state from earlier and do a `terraform destroy` on it to destroy the resources. (While testing it was found that the first method was faster and less error prone)
+# See the output and determine the connection profile you want to delete
+$ gcloud database-migration connection-profiles  delete <CONNECTION_PROFILE_ID> --region=<REGION>
+```
