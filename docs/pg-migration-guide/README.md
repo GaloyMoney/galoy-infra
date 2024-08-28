@@ -147,6 +147,7 @@ SSL connection (protocol: TLSv1.3, cipher: TLS_AES_256_GCM_SHA384, compression: 
 Type "help" for help.
 
 postgres=> USET  ALTER^C
+ALTER ROLE cloudsqlexternalsync RENAME TO "volcano-staging-admin";
 postgres=> ALTER USER "cloudsqlexternalsync" RENAME TO "volcano-staging-pg-admin"
 postgres=> ALTER USER "volcano-staging-pg-admin" WITH PASSWORD "6Y2R6uAYxooKW5FN1bqC"
 ALTER USER "cloudsqlexternalsync" RENAME TO "<database-admin-user>";

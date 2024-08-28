@@ -17,7 +17,7 @@ else
 fi
 
 # remove logical replication stuff
-$cmd state rm "${module_prefix}.migration"
+$cmd state rm "${module_prefix}.module.migration"
 
 # remove admin user
 $cmd state rm "${module_prefix}.google_sql_user.admin"

@@ -2,7 +2,7 @@
 
 # Variables
 DB_NAME="your_database_name"
-NEW_OWNER="cala-user"
+NEW_OWNER="test-user"
 PSQL_CMD="psql -d $DB_NAME -At -c"
 
 # Get list of all tables in the database
