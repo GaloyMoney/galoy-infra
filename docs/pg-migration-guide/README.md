@@ -13,19 +13,19 @@ Before proceeding, please review the [known limitations](https://cloud.google.co
 - On the terraform file of the decided instance, enable the `prep_upgrade_as_source_db` flag
 
 ```hcl
-module "postgresql_migration_source" {  
-source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/postgresql/gcp?ref=<git_reference>"  
-# source = "../../../modules/postgresql/gcp"  
-  
-instance_name          = "${var.name_prefix}-pg"  
-vpc_name               = "${var.name_prefix}-vpc"  
-gcp_project            = var.gcp_project  
-destroyable            = var.destroyable_postgres  
-user_can_create_db     = true  
-databases              = ["test"]  
-replication            = true  
-provision_read_replica = true  
-database_version       = "POSTGRES_14"  
+module "postgresql_migration_source" {
+source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/postgresql/gcp?ref=<git_reference>"
+# source = "../../../modules/postgresql/gcp"
+
+instance_name          = "${var.name_prefix}-pg"
+vpc_name               = "${var.name_prefix}-vpc"
+gcp_project            = var.gcp_project
+destroyable            = var.destroyable_postgres
+user_can_create_db     = true
+databases              = ["test"]
+replication            = true
+provision_read_replica = true
+database_version       = "POSTGRES_14"
 // Enable it as follows
 prep_upgrade_as_source_db   = true
 }
@@ -36,20 +36,25 @@ The `prep_upgrade_as_source_db` flag configures the source database, initialises
 - ** The full specification of how the source instance needs to be configured can be found [Here](https://cloud.google.com/database-migration/docs/postgres/configure-source-database#configure-your-source-instance-postgres)
 - **  The specification for connection profile can be found [here](https://cloud.google.com/database-migration/docs/postgres/create-source-connection-profile)
 
-# Step 2: Start Database Migration Process 
+# Step 2: Start Database Migration Process
 
 > Reference for [Database Migration Service](https://cloud.google.com/sdk/gcloud/reference/database-migration/migration-jobs)
 
 ```sh
-$ gcloud database-migration migration-jobs create (MIGRATION_JOB : --region=REGION) --destination=DESTINATION --source=SOURCE --type=TYPE [--no-async] [--commit-id=COMMIT_ID] [--conversion-workspace=CONVERSION_WORKSPACE] [--display-name=DISPLAY_NAME] [--dump-parallel-level=DUMP_PARALLEL_LEVEL] [--dump-path=DUMP_PATH] [--dump-type=DUMP_TYPE] [--filter=FILTER] [--labels=[KEY=VALUE,…]] [--cmek-key=CMEK_KEY : --cmek-keyring=CMEK_KEYRING --cmek-project=CMEK_PROJECT] [--peer-vpc=PEER_VPC     | --static-ip     | [--vm-ip=VM_IP --vm-port=VM_PORT --vpc=VPC : --vm=VM]] [--sqlserver-databases=databaseName,[…] : --sqlserver-encrypted-databases=SQLSERVER_ENCRYPTED_DATABASES] [GCLOUD_WIDE_FLAG …]
-
-$ gcloud database-migration migration-jobs create <db-migration-name> --region=<your-region> --source=<source-name> --destination=<destination-name> --type=CONTINUOUS 
+gcloud database-migration migration-jobs create my-migration-job --region=us-east1 --type=CONTINUOUS --source=volcano-staging-pg-ecfccd07-id --destination=volcano-staging-pg-f038f9fe-id  --peer-vpc=projects/volcano-staging/global/networks/volcan-staging-vpc
+gcloud database-migration migration-jobs create my-migration-job-2 --region=us-east1 --type=CONTINUOUS --source=volcano-staging-pg-ecfccd07-id --destination=volcano-staging-pg-f038f9fe-id  --peer-vpc=projects/volcano-staging/global/networks/volcano-staging-vpc
+gcloud database-migration migration-jobs describe  my-migration-job-2 --region=us-east1
+gcloud database-migration migration-jobs  start my-migration-job-2 --region=us-east1
+gcloud database-migration migration-jobs promote  my-migration-job-2 --region=us-east1
+gcloud database-migration migration-jobs describe  my-migration-job-2 --region=us-east1
+gcloud database-migration migration-jobs delete my-migration-job-2 --region=us-east1
+$ gcloud database-migration migration-jobs create <db-migration-name> --region=<your-region> --source=<source-name> --destination=<destination-name> --type=CONTINUOUS
 $ gcloud database-migration migration-jobs verify MIGRATION_JOB --region=us-central1
 $ gcloud database-migration migration-jobs start MIGRATION_JOB --region=us-central1
 ```
-# Step 3: Pre-promotion 
+# Step 3: Pre-promotion
 
-- You should verify if all the data has migrated successfully, a generic guide to do it can be found [here](https://cloud.google.com/database-migration/docs/postgres/quickstart#verify_the_migration_job) 
+- You should verify if all the data has migrated successfully, a generic guide to do it can be found [here](https://cloud.google.com/database-migration/docs/postgres/quickstart#verify_the_migration_job)
 
 >    -  Migration does not transfer privileges and users. Create users manually based on the old database.
 >    - Once you migrated the database using DMS all objects and schema owner will become `cloudsqlexternalsync` by default.
@@ -69,7 +74,7 @@ Also, via the `google cloud console`, assign a password for the admin user, for 
 
 Modify your source destination's `main.tf` to reflect the new destination instance by changing:
 - Change the `database_version` to `"POSTGRES_15"` and
-- Set the `prep_upgrade_as_source_db` to `false` or remove the `prep_upgrade_as_source_db` as by default it has the `false` value 
+- Set the `prep_upgrade_as_source_db` to `false` or remove the `prep_upgrade_as_source_db` as by default it has the `false` value
 - Set `pre_promotion` to `true`, as we need the backups disabled; (we need to enable them later):
 
 ```hcl
@@ -107,9 +112,9 @@ $ ./terraform-state-rm.sh
 ```
 
 
-#### Step 3.5.4 
+#### Step 3.5.4
 
-Finally, do a 
+Finally, do a
 
 ```sh
 terraform apply
@@ -117,7 +122,7 @@ terraform apply
 The destination instance should be exactly as with the source PostgreSQL instance, expect backups which we will enable after promotion, and database artifacts which we will fix in the next step.
 
 
-#### Step 3.5.5 
+#### Step 3.5.5
 
 Change the owners of the tables and schemas to the correct owner using the psql command:
 
@@ -137,7 +142,7 @@ Now go to the Database Migration Service and once the replication delay is zero,
 ![migration-successful](./assets/successful-migration.png)
 
 # Step 6: Enable backup
-Disable `pre_promotion` flag, 
+Disable `pre_promotion` flag,
 
 ```hcl
 module "postgresql" {
@@ -160,7 +165,7 @@ module "postgresql" {
 ```
 Do a `terraform apply`
 
-# Step 7: Delete all the dangling resources 
+# Step 7: Delete all the dangling resources
 
 - Delete the Database Migration Service that we used for migration.
 ![delete-dms](./assets/delete-dms.png)
@@ -169,9 +174,9 @@ Do a `terraform apply`
 - Delete the rest of the resources, which includes:
   -  source instance
   -  connection-profile
-  
+
   You can delete them manually by going to [connection profile console](https://console.cloud.google.com/dbmigration/connection-profiles) and [cloud sql console](https://console.cloud.google.com/sql/instances)
-  
-  or 
-  
+
+  or
+
   use the backed-up state from earlier and do a `terraform destroy` on it to destroy the resources. (While testing it was found that the first method was faster and less error prone)

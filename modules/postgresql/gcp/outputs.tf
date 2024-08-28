@@ -36,3 +36,10 @@ output "admin-creds" {
     password = random_password.admin.result
   }
 }
+
+output "connection_profile_credentials" {
+  value = {
+    source_connection_profile_id      = module.migration.source_connection_profile_id
+    destination_connection_profile_id = module.migration.destination_connection_profile_id
+  }
+}
