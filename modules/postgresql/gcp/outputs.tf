@@ -43,3 +43,7 @@ output "connection_profile_credentials" {
     destination_connection_profile_id = module.migration[0].destination_connection_profile_id
   } : {}
 }
+
+output "vpc" {
+  value = "projects/${local.gcp_project}/global/networks/${local.vpc_name}"
+}
