@@ -117,7 +117,7 @@ Migration job 'test-migration' has started demoting the destination instance.
 The destination instance is being demoted. Run the following command after the process has completed:
 
 # The script will specify which command you need to run after the demotion is completed.
-**gcloud database-migration migration-jobs start "test-migration" --region="us-east1"**
+gcloud database-migration migration-jobs start "test-migration" --region="us-east1"
 ```
 
 > Run the start command that is prompted
@@ -139,23 +139,19 @@ $ gcloud database-migration migration-jobs describe "test-job" --region=us-east1
 ### Step 3.5: Handing the non-migrated settings and syncing state via `terraform`
 
 #### Step 3.5.1
-- Log in to the `destination instance` as the `postgres` user and change the name of the `cloudsqlexternalsync` user to the **`<database-admin-user>`** that we deleted earlier, so that we can use that to connect to the database:
+Log in to the `destination instance` as the `postgres` user and change the name of the `cloudsqlexternalsync` user to the `<admin-user>`.
+The value of `<admin-user>` and `destination-connection-string` can be found by running
 
 ```sh
-tf output -json source-instance-admin-creds | jq -r .user
-rishi_galoy_io@volcano-staging-bastion:~/galoy-infra/examples/gcp/postgresql$ psql postgres://postgres:R2s8jSPpPceX7aj56xUN@10.86.1.61:5432/postgres
-psql (16.4 (Ubuntu 16.4-0ubuntu0.24.04.1), server 15.7)
-SSL connection (protocol: TLSv1.3, cipher: TLS_AES_256_GCM_SHA384, compression: off)
-Type "help" for help.
-
-postgres=> USET  ALTER^C
-ALTER ROLE cloudsqlexternalsync RENAME TO "volcano-staging-admin";
-postgres=> ALTER USER "cloudsqlexternalsync" RENAME TO "volcano-staging-pg-admin"
-postgres=> ALTER USER "volcano-staging-pg-admin" WITH PASSWORD "6Y2R6uAYxooKW5FN1bqC"
-ALTER USER "cloudsqlexternalsync" RENAME TO "<database-admin-user>";
+terraform output --json source-instance-admin-creds
+terraform output --json migration_destination_database_creds
 ```
 
-Also, via the `google cloud console`, assign a password for the admin user, for simplicity you can keep it the same as the source instance so you don't have to handle imports, the further guide assumes you have used the same password.
+```sh
+$ psql <value of connection string from above>
+postgres=> ALTER ROLE cloudsqlexternalsync RENAME TO '<instance-admin-name>';
+postgres=> ALTER ROLE "volcano-staging-pg-admin" PASSWORD '<source-instance-password>'
+```
 
 #### Step 3.5.2
 Manipulate the old state to reflect the new state by running the two scripts located at `galoy-infra/examples/gcp/bin`
