@@ -38,8 +38,8 @@ output "admin-creds" {
 }
 
 output "connection_profile_credentials" {
-  value = {
-    source_connection_profile_id      = module.migration.source_connection_profile_id
-    destination_connection_profile_id = module.migration.destination_connection_profile_id
-  }
+  value = local.prep_upgrade_as_source_db ? {
+    source_connection_profile_id      = module.migration[0].source_connection_profile_id
+    destination_connection_profile_id = module.migration[0].destination_connection_profile_id
+  } : {}
 }
