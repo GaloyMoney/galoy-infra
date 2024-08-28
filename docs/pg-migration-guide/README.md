@@ -214,7 +214,7 @@ Change the owners of the tables and schemas to the correct owner using the psql 
 
 ```
 
-# Step 5: Promote the instance
+# Step 4: Promote the instance
 Now go to the [Database Migration Service](https://console.cloud.google.com/dbmigration/migrations) and once the replication delay is zero, promote the migration.
 
 ```sh
@@ -225,7 +225,7 @@ $ gcloud database-migration migration-jobs promote test-job --region=us-east1
 
 ![migration-successful](./assets/successful-migration.png)
 
-# Step 6: Enable backup
+# Step 5: Enable backup
 Disable `pre_promotion` flag,
 
 ```hcl
@@ -249,7 +249,7 @@ module "postgresql" {
 ```
 Do a `terraform apply`
 
-# Step 7: Delete all the dangling resources
+# Step 6: Delete all the dangling resources
 
 ### Delete the Database Migration Service that we used for migration.
 ```sh
