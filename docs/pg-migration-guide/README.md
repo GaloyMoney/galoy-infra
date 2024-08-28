@@ -61,14 +61,61 @@ value = <postgres-module-name>.vpc
 ```sh
 # run the create-dms.sh script located in modules/postgresql/gcp/bin
 $ ./create-dms.sh
-> Enter the job name: test-job
+Enter the region: us-east1
+Enter the job name: test-migration
+Creating migration job 'test-migration' in region 'us-east1'...
+done: true
+metadata:
+'@type': type.googleapis.com/google.cloud.clouddms.v1.OperationMetadata
+apiVersion: v1
+createTime: '2024-08-28T07:43:20.081378163Z'
+endTime: '2024-08-28T07:43:20.193064462Z'
+requestedCancellation: false
+target: projects/volcano-staging/locations/us-east1/migrationJobs/test-migration
+verb: create
+name: projects/volcano-staging/locations/us-east1/operations/operation-1724830999734-620b983096922-b2c351ac-6becb172
+response:
+'@type': type.googleapis.com/google.cloud.clouddms.v1.MigrationJob
+createTime: '2024-08-28T07:43:20.078546769Z'
+destination: projects/volcano-staging/locations/us-east1/connectionProfiles/volcano-staging-pg-f148f0c5-id
+destinationDatabase:
+engine: POSTGRESQL
+provider: CLOUDSQL
+displayName: test-migration
+duration: 0.105832s
+name: projects/volcano-staging/locations/us-east1/migrationJobs/test-migration
+source: projects/volcano-staging/locations/us-east1/connectionProfiles/volcano-staging-pg-2ac106b8-id
+sourceDatabase:
+engine: POSTGRESQL
+provider: CLOUDSQL
+state: NOT_STARTED
+type: CONTINUOUS
+updateTime: '2024-08-28T07:43:20.176407Z'
+vpcPeeringConnectivity:
+vpc: projects/volcano-staging/global/networks/volcano-staging-vpc
+Migration job 'test-migration' created successfully.
+Demoting the destination for migration job 'test-migration'...
+done: false
+metadata:
+'@type': type.googleapis.com/google.cloud.clouddms.v1.OperationMetadata
+apiVersion: v1
+createTime: '2024-08-28T07:43:22.585543514Z'
+requestedCancellation: false
+target: projects/volcano-staging/locations/us-east1/migrationJobs/test-migration
+verb: demoteDestination
+name: projects/volcano-staging/locations/us-east1/operations/operation-1724831002232-620b9832f8593-11ca0f93-e8a4c2c1
+Migration job 'test-migration' has started demoting the destination instance.
 
-$ gcloud database-migration migration-jobs demote-destination test-job --region=us-east1
+The destination instance is being demoted. Run the following command after the process has completed:
 
-$ gcloud database-migration migration-jobs start test-job --region=us-east1
+# The script will specify which command you need to run after the demotion is completed.
+**gcloud database-migration migration-jobs start "test-migration" --region="us-east1"**
+
+# Run the start command that is prompted
+$ gcloud database-migration migration-jobs start "test-migration" --region="us-east1"
 
 # Use the describe command to check the status of the migration-job
-$ gcloud database-migration migration-jobs describe test-job --region=us-east1
+$ gcloud database-migration migration-jobs describe "test-job" --region=us-east1
 
 $ gcloud database-migration migration-jobs promote test-job --region=us-east1
 ```

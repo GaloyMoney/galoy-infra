@@ -46,4 +46,4 @@ fi
 
 # Mention instructions on how to start the DMS
 echo -e "\nThe destination instance is being demoted. Run the following command after the process has completed:"
-echo -e "\ngcloud database-migration migration-jobs start \"$JOB_NAME\" --region=\"$REGION\"\n"
+echo -e "\n$ gcloud database-migration migration-jobs start \"$JOB_NAME\" --region=\"$REGION\"\n"
