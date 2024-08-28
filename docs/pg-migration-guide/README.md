@@ -5,11 +5,8 @@ Before proceeding, please review the [known limitations](https://cloud.google.co
 
 # Step 1: Configure Source Instance and create connection profile
 - Decide upon a instance to upgrade:
-
 	- We are choosing the `rishi-pg14-volcano-staging-pg-a34e9984` instance, a PostgreSQL 14 instance managed via the `galoy-infra/modules/postgresql/gcp` Terraform module.
-
   ![decide-source](./assets/decide-source-instance.png)
-
 - On the terraform file of the decided instance, enable the `prep_upgrade_as_source_db` flag
 
 ```hcl
@@ -150,17 +147,17 @@ terraform output --json migration_destination_database_creds
 ```sh
 $ psql <value of connection string from above>
 postgres=> ALTER ROLE cloudsqlexternalsync RENAME TO '<instance-admin-name>';
-postgres=> ALTER ROLE "volcano-staging-pg-admin" PASSWORD '<source-instance-password>'
+postgres=> ALTER ROLE "<instance-admin-name>" PASSWORD '<source-instance-password>';
 ```
 
 #### Step 3.5.2
 Manipulate the old state to reflect the new state by running the two scripts located at `galoy-infra/examples/gcp/bin`
 
 ```sh
-$ ./terraform-db-swap.sh
+$ ./terraform-db-swap.sh <main.tf directory> <module-name>
 # This will ask for your terraform module name
 # And swap the state between the newer and old instance
-$ ./terraform-state-rm.sh
+$ ./terraform-state-rm.sh <main.tf directory> <module-name>
 # This will ask for your terraform module name, give it the same name as you gave before
 # This will remove all the conflicting state which terraform will try to remove manually
 ```
@@ -193,8 +190,6 @@ module "postgresql" {
 }
 ```
 
-
-
 #### Step 3.5.4
 
 Finally, do a
@@ -210,8 +205,8 @@ The destination instance should be exactly as with the source PostgreSQL instanc
 Change the owners of the tables and schemas to the correct owner using the psql command:
 
 ```sh
-#TODO after the dry run
-
+#TODO | Need to do a dry run
+./postgres-perms-update.sh
 ```
 
 # Step 4: Promote the instance
@@ -253,7 +248,7 @@ Do a `terraform apply`
 
 ### Delete the Database Migration Service that we used for migration.
 ```sh
-$ gcloud database-migration migration-jobs describe "test-job" --region=us-east1
+$ gcloud database-migration migration-jobs delete "test-job" --region=us-east1
 ```
 
 ### Delete the source and external replica instance
