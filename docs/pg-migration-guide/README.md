@@ -259,6 +259,8 @@ $ gcloud database-migration migration-jobs describe "test-job" --region=us-east1
 ### Delete the source and external replica instance
 ```sh
 $  gcloud sql instances list
+# you might also need to disable the deletion protection
+$  gcloud sql instances patch <source-instance-id> --no-deletion-protection
 $  gcloud sql instances delete <source-instance-id>
 $  gcloud sql instances delete <external-replica-instance-id>
 ```
