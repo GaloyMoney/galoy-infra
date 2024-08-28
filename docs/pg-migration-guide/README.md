@@ -220,7 +220,6 @@ Now go to the [Database Migration Service](https://console.cloud.google.com/dbmi
 ```sh
 $ gcloud database-migration migration-jobs promote test-job --region=us-east1
 ```
-![migration-completed](./assets/migration-completed.png)
 
 #### The Migration was successful.
 
