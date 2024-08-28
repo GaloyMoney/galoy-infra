@@ -28,5 +28,9 @@ echo "Migration job '$JOB_NAME' created successfully."
 # Demote the destination
 gcloud database-migration migration-jobs demote-destination "$JOB_NAME"
 
+echo "Migration job '$JOB_NAME' demoted the destination successfully."
+
 # Start the DMS
 gcloud database-migration migration-jobs start "$JOB_NAME"
+
+echo "Migration job '$JOB_NAME' has started."

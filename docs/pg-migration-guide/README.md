@@ -61,7 +61,6 @@ value = <postgres-module-name>.vpc
 ```sh
 # run the create-dms.sh script located in modules/postgresql/gcp/bin
 $ ./create-dms.sh
-> Enter the region: us-east1
 > Enter the job name: test-job
 
 $ gcloud database-migration migration-jobs demote-destination test-job --region=us-east1
@@ -72,15 +71,6 @@ $ gcloud database-migration migration-jobs start test-job --region=us-east1
 $ gcloud database-migration migration-jobs describe test-job --region=us-east1
 
 $ gcloud database-migration migration-jobs promote test-job --region=us-east1
-
-
-
-
-gcloud database-migration migration-jobs create my-migration-job --region=us-east1 --type=CONTINUOUS --source=volcano-staging-pg-ecfccd07-id --destination=volcano-staging-pg-f038f9fe-id  --peer-vpc=projects/volcano-staging/global/networks/volcan-staging-vpc
-gcloud database-migration migration-jobs create my-migration-job-2 --region=us-east1 --type=CONTINUOUS --source=volcano-staging-pg-ecfccd07-id --destination=volcano-staging-pg-f038f9fe-id  --peer-vpc=projects/volcano-staging/global/networks/volcano-staging-vpc
-gcloud database-migration migration-jobs  start my-migration-job-2 --region=us-east1
-gcloud database-migration migration-jobs describe  my-migration-job-2 --region=us-east1
-gcloud database-migration migration-jobs delete my-migration-job-2 --region=us-east1
 ```
 # Step 3: Pre-promotion
 
