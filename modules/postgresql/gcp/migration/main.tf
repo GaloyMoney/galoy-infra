@@ -14,6 +14,25 @@ variable "private_network" {}
 variable "private_ip_address" {}
 variable "source_destination_cloud_sql_id" {}
 
+output "source_connection_profile_id" {
+  description = "The ID of the source connection profile"
+  value       = google_database_migration_service_connection_profile.source_connection_profile.id
+}
+
+output "postgres_user_password" {
+  description = "Value of password for the postgres user"
+  value       = random_password.postgres
+}
+
+output "destination_connection_profile_id" {
+  description = "The ID of the destination connection profile"
+  value       = google_database_migration_service_connection_profile.destination_connection_profile.id
+}
+
+output "destination_instance_private_ip_address" {
+  description = "The private ip address for destination instance"
+  value       = google_sql_database_instance.destination_instance.private_ip_address
+}
 resource "random_id" "db_name_suffix_destination" {
   byte_length = 4
 }
@@ -22,16 +41,6 @@ resource "postgresql_extension" "pglogical" {
   for_each = toset(var.migration_databases)
   name     = "pglogical"
   database = each.value
-}
-
-output "source_connection_profile_id" {
-  description = "The ID of the source connection profile"
-  value       = google_database_migration_service_connection_profile.source_connection_profile.id
-}
-
-output "destination_connection_profile_id" {
-  description = "The ID of the destination connection profile"
-  value       = google_database_migration_service_connection_profile.destination_connection_profile.id
 }
 
 resource "google_database_migration_service_connection_profile" "destination_connection_profile" {
@@ -183,8 +192,6 @@ resource "google_sql_user" "postgres" {
   project  = var.gcp_project
 }
 
-
-#google_sql_database_instance.instance.name
 resource "google_sql_database_instance" "destination_instance" {
   name = "${var.instance_name}-${random_id.db_name_suffix_destination.hex}"
 

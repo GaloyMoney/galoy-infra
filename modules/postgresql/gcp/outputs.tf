@@ -47,3 +47,9 @@ output "connection_profile_credentials" {
 output "vpc" {
   value = "projects/${local.gcp_project}/global/networks/${local.vpc_name}"
 }
+
+output "migration_destination_database_creds" {
+  value = local.prep_upgrade_as_source_db ? {
+    conn = "postgres://postgres:${module.migration[0].postgres_user_password}@${module.migration[0].destination_instance_private_ip_address}:5432/postgres"
+  } : {}
+}
