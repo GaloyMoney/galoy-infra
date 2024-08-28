@@ -17,6 +17,7 @@ DEST_ID=$(terraform output -raw destination_connection_profile_id)
 VPC=$(terraform output -raw vpc)
 
 # Construct and run the gcloud command to create the migration job
+echo "Creating migration job '$JOB_NAME' in region '$REGION'..."
 gcloud database-migration migration-jobs create "$JOB_NAME" \
     --region="$REGION" \
     --type="$TYPE" \
@@ -24,15 +25,25 @@ gcloud database-migration migration-jobs create "$JOB_NAME" \
     --destination="$DEST_ID" \
     --peer-vpc="$VPC"
 
-echo "Migration job '$JOB_NAME' created successfully."
+if [ $? -eq 0 ]; then
+    echo "Migration job '$JOB_NAME' created successfully."
+else
+    echo "Error: Failed to create migration job '$JOB_NAME'."
+    exit 1
+fi
 
 # Demote the destination
+echo "Demoting the destination for migration job '$JOB_NAME'..."
 gcloud database-migration migration-jobs demote-destination "$JOB_NAME" \
     --region="$REGION"
 
-echo "Migration job '$JOB_NAME' has started demoting the destination instance."
+if [ $? -eq 0 ]; then
+    echo "Migration job '$JOB_NAME' has started demoting the destination instance."
+else
+    echo "Error: Failed to demote the destination for migration job '$JOB_NAME'."
+    exit 1
+fi
 
 # Mention instructions on how to start the DMS
-echo "The destination instance is being demoted, run the below command after that process has been completed."
-echo "gcloud database-migration migration-jobs start "$JOB_NAME" \
-    --region="$REGION""
+echo -e "\nThe destination instance is being demoted. Run the following command after the process has completed:"
+echo -e "\ngcloud database-migration migration-jobs start \"$JOB_NAME\" --region=\"$REGION\"\n"
