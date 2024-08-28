@@ -21,7 +21,7 @@ output "source_connection_profile_id" {
 
 output "postgres_user_password" {
   description = "Value of password for the postgres user"
-  value       = random_password.postgres
+  value       = random_password.postgres.result
 }
 
 output "destination_connection_profile_id" {
