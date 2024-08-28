@@ -1,7 +1,4 @@
 #!/bin/bash
-
-set -x
-
 TYPE="CONTINUOUS"
 
 # Get user input for region and job name
@@ -33,12 +30,9 @@ echo "Migration job '$JOB_NAME' created successfully."
 gcloud database-migration migration-jobs demote-destination "$JOB_NAME" \
     --region="$REGION"
 
-echo "Migration job '$JOB_NAME' demoted the destination successfully."
+echo "Migration job '$JOB_NAME' has started demoting the destination instance."
 
-# Start the DMS
-gcloud database-migration migration-jobs start "$JOB_NAME" \
-    --region="$REGION"
-
-echo "Migration job '$JOB_NAME' has started."
-
-set +x
+# Mention instructions on how to start the DMS
+echo "The destination instance is being demoted, run the below command after that process has been completed."
+echo "gcloud database-migration migration-jobs start "$JOB_NAME" \
+    --region="$REGION""
