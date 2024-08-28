@@ -195,6 +195,11 @@ Do a `terraform apply`
   -  source instance
   -  connection-profile
 
+```sh
+$  gcloud sql instances list
+$  gcloud sql instances delete <instance-name>
+```
+
   You can delete them manually by going to [connection profile console](https://console.cloud.google.com/dbmigration/connection-profiles) and [cloud sql console](https://console.cloud.google.com/sql/instances)
 
   or

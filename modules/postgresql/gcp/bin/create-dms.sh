@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -x
+
 TYPE="CONTINUOUS"
 
 # Get user input for region and job name
@@ -38,3 +40,5 @@ gcloud database-migration migration-jobs start "$JOB_NAME" \
     --region="$REGION"
 
 echo "Migration job '$JOB_NAME' has started."
+
+set +x
