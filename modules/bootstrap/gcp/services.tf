@@ -10,7 +10,8 @@ locals {
     "sqladmin.googleapis.com",
     "bigqueryconnection.googleapis.com",
     "maps-backend.googleapis.com",
-    "apikeys.googleapis.com"
+    "apikeys.googleapis.com",
+    "datamigration.googleapis.com"
   ]
 }
 
