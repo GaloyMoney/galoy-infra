@@ -13,7 +13,7 @@ resource "google_sql_database_instance" "instance" {
   project             = local.gcp_project
   database_version    = local.database_version
   region              = local.region
-  deletion_protection = !local.destroyable
+  deletion_protection = local.prep_upgrade_as_source_db ? false : !local.destroyable
 
   settings {
     tier                        = local.tier

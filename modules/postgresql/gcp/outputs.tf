@@ -48,8 +48,22 @@ output "vpc" {
   value = "projects/${local.gcp_project}/global/networks/${local.vpc_name}"
 }
 
-output "migration_destination_database_creds" {
+output "migration_destination_instance" {
   value = local.prep_upgrade_as_source_db ? {
     conn = "postgres://postgres:${module.migration[0].postgres_user_password}@${module.migration[0].destination_instance_private_ip_address}:5432/postgres"
+  } : {}
+}
+
+output "source_instance" {
+  value = {
+    conn = "postgres://${google_sql_user.admin.name}:${random_password.admin.result}@${google_sql_database_instance.instance.private_ip_address}:5432/postgres"
+  }
+}
+
+output "migration_sql_command" {
+  value = local.prep_upgrade_as_source_db ? {
+    psql_login         = "psql postgres://postgres:${module.migration[0].postgres_user_password}@${module.migration[0].destination_instance_private_ip_address}:5432/postgres"
+    rename_admin_user  = "ALTER ROLE cloudsqlexternalsync RENAME TO ${google_sql_user.admin.name};"
+    set_admin_password = "ALTER ROLE ${google_sql_user.admin.name} PASSWORD ${random_password.admin.result};"
   } : {}
 }

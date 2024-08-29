@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
+set -ex
+
 dir=${1}
 module_prefix=${2}
 
-pushd ${1}
+pushd ${dir}
 
 # Function to check if a command exists
 command_exists() {
@@ -21,4 +23,5 @@ $cmd state rm "${module_prefix}.module.migration"
 
 # remove admin user
 $cmd state rm "${module_prefix}.google_sql_user.admin"
+
 popd
