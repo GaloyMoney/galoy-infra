@@ -26,7 +26,7 @@ if [ -z "$JOB_NAME" ]; then
     echo "Error: JOB_NAME cannot be empty."
     exit 1
 fi
-f [ ! -d "$dir" ]; then
+if [ ! -d "$dir" ]; then
     echo "Error: Directory '$dir' does not exist."
     exit 1
 fi
