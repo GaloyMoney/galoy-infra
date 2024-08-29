@@ -68,6 +68,7 @@ resource "google_project_iam_custom_role" "platform_make" {
     "bigquery.tables.update",
     "bigquery.tables.updateData",
     "bigquery.connections.create",
+    "bigquery.connections.update",
     "bigquery.connections.get",
     "bigquery.connections.getIamPolicy",
     "bigquery.connections.setIamPolicy",
