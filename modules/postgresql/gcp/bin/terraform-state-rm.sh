@@ -24,4 +24,10 @@ $cmd state rm "${module_prefix}.module.migration"
 # remove admin user
 $cmd state rm "${module_prefix}.google_sql_user.admin"
 
+module.postgresql_migration_source.google_sql_database_instance.replica
+
+if $cmd state list | grep -q "${module_prefix}.google_sql_database_instance.replica"; then
+  $cmd state rm "${module_prefix}.google_sql_database_instance.replica"
+fi
+
 popd

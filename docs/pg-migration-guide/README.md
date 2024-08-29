@@ -152,12 +152,7 @@ Log in to the `destination instance` as the `postgres` user and change the name 
 The value of `<admin-user>` and `destination-connection-string` can be found by running
 
 ```sh
-$ tofu output --json migration_sql_command
-# you will will be prompted with
-# psql_login         <- psql command to login to the destination database as postgres user
-# rename_admin_user  <- psql command to rename cloudsqlexternalsync to admin
-# set_admin_password <- psql command to change the admin user password
-# Run the commands, then proceed to the next step
+$ tf output -json migration_sql_command | jq -r '.sql_command' | bash
 ```
 
 #### Step 3.5.2
