@@ -214,10 +214,9 @@ Get the promoted instance PG15 connection string by running
 $ tofu output --raw source_instance > pg_connection.txt
 ```
 
-
 ```sh
 #TODO | Need to do a dry run again
-$ ./postgres-perms-update.sh <db-name-whose-perms-we-want-to-be-fixed>
+$ ./postgres-perms-update.sh <main.tf directory> <db-name-whose-perms-we-want-to-be-fixed>
 ```
 
 # Step 4: Promote the instance
@@ -266,7 +265,6 @@ $ gcloud database-migration migration-jobs delete "test-job" --region=us-east1
 ```sh
 $  gcloud sql instances list
 # you might also need to disable the deletion protection
-$  gcloud sql instances patch <source-instance-id> --no-deletion-protection
 $  gcloud sql instances delete <source-instance-id>
 $  gcloud sql instances delete <external-replica-instance-id>
 ```

@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
-set -ex
+set -e
 
-DB_NAME=${1}
+dir=${1}
+DB_NAME=${2}
+
+pushd ${dir}
+
 NEW_OWNER=${DB_NAME}-user
 # READ PG_CON from a file
 PG_CON=$(cat pg_connection.txt)
@@ -29,3 +33,5 @@ for sequence in $sequences; do
 done
 
 echo "Ownership of all tables in $DB_NAME has been granted to $NEW_OWNER."
+
+popd
