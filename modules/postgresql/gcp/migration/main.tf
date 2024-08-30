@@ -198,12 +198,12 @@ resource "google_sql_database_instance" "destination_instance" {
   project             = var.gcp_project
   database_version    = var.destination_database_version
   region              = var.region
-  deletion_protection = !var.destroyable
+  deletion_protection = false
 
   settings {
     tier                        = var.tier
     availability_type           = var.highly_available ? "REGIONAL" : "ZONAL"
-    deletion_protection_enabled = !var.destroyable
+    deletion_protection_enabled = false
 
     dynamic "database_flags" {
       for_each = var.max_connections > 0 ? [var.max_connections] : []

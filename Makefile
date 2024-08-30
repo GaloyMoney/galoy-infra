@@ -1,2 +1,2 @@
 fmt:
-	terraform fmt -recursive
+	tofu fmt -recursive
