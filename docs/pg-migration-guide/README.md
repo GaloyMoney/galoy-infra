@@ -7,28 +7,65 @@ Before proceeding, please review the [known limitations](https://cloud.google.co
 - Decide upon a instance to upgrade:
 	- We are choosing the `rishi-pg14-volcano-staging-pg-a34e9984` instance, a PostgreSQL 14 instance managed via the `galoy-infra/modules/postgresql/gcp` Terraform module.
   ![decide-source](./assets/decide-source-instance.png)
-- On the terraform file of the decided instance, enable the `prep_upgrade_as_source_db` flag
+- On the tofu file of the decided instance, enable the `prep_upgrade_as_source_db` flag
 
 ```hcl
 module "postgresql_migration_source" {
-source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/postgresql/gcp?ref=<git_reference>"
+source                      = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/postgresql/gcp?ref=<git_reference>"
 # source = "../../../modules/postgresql/gcp"
 
-instance_name          = "${var.name_prefix}-pg"
-vpc_name               = "${var.name_prefix}-vpc"
-gcp_project            = var.gcp_project
-destroyable            = var.destroyable_postgres
-user_can_create_db     = true
-databases              = ["test"]
-replication            = true
-provision_read_replica = true
-database_version       = "POSTGRES_14"
+instance_name               = "${var.name_prefix}-pg"
+vpc_name                    = "${var.name_prefix}-vpc"
+gcp_project                 = var.gcp_project
+destroyable                 = var.destroyable_postgres
+user_can_create_db          = true
+databases                   = ["test"]
+replication                 = true
+provision_read_replica      = true
+database_version            = "POSTGRES_14"
 // Enable it as follows
 prep_upgrade_as_source_db   = true
 }
 ```
 
-The `prep_upgrade_as_source_db` flag configures the source database, initialises a new postgres destination and creates a connection profile with the migration user as required by the Database Migration Service.
+The `prep_upgrade_as_source_db` flag configures the source database, initialises a new postgres destination and creates two connection profiles for source and destination as required by the Database Migration Service.
+
+Also add the following outputs which we will require in the future steps:
+
+```sh
+output "source_connection_profile_id" {
+    value       = <module-name>.connection_profile_credentials["source_connection_profile_id"]
+}
+
+output "destination_connection_profile_id" {
+    value       = <module-name>.connection_profile_credentials["destination_connection_profile_id"]
+}
+
+output "vpc" {
+    value       = <module-name>.vpc
+}
+
+output "migration_destination_instance" {
+    value       = <module-name>.migration_destination_instance
+    sensitive   = true
+}
+
+output "source_instance" {
+    value       = <module-name>.source_instance["conn"]
+    sensitive   = true
+}
+
+output "migration_sql_command" {
+    value       = <module-name>.migration_sql_command
+    sensitive   = true
+}
+```
+
+Run:
+
+```sh
+$ tofu apply
+```
 
 - ** The full specification of how the source instance needs to be configured can be found [Here](https://cloud.google.com/database-migration/docs/postgres/configure-source-database#configure-your-source-instance-postgres)
 - **  The specification for connection profile can be found [here](https://cloud.google.com/database-migration/docs/postgres/create-source-connection-profile)
@@ -37,35 +74,10 @@ The `prep_upgrade_as_source_db` flag configures the source database, initialises
 
 > Reference for [Database Migration Service](https://cloud.google.com/sdk/gcloud/reference/database-migration/migration-jobs)
 
-Before proceeding with the DMS creation we will expose the required things by gcloud using the `output` block, add these output blocks to your main terraform file.
-```sh
-output "source_connection_profile_id" {
-description = "The ID of the source connection profile"
-value       = <module-name>.connection_profile_credentials["source_connection_profile_id"]
-}
-
-output "destination_connection_profile_id" {
-description = "The ID of the destination connection profile"
-value       = <module-name>.connection_profile_credentials["destination_connection_profile_id"]
-}
-
-output "vpc" {
-value = <module-name>.vpc
-}
-
-output "migration_destination_database_creds" {
-value = <module-name>.migration_destination_database_creds
-sensitive = true
-}
-
-output "source-instance-admin-creds" {
-value     = <module-name>.admin-creds
-sensitive = true
-}
-```
+Before proceeding with the DMS creation we will expose the required things by gcloud using the `output` block, add these output blocks to your main tofu file.
 ```sh
 # run the create-dms.sh script located in modules/postgresql/gcp/bin
-$ ./create-dms.sh
+$ ./create-dms.sh <main.tf directory> <gcp-project-name> <gcp-region> <dms-migration-job-name>
 Enter the region: us-east1
 Enter the job name: test-migration
 Creating migration job 'test-migration' in region 'us-east1'...
@@ -114,7 +126,7 @@ Migration job 'test-migration' has started demoting the destination instance.
 The destination instance is being demoted. Run the following command after the process has completed:
 
 # The script will specify which command you need to run after the demotion is completed.
-gcloud database-migration migration-jobs start "test-migration" --region="us-east1"
+$ gcloud database-migration migration-jobs start "test-migration" --region="us-east1"
 ```
 
 > Run the start command that is prompted
@@ -133,21 +145,14 @@ $ gcloud database-migration migration-jobs describe "test-job" --region=us-east1
 >    -  Migration does not transfer privileges and users. Create users manually based on the old database.
 >    - Once you migrated the database using DMS all objects and schema owner will become `cloudsqlexternalsync` by default.
 
-### Step 3.5: Handing the non-migrated settings and syncing state via `terraform`
+### Step 3.5: Handing the non-migrated settings and syncing state via `tofu`
 
 #### Step 3.5.1
 Log in to the `destination instance` as the `postgres` user and change the name of the `cloudsqlexternalsync` user to the `<admin-user>`.
 The value of `<admin-user>` and `destination-connection-string` can be found by running
 
 ```sh
-terraform output --json source-instance-admin-creds
-terraform output --json migration_destination_database_creds
-```
-
-```sh
-$ psql <value of connection string from above>
-postgres=> ALTER ROLE cloudsqlexternalsync RENAME TO '<instance-admin-name>';
-postgres=> ALTER ROLE "<instance-admin-name>" PASSWORD '<source-instance-password>';
+$ tf output -json migration_sql_command | jq -r '.sql_command' | bash
 ```
 
 #### Step 3.5.2
@@ -155,11 +160,11 @@ Manipulate the old state to reflect the new state by running the two scripts loc
 
 ```sh
 $ ./terraform-db-swap.sh <main.tf directory> <module-name>
-# This will ask for your terraform module name
+# This will ask for your tofu module name
 # And swap the state between the newer and old instance
 $ ./terraform-state-rm.sh <main.tf directory> <module-name>
-# This will ask for your terraform module name, give it the same name as you gave before
-# This will remove all the conflicting state which terraform will try to remove manually
+# This will ask for your tofu module name, give it the same name as you gave before
+# This will remove all the conflicting state which tofu will try to remove manually
 ```
 #### Step 3.5.3
 
@@ -195,7 +200,7 @@ module "postgresql" {
 Finally, do a
 
 ```sh
-terraform apply
+$ tofu apply
 ```
 The destination instance should be exactly as with the source PostgreSQL instance, expect backups which we will enable after promotion, and database artifacts which we will fix in the next step.
 
@@ -204,9 +209,14 @@ The destination instance should be exactly as with the source PostgreSQL instanc
 
 Change the owners of the tables and schemas to the correct owner using the psql command:
 
+Get the promoted instance PG15 connection string by running
 ```sh
-#TODO | Need to do a dry run
-./postgres-perms-update.sh
+$ tofu output --raw source_instance > pg_connection.txt
+```
+
+```sh
+#TODO | Need to do a dry run again
+$ ./postgres-perms-update.sh <main.tf directory> <db-name-whose-perms-we-want-to-be-fixed>
 ```
 
 # Step 4: Promote the instance
@@ -242,7 +252,7 @@ module "postgresql" {
   pre_promotion          = false # <-we can also remove this line completely
 }
 ```
-Do a `terraform apply`
+Do a `tofu apply`
 
 # Step 6: Delete all the dangling resources
 
@@ -255,7 +265,6 @@ $ gcloud database-migration migration-jobs delete "test-job" --region=us-east1
 ```sh
 $  gcloud sql instances list
 # you might also need to disable the deletion protection
-$  gcloud sql instances patch <source-instance-id> --no-deletion-protection
 $  gcloud sql instances delete <source-instance-id>
 $  gcloud sql instances delete <external-replica-instance-id>
 ```

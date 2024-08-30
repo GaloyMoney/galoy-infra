@@ -1,24 +1,56 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -e
+
+# the directory we want to run the script in
+dir=${1}
+# the gcp project
+PROJECT=${2}
+# the gcp region
+REGION=${3}
+# the migration job name
+JOB_NAME=${4}
+
 TYPE="CONTINUOUS"
 
-# Get user input for region and job name
-read -p "Enter the region: " REGION
-read -p "Enter the job name: " JOB_NAME
+pushd ${dir}
 
-# Validate user input
-if [ -z "$REGION" ] || [ -z "$JOB_NAME" ]; then
-    echo "Error: Region and job name cannot be empty."
+if [ -z "$PROJECT" ]; then
+    echo "Error: PROJECT cannot be empty."
+    exit 1
+fi
+if [ -z "$REGION" ]; then
+    echo "Error: REGION cannot be empty."
+    exit 1
+fi
+if [ -z "$JOB_NAME" ]; then
+    echo "Error: JOB_NAME cannot be empty."
+    exit 1
+fi
+if [ ! -d "$dir" ]; then
+    echo "Error: Directory '$dir' does not exist."
     exit 1
 fi
 
+# Function to check if a command exists
+command_exists() {
+  command -v "$1" >/dev/null 2>&1
+}
+
+# Set the command to use, defaulting to 'terraform' if 'tofu' is not available
+if command_exists tofu; then
+  cmd="tofu"
+else
+  cmd="terraform"
+fi
 # Get Terraform outputs
-SOURCE_ID=$(terraform output -raw source_connection_profile_id)
-DEST_ID=$(terraform output -raw destination_connection_profile_id)
-VPC=$(terraform output -raw vpc)
+SOURCE_ID=$($cmd output -raw source_connection_profile_id)
+DEST_ID=$($cmd output -raw destination_connection_profile_id)
+VPC=$($cmd output -raw vpc)
 
 # Construct and run the gcloud command to create the migration job
 echo "Creating migration job '$JOB_NAME' in region '$REGION'..."
 gcloud database-migration migration-jobs create "$JOB_NAME" \
+    --project="$PROJECT" \
     --region="$REGION" \
     --type="$TYPE" \
     --source="$SOURCE_ID" \
@@ -35,6 +67,7 @@ fi
 # Demote the destination
 echo "Demoting the destination for migration job '$JOB_NAME'..."
 gcloud database-migration migration-jobs demote-destination "$JOB_NAME" \
+    --project="$PROJECT" \
     --region="$REGION"
 
 if [ $? -eq 0 ]; then
@@ -46,4 +79,6 @@ fi
 
 # Mention instructions on how to start the DMS
 echo -e "\nThe destination instance is being demoted. Run the following command after the process has completed:"
-echo -e "\n$ gcloud database-migration migration-jobs start \"$JOB_NAME\" --region=\"$REGION\"\n"
+echo -e "\n$ gcloud database-migration migration-jobs start \"$JOB_NAME\" --project=\"$PROJECT\" --region=\"$REGION\"\n"
+
+popd

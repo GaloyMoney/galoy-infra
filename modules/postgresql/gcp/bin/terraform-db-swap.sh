@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 
 dir=${1}
 module_prefix=${2}

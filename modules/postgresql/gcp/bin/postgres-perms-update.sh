@@ -1,11 +1,16 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -e
 
-# Prompt user for input
-read -p "Enter database name: " DB_NAME
-read -p "Enter new owner: " NEW_OWNER
-read -p "Enter PostgreSQL connection string: " PG_CON
+dir=${1}
+DB_NAME=${2}
 
-PSQL_CMD="psql $PG_CON -d $DB_NAME -At -c"
+pushd ${dir}
+
+NEW_OWNER=${DB_NAME}-user
+# READ PG_CON from a file
+PG_CON=$(cat pg_connection.txt)
+
+PSQL_CMD="psql $PG_CON -At -c"
 
 $PSQL_CMD "ALTER DATABASE postgres OWNER TO cloudsqlsuperuser;"
 $PSQL_CMD "ALTER SCHEMA public OWNER TO cloudsqlsuperuser;"
@@ -19,4 +24,14 @@ for table in $tables; do
     $PSQL_CMD "ALTER TABLE public.\"$table\" OWNER TO \"$NEW_OWNER\";"
 done
 
+# Get list of all sequences in the database
+sequences=$($PSQL_CMD "SELECT sequence_name FROM information_schema.sequences WHERE sequence_schema = 'public';")
+
+# Loop through each sequence and change the owner
+for sequence in $sequences; do
+    $PSQL_CMD "ALTER SEQUENCE public.\"$sequence\" OWNER TO \"$NEW_OWNER\";"
+done
+
 echo "Ownership of all tables in $DB_NAME has been granted to $NEW_OWNER."
+
+popd
