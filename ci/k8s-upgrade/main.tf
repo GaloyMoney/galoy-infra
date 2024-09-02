@@ -26,9 +26,9 @@ data "google_container_engine_versions" "useast1" {
 
 locals {
   # Convert outputs to sets
-  euwest6_versions = toset(data.google_container_engine_versions.euwest6.valid_master_versions)
+  euwest6_versions    = toset(data.google_container_engine_versions.euwest6.valid_master_versions)
   uscentral1_versions = toset(data.google_container_engine_versions.uscentral1.valid_master_versions)
-  useast1_versions = toset(data.google_container_engine_versions.useast1.valid_master_versions)
+  useast1_versions    = toset(data.google_container_engine_versions.useast1.valid_master_versions)
 
   # Find the intersection of all sets, i.e., common versions
   common_versions = setintersection(local.euwest6_versions, local.uscentral1_versions, local.useast1_versions)
