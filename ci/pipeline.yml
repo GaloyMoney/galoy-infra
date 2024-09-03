@@ -66,7 +66,7 @@ jobs:
 - name: check-and-upgrade-k8s
   plan:
   - in_parallel:
-    - get: daily-trigger-resource
+    - get: every-1h
       trigger: true
     - get: repo
     - get: pipeline-tasks
@@ -100,10 +100,10 @@ resources:
 #@ for/end resource in gcp_resources():
 - #@ resource
 
-- name: daily-trigger-resource
+- name: every-1h
   type: time
+  icon: clock-outline
   source:
-    start: 1:00 AM
-    stop: 2:00 AM
+    interval: 1h
 
 resource_types: #@ resource_types()
