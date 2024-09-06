@@ -75,6 +75,15 @@ resource "postgresql_grant" "grant_all" {
   ]
 }
 
+resource "postgresql_grant" "grant_public_schema" {
+  database    = postgresql_database.db.name
+  role        = postgresql_role.user.name
+  schema      = "public"
+  object_type = "schema"
+
+  privileges  = ["USAGE", "CREATE"]
+}
+
 resource "postgresql_grant" "grant_connect_replicator" {
   count       = var.replication ? 1 : 0
   database    = postgresql_database.db.name
