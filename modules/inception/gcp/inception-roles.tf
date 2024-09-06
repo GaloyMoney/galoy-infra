@@ -49,6 +49,16 @@ resource "google_project_iam_custom_role" "inception_make" {
     "storage.buckets.get",
     "storage.buckets.getIamPolicy",
     "storage.buckets.setIamPolicy",
+    "secretmanager.secrets.create",
+    "secretmanager.secrets.get",
+    "secretmanager.secrets.list",
+    "secretmanager.secrets.update",
+    "secretmanager.secrets.setIamPolicy",
+    "secretmanager.secrets.getIamPolicy",
+    "secretmanager.versions.access",
+    "secretmanager.versions.add",
+    "secretmanager.versions.get",
+    "secretmanager.versions.list",
   ]
 }
 
@@ -74,7 +84,9 @@ resource "google_project_iam_custom_role" "inception_destroy" {
     "resourcemanager.projects.get",
     "servicenetworking.services.get",
     "servicenetworking.services.deleteConnection",
-    "serviceusage.operations.get"
+    "serviceusage.operations.get",
+    "secretmanager.secrets.delete",
+    "secretmanager.versions.destroy",
   ]
 }
 

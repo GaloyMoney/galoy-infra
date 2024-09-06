@@ -86,6 +86,20 @@ resource "google_project_iam_custom_role" "platform_make" {
     "datamigration.connectionprofiles.create",
     "datamigration.connectionprofiles.get",
     "datamigration.operations.get",
+    "dataform.releaseConfigs.create",
+    "dataform.releaseConfigs.get",
+    "dataform.releaseConfigs.list",
+    "dataform.releaseConfigs.update",
+    "dataform.repositories.create",
+    "dataform.repositories.get",
+    "dataform.repositories.getIamPolicy",
+    "dataform.repositories.list",
+    "dataform.repositories.setIamPolicy",
+    "dataform.repositories.update",
+    "dataform.workflowConfigs.create",
+    "dataform.workflowConfigs.get",
+    "dataform.workflowConfigs.list",
+    "dataform.workflowConfigs.update",
   ]
 }
 
@@ -118,5 +132,8 @@ resource "google_project_iam_custom_role" "platform_destroy" {
     "datamigration.connectionprofiles.delete",
     "bigquery.datasets.delete",
     "bigquery.tables.delete",
+    "dataform.releaseConfigs.delete",
+    "dataform.repositories.delete",
+    "dataform.workflowConfigs.delete",
   ]
 }

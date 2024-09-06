@@ -11,7 +11,8 @@ locals {
     "bigqueryconnection.googleapis.com",
     "maps-backend.googleapis.com",
     "apikeys.googleapis.com",
-    "datamigration.googleapis.com"
+    "datamigration.googleapis.com",
+    "secretmanager.googleapis.com"
   ]
 }
 
