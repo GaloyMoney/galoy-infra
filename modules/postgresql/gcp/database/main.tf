@@ -81,7 +81,7 @@ resource "postgresql_grant" "grant_public_schema" {
   schema      = "public"
   object_type = "schema"
 
-  privileges  = ["USAGE", "CREATE"]
+  privileges = ["USAGE", "CREATE"]
 }
 
 resource "postgresql_grant" "grant_connect_replicator" {
