@@ -59,6 +59,8 @@ resource "google_project_iam_custom_role" "inception_make" {
     "secretmanager.versions.add",
     "secretmanager.versions.get",
     "secretmanager.versions.list",
+    "secretmanager.versions.enable",
+    "secretmanager.versions.disable",
   ]
 }
 
