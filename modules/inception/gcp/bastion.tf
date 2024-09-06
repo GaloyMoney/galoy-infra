@@ -51,7 +51,6 @@ resource "google_compute_instance" "bastion" {
     bria_version : local.bria_version,
     bitcoin_version : local.bitcoin_version
     cepler_version : local.cepler_version
-    safe_version : local.safe_version
     kubectl_version : local.kubectl_version
     k9s_version : local.k9s_version
     lnd_version : local.lnd_version
