@@ -24,7 +24,6 @@ module "platform" {
   node_default_machine_type = var.node_default_machine_type
   destroyable_cluster       = var.destroyable_cluster
   destroyable_postgres      = var.destroyable_postgres
-  deploy_shared_pg          = false
 }
 
 output "cluster_endpoint" {
