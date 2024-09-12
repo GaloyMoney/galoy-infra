@@ -21,9 +21,6 @@ variable "destroyable_cluster" {
 variable "postgres_tier" {
   default = "db-f1-micro"
 }
-variable "destroyable_postgres" {
-  default = false
-}
 variable "pg_ha" {
   default = false
 }
@@ -55,7 +52,6 @@ locals {
   max_default_node_count    = var.max_default_node_count
   cluster_location          = var.cluster_zone == "" ? local.region : "${local.region}-${var.cluster_zone}"
   postgres_tier             = var.postgres_tier
-  destroyable_postgres      = var.destroyable_postgres
   pg_ha                     = var.pg_ha
   deploy_lnd_ips            = var.deploy_lnd_ips
 }

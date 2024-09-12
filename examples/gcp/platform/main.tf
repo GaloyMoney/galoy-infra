@@ -7,9 +7,6 @@ variable "node_default_machine_type" {
 variable "letsencrypt_issuer_email" {
   default = "bot@galoy.io"
 }
-variable "destroyable_postgres" {
-  default = false
-}
 variable "destroyable_cluster" {
   default = false
 }
@@ -23,7 +20,6 @@ module "platform" {
   node_service_account      = var.node_service_account
   node_default_machine_type = var.node_default_machine_type
   destroyable_cluster       = var.destroyable_cluster
-  destroyable_postgres      = var.destroyable_postgres
 }
 
 output "cluster_endpoint" {
