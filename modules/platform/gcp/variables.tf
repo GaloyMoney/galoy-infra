@@ -27,9 +27,6 @@ variable "destroyable_postgres" {
 variable "pg_ha" {
   default = false
 }
-variable "deploy_shared_pg" {
-  default = true
-}
 variable "node_service_account" {}
 variable "min_default_node_count" {
   default = 1
@@ -60,6 +57,5 @@ locals {
   postgres_tier             = var.postgres_tier
   destroyable_postgres      = var.destroyable_postgres
   pg_ha                     = var.pg_ha
-  deploy_shared_pg          = var.deploy_shared_pg
   deploy_lnd_ips            = var.deploy_lnd_ips
 }
