@@ -32,8 +32,6 @@ EOF
 sleep 5
 
 terraform init
-terraform state show module.inception.google_storage_bucket.tf_state || \
-  terraform import module.inception.google_storage_bucket.tf_state ${tf_state_bucket_name}
 
 terraform state show module.inception.google_project_iam_custom_role.inception_destroy || \
   terraform apply \
