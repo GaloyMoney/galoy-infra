@@ -10,7 +10,12 @@ curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /
 
 # Keep make and terraform the first items installed as they are needed
 # for testflight to complete
-apt-get update && apt-get install -y terraform make jq tree wget redis postgresql vault
+apt-get update && apt-get install -y make jq tree wget redis postgresql vault unzip gnupg
+
+curl --proto '=https' --tlsv1.2 -fsSL https://get.opentofu.org/install-opentofu.sh -o install-opentofu.sh \
+  && chmod +x install-opentofu.sh \
+  && ./install-opentofu.sh --install-method standalone --opentofu-version ${opentofu_version} \
+  && rm -f install-opentofu.sh
 
 cat <<EOF > /etc/profile.d/aliases.sh
 alias tf="terraform"
