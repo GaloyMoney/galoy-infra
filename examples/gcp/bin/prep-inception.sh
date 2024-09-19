@@ -31,7 +31,7 @@ EOF
 # Wait for the service account key to propagate
 sleep 5
 
-terraform init
+tofu init
 
 tofu state show module.inception.google_project_iam_custom_role.inception_destroy || \
   tofu apply \

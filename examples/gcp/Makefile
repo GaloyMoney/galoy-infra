@@ -1,4 +1,4 @@
-TF:=terraform
+TF:=tofu
 
 bootstrap:
 	cd bootstrap \
