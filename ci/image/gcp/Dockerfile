@@ -18,11 +18,12 @@ RUN wget https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/${YQ_BI
   && echo $YQ_SHASUM /usr/bin/yq | sha256sum --check \
   && chmod +x /usr/bin/yq
 
-ENV TERRAFORM_VERSION=1.4.5
-RUN wget https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip \
-    && unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip \
-    && mv terraform /usr/local/bin/ \
-    && rm terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+ENV OPENTOFU_VERSION=v1.8.1
+RUN curl --proto '=https' --tlsv1.2 -fsSL https://get.opentofu.org/install-opentofu.sh -o install-opentofu.sh \
+  && chmod +x install-opentofu.sh \
+  && ./install-opentofu.sh --install-method deb \
+  && rm -f install-opentofu.sh
+
 
 ARG KUBECTL_VERSION=v1.24.12
 ARG KUBECTL_SHASUM=25875551d4242339bcc8cef0c18f0a0f631ea621f6fab1190a5aaab466634e7c

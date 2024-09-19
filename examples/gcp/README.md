@@ -40,7 +40,7 @@ EOF
 $ make bootstrap
 ```
 
-Executing `make bootstrap` will execute `terraform apply` in the `bootstrap` folder and also import the relevant resources into the `inception` phase - which will subsequently own the lifecycle of those resources.
+Executing `make bootstrap` will execute `tofu apply` in the `bootstrap` folder and also import the relevant resources into the `inception` phase - which will subsequently own the lifecycle of those resources.
 
 ## Inception phase
 

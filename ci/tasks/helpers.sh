@@ -44,7 +44,7 @@ terraform {
 }
 EOF
 
-  terraform init
+  tofu init
   popd
 }
 
@@ -56,7 +56,7 @@ function write_users() {
 
 function cleanup_inception_key() {
   pushd bootstrap
-  inception_email=$(terraform output inception_sa | jq -r)
+  inception_email=$(tofu output inception_sa | jq -r)
   popd
   key_id="$(cat ./inception-sa-creds.json | jq -r '.private_key_id')"
   gcloud iam service-accounts keys delete "${key_id}" --iam-account="${inception_email}" --quiet

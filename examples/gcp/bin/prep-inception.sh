@@ -4,11 +4,11 @@ set -eu
 
 pushd bootstrap
 
-terraform output > ../inception/terraform.tfvars
+tofu output > ../inception/terraform.tfvars
 
-inception_email=$(terraform output inception_sa | jq -r)
-tf_state_bucket_name=$(terraform output tf_state_bucket_name | jq -r)
-name_prefix=$(terraform output name_prefix | jq -r)
+inception_email=$(tofu output inception_sa | jq -r)
+tf_state_bucket_name=$(tofu output tf_state_bucket_name | jq -r)
+name_prefix=$(tofu output name_prefix | jq -r)
 
 popd
 
@@ -33,8 +33,8 @@ sleep 5
 
 terraform init
 
-terraform state show module.inception.google_project_iam_custom_role.inception_destroy || \
-  terraform apply \
+tofu state show module.inception.google_project_iam_custom_role.inception_destroy || \
+  tofu apply \
     -target module.inception.google_project_iam_custom_role.inception_make \
     -target module.inception.google_project_iam_custom_role.inception_destroy \
     -target module.inception.google_project_iam_member.inception_make \
