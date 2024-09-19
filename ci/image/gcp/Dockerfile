@@ -18,9 +18,10 @@ RUN wget https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/${YQ_BI
   && echo $YQ_SHASUM /usr/bin/yq | sha256sum --check \
   && chmod +x /usr/bin/yq
 
+ENV OPENTOFU_VERSION=1.8.2
 RUN curl --proto '=https' --tlsv1.2 -fsSL https://get.opentofu.org/install-opentofu.sh -o install-opentofu.sh \
   && chmod +x install-opentofu.sh \
-  && ./install-opentofu.sh --install-method deb \
+  && ./install-opentofu.sh --install-method standalone --opentofu-version $OPENTOFU_VERSION \
   && rm -f install-opentofu.sh
 
 
