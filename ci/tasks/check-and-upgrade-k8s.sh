@@ -5,8 +5,8 @@ set -eu
 source pipeline-tasks/ci/tasks/helpers.sh
 pushd pipeline-tasks/ci/k8s-upgrade
 
-terraform init && terraform apply -auto-approve
-LATEST_VERSION="$(terraform output -json | jq -r .latest_version.value)"
+tofu init && tofu apply -auto-approve
+LATEST_VERSION="$(tofu output -json | jq -r .latest_version.value)"
 
 if [[ $LATEST_VERSION == "" ]]; then
   echo "Failed to get latest version"

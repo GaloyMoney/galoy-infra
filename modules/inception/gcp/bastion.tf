@@ -1,13 +1,14 @@
 locals {
-  tag             = "${local.name_prefix}-bastion"
-  bria_version    = "0.1.106"
-  bitcoin_version = "25.2"
-  cepler_version  = "0.7.15"
-  lnd_version     = "0.18.0-beta"
-  kubectl_version = "1.30.4"
-  k9s_version     = "0.32.5"
-  bos_version     = "18.2.0"
-  kratos_version  = "0.11.1"
+  tag              = "${local.name_prefix}-bastion"
+  bria_version     = "0.1.106"
+  bitcoin_version  = "25.2"
+  cepler_version   = "0.7.15"
+  lnd_version      = "0.18.0-beta"
+  kubectl_version  = "1.30.4"
+  k9s_version      = "0.32.5"
+  bos_version      = "18.2.0"
+  kratos_version   = "0.11.1"
+  opentofu_version = "1.8.2"
 }
 data "google_compute_image" "bastion" {
   family      = local.bastion_image_family
@@ -56,6 +57,7 @@ resource "google_compute_instance" "bastion" {
     lnd_version : local.lnd_version
     bos_version : local.bos_version
     kratos_version : local.kratos_version
+    opentofu_version : local.opentofu_version
   })
 
   depends_on = [

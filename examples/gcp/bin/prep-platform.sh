@@ -7,15 +7,15 @@ REPO_ROOT_DIR="${REPO_ROOT##*/}"
 
 pushd bootstrap
 
-tf_state_bucket_name=$(terraform output tf_state_bucket_name | jq -r)
-name_prefix=$(terraform output name_prefix | jq -r)
-gcp_project=$(terraform output gcp_project | jq -r)
+tf_state_bucket_name=$(tofu output tf_state_bucket_name | jq -r)
+name_prefix=$(tofu output name_prefix | jq -r)
+gcp_project=$(tofu output gcp_project | jq -r)
 
 popd
 
 pushd inception
 
-cluster_sa=$(terraform output cluster_sa | jq -r)
+cluster_sa=$(tofu output cluster_sa | jq -r)
 
 popd
 
@@ -37,5 +37,5 @@ node_service_account = "${cluster_sa}"
 destroyable_cluster = true
 EOF
 
-terraform init
+tofu init
 popd

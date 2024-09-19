@@ -7,23 +7,23 @@ REPO_ROOT_DIR="${REPO_ROOT##*/}"
 
 pushd bootstrap
 
-tf_state_bucket_name=$(terraform output tf_state_bucket_name | jq -r)
-name_prefix=$(terraform output name_prefix | jq -r)
+tf_state_bucket_name=$(tofu output tf_state_bucket_name | jq -r)
+name_prefix=$(tofu output name_prefix | jq -r)
 
 popd
 
 pushd inception
 
-cluster_sa=$(terraform output cluster_sa | jq -r)
-bastion_name="$(terraform output bastion_name | jq -r)"
-bastion_zone="$(terraform output bastion_zone | jq -r)"
+cluster_sa=$(tofu output cluster_sa | jq -r)
+bastion_name="$(tofu output bastion_name | jq -r)"
+bastion_zone="$(tofu output bastion_zone | jq -r)"
 
 popd
 
 pushd platform
 
-cluster_endpoint=$(terraform output cluster_endpoint | jq -r)
-cluster_ca_cert="$(terraform output -json cluster_ca_cert | jq -r)"
+cluster_endpoint=$(tofu output cluster_endpoint | jq -r)
+cluster_ca_cert="$(tofu output -json cluster_ca_cert | jq -r)"
 
 popd
 
