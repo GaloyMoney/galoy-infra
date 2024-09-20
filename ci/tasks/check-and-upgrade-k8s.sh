@@ -17,7 +17,7 @@ popd
 
 pushd repo
 
-CURRENT_VERSION=$(hcledit -f modules/platform/gcp/variables.tf attribute get variable.kube_version.default)
+CURRENT_VERSION=$(hcledit -f modules/platform/gcp/variables.tf attribute get variable.kube_version.default | tr -d '"')
 
 if [[ "$(echo -e "$CURRENT_VERSION\n$LATEST_VERSION" | sort -V | head -n1)" != "$LATEST_VERSION" ]]; then
   echo "K8s upgrade from ${CURRENT_VERSION} to ${LATEST_VERSION} is available"
