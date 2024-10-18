@@ -78,7 +78,7 @@ jobs:
         source:
           username: #@ data.values.docker_registry_user
           password: #@ data.values.docker_registry_password
-          repository: #@ data.values.docker_registry + "/galoy-deployments-pipeline"
+          repository: #@ data.values.docker_registry + "/blink-deployments-pipeline"
       inputs:
       - name: repo
       - name: pipeline-tasks
