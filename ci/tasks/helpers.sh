@@ -1,4 +1,4 @@
-alias tf=terraform
+alias tf=tofu
 export MODULES_GIT_REF="$(cat modules/.git/short_ref)"
 export MODULES_GIT_LONG_REF="$(cat modules/.git/ref)"
 export KUBE_CONFIG="~/.kube/config"
