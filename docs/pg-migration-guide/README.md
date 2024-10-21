@@ -77,7 +77,9 @@ $ tofu apply
 Before proceeding with the DMS creation we will expose the required things by gcloud using the `output` block, add these output blocks to your main tofu file.
 ```sh
 # run the create-dms.sh script located in modules/postgresql/gcp/bin
-$ ./create-dms.sh <main.tf directory> <gcp-project-name> <gcp-region> <dms-migration-job-name>
+# <output-prefix> to be used for output automation 
+# this is the module name of the current project we are performing migration
+$ ./create-dms.sh <main.tf directory> <gcp-project-name> <gcp-region> <dms-migration-job-name> <output-prefix>
 Enter the region: us-east1
 Enter the job name: test-migration
 Creating migration job 'test-migration' in region 'us-east1'...
@@ -148,12 +150,21 @@ $ gcloud database-migration migration-jobs describe "test-job" --region=us-east1
 ### Step 3.5: Handing the non-migrated settings and syncing state via `tofu`
 
 #### Step 3.5.1
-Log in to the `destination instance` as the `postgres` user and change the name of the `cloudsqlexternalsync` user to the `<admin-user>`.
+- Log in to the `destination instance` as the `postgres` user.
+```sh
+
+```
+
+
+- Change the name of the `cloudsqlexternalsync` user to the `<admin-user>`.
 The value of `<admin-user>` and `destination-connection-string` can be found by running
 
 ```sh
-$ tf output -json migration_sql_command | jq -r '.sql_command' | bash
+# get the <admin-user> value here
+$ tf output -json migration_sql_command 
 ```
+
+
 
 #### Step 3.5.2
 Manipulate the old state to reflect the new state by running the two scripts located at `galoy-infra/examples/gcp/bin`

@@ -10,6 +10,7 @@ REGION=${3}
 # the migration job name
 JOB_NAME=${4}
 # tofu output prefix to be used for output automation 
+# this is the module name of the current project we are performing migration
 OUTPUT_PREFIX=${5}
 
 TYPE="CONTINUOUS"
