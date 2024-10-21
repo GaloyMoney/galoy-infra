@@ -9,6 +9,8 @@ PROJECT=${2}
 REGION=${3}
 # the migration job name
 JOB_NAME=${4}
+# tofu output prefix to be used for output automation 
+OUTPUT_PREFIX=${5}
 
 TYPE="CONTINUOUS"
 
@@ -43,9 +45,9 @@ else
   cmd="terraform"
 fi
 # Get Terraform outputs
-SOURCE_ID=$($cmd output -raw source_connection_profile_id)
-DEST_ID=$($cmd output -raw destination_connection_profile_id)
-VPC=$($cmd output -raw vpc)
+SOURCE_ID=$($cmd output -raw "${OUTPUT_PREFIX}source_connection_profile_id")
+DEST_ID=$($cmd output -raw "${OUTPUT_PREFIX}destination_connection_profile_id")
+VPC=$($cmd output -raw "${OUTPUT_PREFIX}vpc")
 
 # Construct and run the gcloud command to create the migration job
 echo "Creating migration job '$JOB_NAME' in region '$REGION'..."
