@@ -151,20 +151,13 @@ $ gcloud database-migration migration-jobs describe "test-job" --region=us-east1
 
 #### Step 3.5.1
 - Log in to the `destination instance` as the `postgres` user.
-```sh
-
-```
-
-
 - Change the name of the `cloudsqlexternalsync` user to the `<admin-user>`.
-The value of `<admin-user>` and `destination-connection-string` can be found by running
+- The commands to do this can be found by running the following command:
 
 ```sh
 # get the <admin-user> value here
 $ tf output -json migration_sql_command 
 ```
-
-
 
 #### Step 3.5.2
 Manipulate the old state to reflect the new state by running the two scripts located at `galoy-infra/examples/gcp/bin`
