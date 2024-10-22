@@ -136,8 +136,13 @@ $ gcloud database-migration migration-jobs start "test-migration" --region="us-e
 ```sh
 $ gcloud database-migration migration-jobs start "test-migration" --region="us-east1"
 
-# Use the describe command to check the status of the migration-job
+# Use the describe command to check the status of the migration-job !IMPORTANT
 $ gcloud database-migration migration-jobs describe "test-job" --region=us-east1
+
+
+## NOTE:
+
+BEFORE PROMOTING VERIFY THAT THE DMS HAS BEEN SUCCESSFUL BY RUNNING THE `describe` command from earlier.
 
 ```
 # Step 3: Pre-promotion
