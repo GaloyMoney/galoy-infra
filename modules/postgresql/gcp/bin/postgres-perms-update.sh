@@ -10,9 +10,13 @@ NEW_OWNER=${DB_NAME}-user
 # READ PG_CON from a file
 PG_CON=$(cat pg_connection.txt)
 
-PSQL_CMD="psql $PG_CON -At -c"
+# Command for database owner change needs to connect to postgres database
+PSQL_CMD_POSTGRES="psql $PG_CON/postgres -At -c"
 
-$PSQL_CMD "ALTER DATABASE postgres OWNER TO cloudsqlsuperuser;"
+# Command for all other operations needs to connect to target database
+PSQL_CMD="psql $PG_CON/$DB_NAME -At -c"
+
+$PSQL_CMD_POSTGRES "ALTER DATABASE postgres OWNER TO cloudsqlsuperuser;"
 $PSQL_CMD "ALTER SCHEMA public OWNER TO cloudsqlsuperuser;"
 
 $PSQL_CMD "GRANT \"$NEW_OWNER\" TO \"postgres\";"
