@@ -77,7 +77,9 @@ $ tofu apply
 Before proceeding with the DMS creation we will expose the required things by gcloud using the `output` block, add these output blocks to your main tofu file.
 ```sh
 # run the create-dms.sh script located in modules/postgresql/gcp/bin
-$ ./create-dms.sh <main.tf directory> <gcp-project-name> <gcp-region> <dms-migration-job-name>
+# <output-prefix> to be used for output automation 
+# this is the module name of the current project we are performing migration
+$ ./create-dms.sh <main.tf directory> <gcp-project-name> <gcp-region> <dms-migration-job-name> <output-prefix>
 Enter the region: us-east1
 Enter the job name: test-migration
 Creating migration job 'test-migration' in region 'us-east1'...
@@ -134,8 +136,13 @@ $ gcloud database-migration migration-jobs start "test-migration" --region="us-e
 ```sh
 $ gcloud database-migration migration-jobs start "test-migration" --region="us-east1"
 
-# Use the describe command to check the status of the migration-job
+# Use the describe command to check the status of the migration-job !IMPORTANT
 $ gcloud database-migration migration-jobs describe "test-job" --region=us-east1
+
+
+## NOTE:
+
+BEFORE PROMOTING VERIFY THAT THE DMS HAS BEEN SUCCESSFUL BY RUNNING THE `describe` command from earlier.
 
 ```
 # Step 3: Pre-promotion
@@ -148,11 +155,13 @@ $ gcloud database-migration migration-jobs describe "test-job" --region=us-east1
 ### Step 3.5: Handing the non-migrated settings and syncing state via `tofu`
 
 #### Step 3.5.1
-Log in to the `destination instance` as the `postgres` user and change the name of the `cloudsqlexternalsync` user to the `<admin-user>`.
-The value of `<admin-user>` and `destination-connection-string` can be found by running
+- Log in to the `destination instance` as the `postgres` user.
+- Change the name of the `cloudsqlexternalsync` user to the `<admin-user>`.
+- The commands to do this can be found by running the following command:
 
 ```sh
-$ tf output -json migration_sql_command | jq -r '.sql_command' | bash
+# get the <admin-user> value here
+$ tf output -json migration_sql_command 
 ```
 
 #### Step 3.5.2
@@ -178,7 +187,7 @@ module "postgresql" {
   #source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/postgresql/gcp?ref=689daa7"
   source = "../../../modules/postgresql/gcp"
 
-  instance_name          = "rishi-pg"
+  instance_name          = "test-pg"
   vpc_name               = "${var.name_prefix}-vpc"
   gcp_project            = var.gcp_project
   destroyable            = var.destroyable_postgres
@@ -238,7 +247,7 @@ module "postgresql" {
   #source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/postgresql/gcp?ref=689daa7"
   source = "../../../modules/postgresql/gcp"
 
-  instance_name          = "rishi-pg"
+  instance_name          = "test-pg"
   vpc_name               = "${var.name_prefix}-vpc"
   gcp_project            = var.gcp_project
   destroyable            = var.destroyable_postgres

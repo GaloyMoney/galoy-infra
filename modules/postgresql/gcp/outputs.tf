@@ -61,6 +61,8 @@ output "source_instance" {
 }
 output "migration_sql_command" {
   value = local.prep_upgrade_as_source_db ? {
-    sql_command = "psql postgres://postgres:${module.migration[0].postgres_user_password}@${module.migration[0].destination_instance_private_ip_address}:5432/postgres -c \"ALTER ROLE cloudsqlexternalsync RENAME TO \\\"${google_sql_user.admin.name}\\\"; ALTER ROLE \\\"${google_sql_user.admin.name}\\\" PASSWORD '${random_password.admin.result}';\""
+    destination_connection_string = "psql postgres://postgres:${module.migration[0].postgres_user_password}@${module.migration[0].destination_instance_private_ip_address}:5432/postgres"
+    alter_admin_name              = "ALTER ROLE cloudsqlexternalsync RENAME TO ${google_sql_user.admin.name}"
+    alter_admin_password          = "ALTER ROLE ${google_sql_user.admin.name} PASSWORD ${random_password.admin.result}"
   } : {}
 }
