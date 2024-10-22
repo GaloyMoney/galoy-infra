@@ -187,7 +187,7 @@ module "postgresql" {
   #source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/postgresql/gcp?ref=689daa7"
   source = "../../../modules/postgresql/gcp"
 
-  instance_name          = "rishi-pg"
+  instance_name          = "test-pg"
   vpc_name               = "${var.name_prefix}-vpc"
   gcp_project            = var.gcp_project
   destroyable            = var.destroyable_postgres
@@ -247,7 +247,7 @@ module "postgresql" {
   #source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/postgresql/gcp?ref=689daa7"
   source = "../../../modules/postgresql/gcp"
 
-  instance_name          = "rishi-pg"
+  instance_name          = "test-pg"
   vpc_name               = "${var.name_prefix}-vpc"
   gcp_project            = var.gcp_project
   destroyable            = var.destroyable_postgres
