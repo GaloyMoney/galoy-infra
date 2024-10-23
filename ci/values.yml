@@ -5,7 +5,7 @@ git_branch: main
 git_version_branch: testflight-name-prefix-uid-branch
 github_private_key: ((github.private_key))
 
-deployments_git_uri: git@github.com:GaloyMoney/galoy-deployments.git
+deployments_git_uri: git@github.com:GaloyMoney/blink-deployments.git
 concourse_locks_git_uri: git@github.com:GaloyMoney/concourse-locks.git
 
 cepler_gates_branch: cepler-gates
