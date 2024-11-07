@@ -86,6 +86,7 @@ jobs:
       - name: repo
       params:
         BRANCH: #@ data.values.git_branch
+        GOOGLE_CREDENTIALS: #@ data.values.testflight_gcp_creds
       run:
         path: pipeline-tasks/ci/tasks/check-and-upgrade-k8s.sh
   - put: repo
