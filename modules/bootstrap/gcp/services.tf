@@ -12,7 +12,8 @@ locals {
     "maps-backend.googleapis.com",
     "apikeys.googleapis.com",
     "datamigration.googleapis.com",
-    "secretmanager.googleapis.com"
+    "secretmanager.googleapis.com",
+    "artifactregistry.googleapis.com"
   ]
 }
 
