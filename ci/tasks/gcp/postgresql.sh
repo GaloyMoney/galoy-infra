@@ -30,8 +30,8 @@ bin/prep-postgresql.sh
 
 set +e
 for i in {1..60}; do
-  echo "Attempt ${i} to find make on bastion"
-  gcloud compute ssh --ssh-key-file=${CI_ROOT}/login.ssh ${bastion_name} --zone=${bastion_zone} -- "which make" && break
+  echo "Attempt ${i} to find make and tofu on bastion"
+  gcloud compute ssh --ssh-key-file=${CI_ROOT}/login.ssh ${bastion_name} --zone=${bastion_zone} -- "which make && which tofu" && break
   sleep 2
 done
 set -e
