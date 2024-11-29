@@ -32,7 +32,7 @@ variable "max_default_node_count" {
   default = 3
 }
 variable "deploy_lnd_ips" {
-  default = true
+  default = false
 }
 
 locals {
