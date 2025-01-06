@@ -6,6 +6,7 @@ resource "google_storage_bucket" "tf_state" {
     enabled = true
   }
   force_destroy = local.tf_state_bucket_force_destroy
+  uniform_bucket_level_access = true
 }
 
 resource "google_storage_bucket_iam_member" "inception" {
