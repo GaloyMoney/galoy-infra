@@ -68,11 +68,6 @@
     branch: main
     private_key: #@ data.values.github_private_key
 
-- name: slack
-  type: slack-notification
-  source:
-    url: #@ data.values.slack_webhook_url
-
 #@ end
 
 #@ def resource_types():
@@ -100,30 +95,4 @@
     repository: #@ data.values.docker_registry + "/honeymarker-resource"
     tag: edge
 
-- name: slack-notification
-  type: docker-image
-  source:
-    repository: cfcommunity/slack-notification-resource
-#@ end
-
----
-
-#@ def slack_success_notification():
-#@ success_url = "<$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME| :zap: $BUILD_JOB_NAME> completed!"
-put: slack
-params:
-  channel:  #@ data.values.slack_channel
-  username: #@ data.values.slack_username
-  icon_url: https://cl.ly/2F421Y300u07/concourse-logo-blue-transparent.png
-  text:    #@ success_url
-#@ end
-
-#@ def slack_failure_notification():
-#@ fail_url = "<$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME| :face_with_symbols_on_mouth: $BUILD_JOB_NAME> failed!"
-put: slack
-params:
-  channel:  #@ data.values.slack_channel
-  username: #@ data.values.slack_username
-  icon_url: https://cl.ly/2F421Y300u07/concourse-logo-blue-transparent.png
-  text:    #@ fail_url
 #@ end
