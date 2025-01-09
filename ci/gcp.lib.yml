@@ -10,9 +10,7 @@
 #@   "testflight_cleanup_postgresql_job_name",
 #@   "bump_repos_job_name",
 #@   "build_pipeline_image_job_name",
-#@   "modules_resource_name",
-#@   "slack_success_notification",
-#@   "slack_failure_notification")
+#@   "modules_resource_name")
 
 #@ def pipeline_image():
 #@   return data.values.docker_registry + "/gcp-infra-pipeline"
@@ -82,8 +80,6 @@ plan:
     params: #@ gcp_testflight_task_params()
     run:
       path: pipeline-tasks/ci/tasks/gcp/bootstrap.sh
-- #@ slack_success_notification()
-on_failure: #@ slack_failure_notification()
 #@ end
 
 #@ def gcp_testflight_inception_job():
@@ -120,8 +116,6 @@ plan:
     params: #@ gcp_testflight_task_params()
     run:
       path: pipeline-tasks/ci/tasks/gcp/inception.sh
-- #@ slack_success_notification()
-on_failure: #@ slack_failure_notification()
 #@ end
 
 #@ def gcp_testflight_platform_job():
@@ -157,8 +151,6 @@ plan:
     params: #@ gcp_testflight_task_params()
     run:
       path: pipeline-tasks/ci/tasks/gcp/platform.sh
-- #@ slack_success_notification()
-on_failure: #@ slack_failure_notification()
 #@ end
 
 #@ def gcp_testflight_smoketest_job():
@@ -194,8 +186,6 @@ plan:
     params: #@ gcp_testflight_task_params()
     run:
       path: pipeline-tasks/ci/tasks/gcp/smoketest.sh
-- #@ slack_success_notification()
-on_failure: #@ slack_failure_notification()
 #@ end
 
 #@ def gcp_testflight_postgresql_job():
@@ -232,8 +222,6 @@ plan:
     params: #@ gcp_testflight_task_params()
     run:
       path: pipeline-tasks/ci/tasks/gcp/postgresql.sh
-- #@ slack_success_notification()
-on_failure: #@ slack_failure_notification()
 #@ end
 
 #@ def gcp_testflight_cleanup_job():
@@ -278,8 +266,6 @@ plan:
 - in_parallel:
   - { put: gcp-testflight-lock, params: { release: gcp-testflight-lock }}
   - { put: gcp-testflight-uid, params: { bump: patch } }
-- #@ slack_success_notification()
-on_failure: #@ slack_failure_notification()
 #@ end
 
 #@ def gcp_testflight_cleanup_postgresql_job():
@@ -318,8 +304,6 @@ plan:
     params: #@ gcp_testflight_task_params()
     run:
       path: pipeline-tasks/ci/tasks/gcp/teardown-postgresql.sh
-- #@ slack_success_notification()
-on_failure: #@ slack_failure_notification()
 #@ end
 
 #@ def gcp_bump_repos_job():
