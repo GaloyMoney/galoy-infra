@@ -5,6 +5,7 @@ variable "user_name" {}
 variable "user_can_create_db" {}
 variable "pg_instance_connection_name" {}
 variable "replication" {}
+variable "replication_slots" {}
 variable "connection_users" {
   type = list(string)
 }
@@ -46,6 +47,13 @@ resource "postgresql_role" "replicator" {
   password    = random_password.replicator[0].result
   login       = true
   replication = true
+}
+
+# for each replication slot, create a replication slot
+resource "postgresql_replication_slot" "replication" {
+  for_each = var.replication_slots
+  name     = each.key
+  plugin   = "wal2json"
 }
 
 resource "postgresql_database" "db" {
