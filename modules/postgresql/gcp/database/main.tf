@@ -49,11 +49,10 @@ resource "postgresql_role" "replicator" {
   replication = true
 }
 
-# for each replication slot, create a replication slot
 resource "postgresql_replication_slot" "replication" {
-  for_each = var.replication_slots
-  name     = each.key
-  plugin   = "wal2json"
+  count  = length(var.replication_slots)
+  name   = var.replication_slots[count.index]
+  plugin = "wal2json"
 }
 
 resource "postgresql_database" "db" {
