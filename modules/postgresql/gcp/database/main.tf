@@ -49,10 +49,17 @@ resource "postgresql_role" "replicator" {
   replication = true
 }
 
+resource "postgresql_grant_role" "admin_replicator" {
+  role       = local.admin_user_name
+  grant_role = postgresql_role.replicator[0].name
+}
+
 resource "postgresql_replication_slot" "replication" {
   count  = length(var.replication_slots)
   name   = var.replication_slots[count.index]
   plugin = "wal2json"
+
+  depends_on = [postgresql_grant_role.admin_replicator]
 }
 
 resource "postgresql_database" "db" {
