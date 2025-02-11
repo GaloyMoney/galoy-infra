@@ -50,7 +50,7 @@ resource "postgresql_role" "replicator" {
 }
 
 resource "postgresql_grant_role" "admin_replicator" {
-  role       = local.admin_user_name
+  role       = var.admin_user_name
   grant_role = postgresql_role.replicator[0].name
 }
 
