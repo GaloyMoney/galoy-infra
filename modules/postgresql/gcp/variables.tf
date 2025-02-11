@@ -61,12 +61,6 @@ variable "pre_promotion" {
   default     = false
 }
 
-variable "replication_slots" {
-  description = "List of replication slot names to configure for logical replication"
-  type        = list(string)
-  default     = []
-}
-
 locals {
   gcp_project                   = var.gcp_project
   vpc_name                      = var.vpc_name
@@ -82,7 +76,6 @@ locals {
   migration_databases           = concat(var.databases, ["postgres"])
   big_query_viewers             = var.big_query_viewers
   replication                   = var.replication
-  replication_slots             = var.replication_slots
   provision_read_replica        = var.provision_read_replica
   big_query_connection_location = var.big_query_connection_location
   prep_upgrade_as_source_db     = var.prep_upgrade_as_source_db

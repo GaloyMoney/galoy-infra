@@ -107,7 +107,6 @@ module "database" {
   pg_instance_connection_name   = google_sql_database_instance.instance.connection_name
   connection_users              = local.big_query_viewers
   replication                   = local.replication
-  replication_slots             = local.replication_slots
   big_query_connection_location = local.big_query_connection_location
 }
 

@@ -5,7 +5,6 @@ variable "user_name" {}
 variable "user_can_create_db" {}
 variable "pg_instance_connection_name" {}
 variable "replication" {}
-variable "replication_slots" {}
 variable "connection_users" {
   type = list(string)
 }
@@ -47,19 +46,6 @@ resource "postgresql_role" "replicator" {
   password    = random_password.replicator[0].result
   login       = true
   replication = true
-}
-
-resource "postgresql_grant_role" "admin_replicator" {
-  role       = var.admin_user_name
-  grant_role = postgresql_role.replicator[0].name
-}
-
-resource "postgresql_replication_slot" "replication" {
-  count  = length(var.replication_slots)
-  name   = var.replication_slots[count.index]
-  plugin = "wal2json"
-
-  depends_on = [postgresql_grant_role.admin_replicator]
 }
 
 resource "postgresql_database" "db" {

@@ -16,7 +16,6 @@ module "postgresql" {
   databases              = ["test"]
   replication            = true
   provision_read_replica = true
-  replication_slots      = ["test_slot"]
 }
 
 module "postgresql_migration_source" {
