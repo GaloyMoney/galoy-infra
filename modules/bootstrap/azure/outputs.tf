@@ -14,8 +14,8 @@ output "tf_state_storage_account" {
 output "resource_group" {
   value = azurerm_resource_group.bootstrap.name
 }
-output "application_id" {
-  value = azuread_application.inception.application_id
+output "client_id" {
+  value = azuread_application.inception.client_id
 }
 output "client_secret" {
   value     = azuread_application_password.inception_app_password.value
