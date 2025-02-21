@@ -1,4 +1,5 @@
 variable "name_prefix" {}
+variable "subscription_id" {}
 variable "resource_group_name" {}
 variable "tf_state_storage_location" {}
 
@@ -7,6 +8,7 @@ module "inception" {
   source = "../../../modules/inception/azure"
 
   name_prefix               = var.name_prefix
+  subscription_id           = var.subscription_id
   resource_group_name       = var.resource_group_name
   tf_state_storage_location = var.tf_state_storage_location
 }
