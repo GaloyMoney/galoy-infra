@@ -15,13 +15,14 @@
       pkgs = import nixpkgs {inherit system;};
     in
       with pkgs; {
-        devShells.default = mkShell 
+        devShells.default = mkShell
           {
             nativeBuildInputs = [
               alejandra
               opentofu
               ytt
               azure-cli
+              jq
             ];
           };
 
