@@ -23,3 +23,7 @@ output "bastion_password" {
   value     = module.inception.bastion_password
   sensitive = true
 }
+
+provider "azurerm" {
+  features {}
+}
