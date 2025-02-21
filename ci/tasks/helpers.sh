@@ -48,6 +48,22 @@ EOF
   popd
 }
 
+function init_bootstrap_azure() {
+  pushd bootstrap
+  cat <<EOF > override.tf
+terraform {
+  backend "kubernetes" {
+    secret_suffix = "testflight-azure"
+    namespace     = "concourse-tf"
+    config_path   = "/root/.kube/config"
+  }
+}
+EOF
+
+  terraform init
+  popd
+}
+
 function write_users() {
    echo ${TESTFLIGHT_ADMINS} | \
      jq --arg sa "$(cat ${CI_ROOT}/gcloud-creds.json | jq -r '.client_email')" \
