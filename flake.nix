@@ -21,6 +21,7 @@
               alejandra
               opentofu
               ytt
+              azure-cli
             ];
           };
 
