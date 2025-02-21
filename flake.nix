@@ -21,7 +21,7 @@
               alejandra
               opentofu
               ytt
-              azure-cli
+              (azure-cli.withExtensions [azure-cli.extensions.ssh])
               jq
             ];
           };
