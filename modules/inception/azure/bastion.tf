@@ -1,6 +1,6 @@
 resource "random_password" "password" {
   length  = 16
-  special = false
+  special = true
 }
 
 resource "azurerm_virtual_machine" "bastion" {
