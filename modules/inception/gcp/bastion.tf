@@ -58,6 +58,7 @@ resource "google_compute_instance" "bastion" {
     bos_version : local.bos_version
     kratos_version : local.kratos_version
     opentofu_version : local.opentofu_version
+    prod_system : var.prod_system
   })
 
   depends_on = [
