@@ -9,6 +9,10 @@ variable "primary_zone" {
 variable "cluster_zone" {
   default = ""
 }
+variable "prod_system" {
+  type    = bool
+  default = false
+}
 variable "bastion_machine_type" {
   default = "e2-micro"
 }
