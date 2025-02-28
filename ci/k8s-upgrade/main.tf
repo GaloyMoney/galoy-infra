@@ -19,14 +19,13 @@ data "google_container_engine_versions" "useast1" {
 
 locals {
   # Convert outputs to sets
-  uscentral1_versions = toset(data.google_container_engine_versions.uscentral1.valid_master_versions)
-  useast1_versions    = toset(data.google_container_engine_versions.useast1.valid_master_versions)
+  uscentral1_versions = data.google_container_engine_versions.uscentral1.valid_master_versions
+  useast1_versions    = data.google_container_engine_versions.useast1.valid_master_versions
 
   # Find the intersection of all sets, i.e., common versions
-  common_versions = setintersection(local.uscentral1_versions, local.useast1_versions)
+  common_versions = [for version in local.useast1_versions : version if contains(local.uscentral1_versions, version)]
 }
 
 output "latest_version" {
-  # Convert the set back to a list, sort it, and get the last element which is the highest version
-  value = length(local.common_versions) > 0 ? sort(tolist(local.common_versions))[length(local.common_versions) - 1] : ""
+  value = local.common_versions[0]
 }
