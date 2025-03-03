@@ -17,9 +17,11 @@ RUN wget https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/${YQ_BI
   && echo $YQ_SHASUM /usr/bin/yq | sha256sum --check \
   && chmod +x /usr/bin/yq
 
-RUN curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add - \
-  && apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main" \
-  && apt-get update && apt-get install -y terraform && apt-get clean
+ENV OPENTOFU_VERSION=1.9.0
+RUN curl --proto '=https' --tlsv1.2 -fsSL https://get.opentofu.org/install-opentofu.sh -o install-opentofu.sh \
+  && chmod +x install-opentofu.sh \
+  && ./install-opentofu.sh --install-method standalone --opentofu-version $OPENTOFU_VERSION \
+  && rm -f install-opentofu.sh
 
 ARG KUBECTL_VERSION=v1.23.5
 ARG KUBECTL_SHASUM=715da05c56aa4f8df09cb1f9d96a2aa2c33a1232f6fd195e3ffce6e98a50a879
