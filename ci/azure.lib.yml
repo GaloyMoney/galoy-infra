@@ -4,13 +4,10 @@
 #@   "testflight_bootstrap_job_name",
 #@   "testflight_inception_job_name",
 #@   "testflight_platform_job_name",
-#@   "testflight_services_job_name",
 #@   "testflight_cleanup_job_name",
 #@   "bump_repos_job_name",
 #@   "build_pipeline_image_job_name",
-#@   "modules_resource_name",
-#@   "slack_success_notification",
-#@   "slack_failure_notification")
+#@   "modules_resource_name")
 
 #@ def pipeline_image():
 #@   return data.values.docker_registry + "/azure-infra-pipeline"
@@ -28,7 +25,7 @@ source:
 name: #@ modules_resource_name("azure")
 type: git
 source:
-  paths: 
+  paths:
   - modules/bootstrap/azure
   - modules/inception/azure
   - modules/platform/azure
@@ -74,8 +71,6 @@ plan:
     params: #@ azure_testflight_task_params()
     run:
       path: pipeline-tasks/ci/tasks/azure/bootstrap.sh
-- #@ slack_success_notification()
-on_failure: #@ slack_failure_notification()
 #@ end
 
 #@ def azure_testflight_inception_job():
@@ -83,7 +78,7 @@ name: #@ testflight_inception_job_name("azure")
 serial: true
 plan:
 - get: azure-testflight-lock
-  passed: 
+  passed:
   - #@ testflight_bootstrap_job_name("azure")
 - in_parallel:
   - get: #@ modules_resource_name("azure")
@@ -91,7 +86,7 @@ plan:
     passed:
     - #@ testflight_bootstrap_job_name("azure")
   - get: repo
-    passed: 
+    passed:
     - #@ testflight_bootstrap_job_name("azure")
   - { get: pipeline-tasks }
   - { get: azure-testflight-uid }
@@ -109,8 +104,6 @@ plan:
     params: #@ azure_testflight_task_params()
     run:
       path: pipeline-tasks/ci/tasks/azure/inception.sh
-- #@ slack_success_notification()
-on_failure: #@ slack_failure_notification()
 #@ end
 
 #@ def azure_testflight_platform_job():
@@ -118,15 +111,15 @@ name: #@ testflight_platform_job_name("azure")
 serial: true
 plan:
 - get: azure-testflight-lock
-  passed: 
+  passed:
   - #@ testflight_inception_job_name("azure")
 - in_parallel:
   - get: #@ modules_resource_name("azure")
     trigger: true
-    passed: 
+    passed:
     - #@ testflight_inception_job_name("azure")
   - get: repo
-    passed: 
+    passed:
     - #@ testflight_inception_job_name("azure")
   - { get: pipeline-tasks }
   - { get: azure-testflight-uid }
@@ -144,43 +137,6 @@ plan:
     params: #@ azure_testflight_task_params()
     run:
       path: pipeline-tasks/ci/tasks/azure/platform.sh
-- #@ slack_success_notification()
-on_failure: #@ slack_failure_notification()
-#@ end
-
-#@ def azure_testflight_services_job():
-name: #@ testflight_services_job_name("azure")
-serial: true
-plan:
-- get: azure-testflight-lock
-  passed: 
-  - #@ testflight_platform_job_name("azure")
-- in_parallel:
-  - get: #@ modules_resource_name("azure")
-    trigger: true
-    passed: 
-    - #@ testflight_platform_job_name("azure")
-  - get: repo
-    passed: 
-    - #@ testflight_platform_job_name("azure")
-  - { get: pipeline-tasks }
-  - { get: azure-testflight-uid }
-- task: services
-  config:
-    platform: linux
-    image_resource: #@ task_image_config()
-    inputs:
-    - name: pipeline-tasks
-    - name: repo
-    - name: #@ modules_resource_name("azure")
-      path: modules
-    - name: azure-testflight-uid
-      path: testflight-uid
-    params: #@ azure_testflight_task_params()
-    run:
-      path: pipeline-tasks/ci/tasks/azure/services.sh
-- #@ slack_success_notification()
-on_failure: #@ slack_failure_notification()
 #@ end
 
 #@ def azure_testflight_cleanup_job():
@@ -188,16 +144,16 @@ name: #@ testflight_cleanup_job_name("azure")
 serial: true
 plan:
 - get: azure-testflight-lock
-  passed: 
-  - #@ testflight_services_job_name("azure")
+  passed:
+  - #@ testflight_platform_job_name("azure")
 - in_parallel:
   - get: #@ modules_resource_name("azure")
     trigger: true
-    passed: 
-    - #@ testflight_services_job_name("azure")
+    passed:
+    - #@ testflight_platform_job_name("azure")
   - get: repo
-    passed: 
-    - #@ testflight_services_job_name("azure")
+    passed:
+    - #@ testflight_platform_job_name("azure")
   - { get: pipeline-tasks }
   - { get: azure-testflight-uid }
 - task: teardown
@@ -218,8 +174,6 @@ plan:
       path: pipeline-tasks/ci/tasks/azure/teardown.sh
 - { put: azure-testflight-lock, params: { release: azure-testflight-lock }}
 - { put: azure-testflight-uid, params: { bump: patch } }
-- #@ slack_success_notification()
-on_failure: #@ slack_failure_notification()
 #@ end
 
 #@ def build_pipeline_image_job():
@@ -296,7 +250,6 @@ source:
 - #@ azure_testflight_bootstrap_job()
 - #@ azure_testflight_inception_job()
 - #@ azure_testflight_platform_job()
-- #@ azure_testflight_services_job()
 - #@ azure_testflight_cleanup_job()
 - #@ build_pipeline_image_job()
 #@ end

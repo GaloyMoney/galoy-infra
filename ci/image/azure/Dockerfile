@@ -7,7 +7,7 @@ RUN apt-get update \
   libtool autotools-dev autoconf libssl-dev libboost-all-dev \
   apt-transport-https ca-certificates \
   gnupg software-properties-common \
-  vim jq rsync wget netcat \
+  vim jq rsync wget netcat-openbsd \
   && apt-get clean all
 
 ARG YQ_VERSION=v4.21.1
