@@ -60,7 +60,7 @@ terraform {
 }
 EOF
 
-  terraform init
+  tofu init
   popd
 }
 
