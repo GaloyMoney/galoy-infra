@@ -1,6 +1,4 @@
 variable "name_prefix" {}
-variable "tenant_id" {}
-variable "subscription_id" {}
 variable "tf_state_storage_location" {
   default = "eastus"
 }
@@ -12,8 +10,6 @@ variable "resource_group_location" {
 }
 
 locals {
-  tenant_id                      = var.tenant_id
-  subscription_id                = var.subscription_id
   name_prefix                    = var.name_prefix
   resource_group_location        = var.resource_group_location
   tf_state_storage_location      = var.tf_state_storage_location
