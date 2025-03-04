@@ -37,9 +37,6 @@ output "client_secret" {
   value     = module.bootstrap.client_secret
   sensitive = true
 }
-output "tenant_id" {
-  value = module.bootstrap.tenant_id
-}
 output "subscription_id" {
   value = module.bootstrap.subscription_id
 }
