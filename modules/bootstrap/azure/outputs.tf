@@ -21,9 +21,6 @@ output "client_secret" {
   value     = azuread_application_password.inception_app_password.value
   sensitive = true
 }
-output "tenant_id" {
-  value = local.tenant_id
-}
 output "subscription_id" {
   value = data.azurerm_subscription.current.subscription_id
 }
