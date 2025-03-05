@@ -13,21 +13,10 @@ tf_state_storage_account_id=$(tofu output tf_state_storage_account_id | jq -r)
 tf_state_storage_blob_id=$(tofu output tf_state_storage_blob_id | jq -r)
 tf_state_storage_container_id=$(tofu output tf_state_storage_container_id | jq -r)
 resource_group_name=$(tofu output resource_group_name | jq -r)
-name_prefix=$(tofu output name_prefix | jq -r)
-client_id=$(tofu output client_id | jq -r)
-client_secret=$(tofu output client_secret | jq -r)
-tenant_id=$(tofu output tenant_id | jq -r)
-subscription_id=$(tofu output subscription_id | jq -r)
 access_key=$(tofu output -json access_key | jq -r ".access_key")
 
 popd
 
-
-
-export ARM_CLIENT_ID=$client_id
-export ARM_CLIENT_SECRET=$client_secret
-export ARM_TENANT_ID=$tenant_id
-export ARM_SUBSCRIPTION_ID=$subscription_id
 export ARM_ACCESS_KEY=$access_key
 
 pushd inception
@@ -35,7 +24,6 @@ pushd inception
 cat <<EOF > terraform.tf
 terraform {
   backend "azurerm" {
-    subscription_id = "${subscription_id}"
     resource_group_name = "${resource_group_name}"
     storage_account_name = "${tf_state_storage_account}"
     container_name       = "${tf_state_storage_container}"
