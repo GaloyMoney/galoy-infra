@@ -1,5 +1,4 @@
 variable "name_prefix" {}
-variable "subscription_id" {}
 variable "resource_group_name" {}
 variable "tf_state_storage_location" {}
 

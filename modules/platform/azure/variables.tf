@@ -1,4 +1,3 @@
-variable "subscription_id" {}
 variable "name_prefix" {}
 variable "network_prefix" {
   default = "10.1"
@@ -22,7 +21,6 @@ variable "max_default_node_count" {
   default = 3
 }
 locals {
-  subscription_id           = var.subscription_id
   name_prefix               = var.name_prefix
   network_prefix            = var.network_prefix
   resource_group_name       = var.resource_group_name
