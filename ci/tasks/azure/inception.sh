@@ -11,4 +11,6 @@ update_examples_git_ref || true
 init_kubeconfig
 init_bootstrap_azure
 
+bin/prep-inception.sh
+
 echo yes | make inception
