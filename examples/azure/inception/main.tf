@@ -7,7 +7,6 @@ module "inception" {
   source = "../../../modules/inception/azure"
 
   name_prefix               = var.name_prefix
-  subscription_id           = var.subscription_id
   resource_group_name       = var.resource_group_name
   tf_state_storage_location = var.tf_state_storage_location
 }
@@ -24,6 +23,5 @@ output "bastion_password" {
 }
 
 provider "azurerm" {
-  subscription_id = var.subscription_id
   features {}
 }
