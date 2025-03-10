@@ -2,8 +2,6 @@ variable "name_prefix" {}
 variable "network_prefix" {
   default = "10.0"
 }
-variable "resource_group_name" {
-}
 variable "node_default_machine_type" {
   default = "Standard_DS2_v2"
 }
@@ -18,7 +16,6 @@ module "platform" {
 
   name_prefix               = var.name_prefix
   network_prefix            = var.network_prefix
-  resource_group_name       = var.resource_group_name
   node_default_machine_type = var.node_default_machine_type
   vnet_name                 = var.vnet_name
   cluster_location          = var.cluster_location

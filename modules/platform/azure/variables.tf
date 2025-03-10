@@ -2,8 +2,6 @@ variable "name_prefix" {}
 variable "network_prefix" {
   default = "10.1"
 }
-variable "resource_group_name" {
-}
 variable "node_default_machine_type" {
   default = "Standard_DS2_v2"
 }
@@ -23,7 +21,7 @@ variable "max_default_node_count" {
 locals {
   name_prefix               = var.name_prefix
   network_prefix            = var.network_prefix
-  resource_group_name       = var.resource_group_name
+  resource_group_name       = var.name_prefix
   node_default_machine_type = var.node_default_machine_type
   vnet_name                 = var.vnet_name
   cluster_name              = "${var.name_prefix}-cluster"
