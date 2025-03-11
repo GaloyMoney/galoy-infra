@@ -1,5 +1,3 @@
-# Configure the Azure Active Directory Provider
-provider "azuread" {}
 # Create an application
 resource "azuread_application" "inception" {
   display_name = local.inception_app_name
