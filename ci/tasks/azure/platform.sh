@@ -4,7 +4,7 @@ set -eu
 
 source pipeline-tasks/ci/tasks/helpers.sh
 
-pushd repo/examples/gcp
+pushd repo/examples/azure
 
 update_examples_git_ref
 
