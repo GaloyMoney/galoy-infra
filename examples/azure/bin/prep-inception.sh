@@ -27,3 +27,5 @@ terraform {
   }
 }
 EOF
+
+tofu init
