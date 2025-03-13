@@ -4,7 +4,7 @@ set -eu
 
 source pipeline-tasks/ci/tasks/helpers.sh
 pushd repo/examples/azure
-update_examples_git_ref
+update_examples_git_ref || true
 make_commit "chore(examples): bump azure modules to '${MODULES_GIT_REF}' in examples"
 popd
 
