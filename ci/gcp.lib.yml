@@ -343,7 +343,7 @@ plan:
       BRANCH: #@ data.values.git_branch
       GITHUB_SSH_KEY: #@ data.values.github_private_key
     run:
-      path: pipeline-tasks/ci/tasks/bump-repos.sh
+      path: pipeline-tasks/ci/tasks/gcp/bump-repos.sh
 - in_parallel:
   - put: repo
     params:
