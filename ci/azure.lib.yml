@@ -176,6 +176,55 @@ plan:
 - { put: azure-testflight-uid, params: { bump: patch } }
 #@ end
 
+#@ def azure_bump_repos_job():
+name: #@ bump_repos_job_name("azure")
+plan:
+- in_parallel:
+  - { get: galoy-staging }
+  - get: #@ modules_resource_name("azure")
+    trigger: true
+    passed:
+    - #@ testflight_cleanup_job_name("azure")
+  - get: repo
+    trigger: true
+    passed:
+    - #@ testflight_cleanup_job_name("azure")
+    params: { fetch_tags: false }
+  - { get: pipeline-tasks }
+  - get: azure-testflight-uid
+    passed:
+    - #@ testflight_cleanup_job_name("azure")
+- task: bump-repos
+  config:
+    platform: linux
+    image_resource: #@ task_image_config()
+    inputs:
+    - name: galoy-staging
+    - name: pipeline-tasks
+    - name: #@ modules_resource_name("azure")
+      path: modules
+    - name: repo
+    - name: azure-testflight-uid
+      path: testflight-uid
+    outputs:
+    - name: repo
+    - name: galoy-staging
+    params:
+      BRANCH: #@ data.values.git_branch
+      GITHUB_SSH_KEY: #@ data.values.github_private_key
+    run:
+      path: pipeline-tasks/ci/tasks/azure/bump-repos.sh
+- in_parallel:
+  - put: repo
+    params:
+      repository: repo
+      rebase: true
+  - put: galoy-staging
+    params:
+      repository: galoy-staging
+      rebase: true
+#@ end
+
 #@ def build_pipeline_image_job():
 name: #@ build_pipeline_image_job_name("azure")
 serial: true
@@ -251,6 +300,7 @@ source:
 - #@ azure_testflight_inception_job()
 - #@ azure_testflight_platform_job()
 - #@ azure_testflight_cleanup_job()
+- #@ azure_bump_repos_job()
 - #@ build_pipeline_image_job()
 #@ end
 

@@ -3,9 +3,9 @@
 set -eu
 
 source pipeline-tasks/ci/tasks/helpers.sh
-pushd repo/examples/gcp
-update_examples_git_ref
-make_commit "chore(examples): bump modules to '${MODULES_GIT_REF}' in examples"
+pushd repo/examples/azure
+update_examples_git_ref || true
+make_commit "chore(examples): bump azure modules to '${MODULES_GIT_REF}' in examples"
 popd
 
 pushd galoy-staging
@@ -17,4 +17,4 @@ ${GITHUB_SSH_KEY}
 EOF
 GITHUB_SSH_KEY_BASE64=$(base64 -w 0 ./github.key) make vendir
 
-make_commit "chore(deps): bump galoy-infra modules to '${MODULES_GIT_REF}'"
+make_commit "chore(deps): bump galoy-infra azure modules to '${MODULES_GIT_REF}'"
