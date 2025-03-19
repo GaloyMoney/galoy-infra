@@ -17,7 +17,6 @@ resource "azuread_service_principal" "bootstrap" {
 # Create Application password (client secret)
 resource "azuread_application_password" "inception_app_password" {
   application_id = azuread_application.inception.id
-  end_date       = timeadd(timestamp(), "720h") # expire in 3 years
 }
 
 data "azurerm_subscription" "current" {}
