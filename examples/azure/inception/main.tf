@@ -1,7 +1,7 @@
 variable "name_prefix" {}
 
 module "inception" {
-  #source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/inception/azure?ref=1b539d8"
+  #source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/inception/azure?ref=a5c4dec"
   source = "../../../modules/inception/azure"
 
   name_prefix = var.name_prefix
