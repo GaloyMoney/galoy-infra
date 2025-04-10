@@ -1,5 +1,5 @@
 data "azurerm_subnet" "dmz" {
-  name                 = "${local.name_prefix}-bastionSubnet"
+  name                 = "${local.name_prefix}-dmz"
   virtual_network_name = local.vnet_name
   resource_group_name  = data.azurerm_resource_group.resource_group.name
 }
