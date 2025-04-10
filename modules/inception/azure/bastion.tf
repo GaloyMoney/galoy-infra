@@ -42,9 +42,6 @@ resource "azurerm_virtual_machine" "bastion" {
   identity {
     type = "SystemAssigned"
   }
-  tags = {
-    environment = "staging"
-  }
 }
 
 resource "azurerm_virtual_machine_extension" "aadlogin" {

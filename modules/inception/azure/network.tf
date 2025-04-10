@@ -35,7 +35,7 @@ resource "azurerm_subnet_network_security_group_association" "bastion_associatio
   network_security_group_id = azurerm_network_security_group.bastion_security_group.id
 }
 
-resource "azurerm_public_ip" "bastion_ni_public_ip" {
+resource "azurerm_public_ip" "bastion_public_ip" {
   name                = "bastion_public_ip"
   location            = data.azurerm_resource_group.resource_group.location
   resource_group_name = data.azurerm_resource_group.resource_group.name
@@ -52,7 +52,6 @@ resource "azurerm_network_interface" "bastion_network_interface" {
     name                          = "bastion_network_interface_configuration1"
     subnet_id                     = azurerm_subnet.bastion_subnet.id
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.bastion_ni_public_ip.id
+    public_ip_address_id          = azurerm_public_ip.bastion_public_ip.id
   }
-
 }
