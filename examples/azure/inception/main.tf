@@ -10,7 +10,7 @@ variable "users" {
 }
 
 module "inception" {
-  #source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/inception/azure?ref=a5c4dec"
+  #source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/inception/azure?ref=ee2c99a"
   source = "../../../modules/inception/azure"
   users  = var.users
 
