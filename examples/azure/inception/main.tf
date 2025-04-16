@@ -9,12 +9,15 @@ variable "users" {
   }))
 }
 
+variable "inception_sp_id" {}
+
 module "inception" {
   #source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/inception/azure?ref=673e0dc"
   source = "../../../modules/inception/azure"
   users  = var.users
 
-  name_prefix = var.name_prefix
+  name_prefix     = var.name_prefix
+  inception_sp_id = var.inception_sp_id
 }
 
 output "vnet_name" {

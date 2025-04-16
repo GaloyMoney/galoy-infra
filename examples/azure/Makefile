@@ -18,6 +18,7 @@ platform:
 
 inception:
 	export ARM_ACCESS_KEY=$(cd bootstrap && $(TF) output -json access_key | jq -r ".access_key")
+	bin/prep-inception.sh
 	cd inception \
 		&& $(TF) init \
 		&& $(TF) apply
