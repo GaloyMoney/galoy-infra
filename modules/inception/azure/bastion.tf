@@ -1,3 +1,10 @@
+locals {
+  cepler_version   = "0.7.15"
+  kubectl_version  = "1.30.4"
+  k9s_version      = "0.32.5"
+  opentofu_version = "1.9.0"
+}
+
 resource "tls_private_key" "bastion_key" {
   algorithm = "RSA"
   rsa_bits  = 4096
@@ -31,6 +38,12 @@ resource "azurerm_virtual_machine" "bastion" {
   os_profile {
     computer_name  = "${local.name_prefix}-bastion"
     admin_username = "galoy"
+    custom_data = base64encode(templatefile("${path.module}/bastion-startup.tmpl", {
+      cepler_version : local.cepler_version
+      kubectl_version : local.kubectl_version
+      k9s_version : local.k9s_version
+      opentofu_version : local.opentofu_version
+    }))
   }
   os_profile_linux_config {
     disable_password_authentication = true
