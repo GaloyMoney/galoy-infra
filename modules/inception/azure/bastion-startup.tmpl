@@ -1,0 +1,52 @@
+#!/bin/bash
+
+sed -i'' 's/pam_mkhomedir.so$/pam_mkhomedir.so umask=0077/' /etc/pam.d/sshd # Make all files private by default
+
+curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add -
+apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+
+# Keep make and terraform the first items installed as they are needed
+# for testflight to complete
+apt-get update && apt-get install -y make jq tree wget postgresql vault unzip gnupg
+
+curl --proto '=https' --tlsv1.2 -fsSL https://get.opentofu.org/install-opentofu.sh -o install-opentofu.sh \
+  && chmod +x install-opentofu.sh \
+  && ./install-opentofu.sh --install-method standalone --opentofu-version ${opentofu_version} \
+  && rm -f install-opentofu.sh
+
+cat <<EOF > /etc/profile.d/aliases.sh
+alias k="kubectl"
+alias g="git"
+alias gs="git status"
+
+export KUBE_CONFIG_PATH=~/.kube/config
+export BRIA_ADMIN_API_URL=http://10.1.2.2:2743
+export BRIA_API_URL=http://10.1.2.1:2742
+EOF
+
+curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | tee /etc/apt/trusted.gpg.d/microsoft.gpg > /dev/null \
+  && AZ_REPO=$(lsb_release -cs) \
+  && echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | tee /etc/apt/sources.list.d/azure-cli.list \
+  && apt-get update -y \
+  && apt-get install azure-cli -y
+  && az extension add --name ssh
+
+curl -LO https://storage.googleapis.com/kubernetes-release/release/v${kubectl_version}/bin/linux/amd64/kubectl
+chmod +x ./kubectl
+mv ./kubectl /usr/local/bin
+
+curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+
+wget -O- https://k14s.io/install.sh | bash
+
+wget https://github.com/bodymindarts/cepler/releases/download/v${cepler_version}/cepler-x86_64-unknown-linux-musl-${cepler_version}.tar.gz \
+  && tar -zxvf cepler-x86_64-unknown-linux-musl-${cepler_version}.tar.gz \
+  && mv cepler-x86_64-unknown-linux-musl-${cepler_version}/cepler /usr/local/bin \
+  && chmod +x /usr/local/bin/cepler \
+  && rm -rf ./cepler-*
+
+mkdir k9s && cd k9s \
+   && wget https://github.com/derailed/k9s/releases/download/v${k9s_version}/k9s_Linux_amd64.tar.gz \
+   && tar -xvf k9s_Linux_amd64.tar.gz \
+   && mv k9s /usr/local/bin \
+   && cd .. && rm -rf k9s*
