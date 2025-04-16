@@ -70,6 +70,11 @@ function write_users() {
      '{ users: [ .[] | { id: ., inception: true, platform: true, logs: true, bastion: true }, { id: "serviceAccount:\($sa)", inception: true, platform: true, logs: true, bastion: true } ]}' > inception/users.auto.tfvars.json
 }
 
+function write_azure_users() {
+  echo ${TESTFLIGHT_ADMINS} | \
+    jq '{ users: [ .[] | { id: ., inception: true, platform: true, logs: true, bastion: true } ]}' > inception/users.auto.tfvars.json
+}
+
 function cleanup_inception_key() {
   pushd bootstrap
   inception_email=$(tofu output inception_sa | jq -r)

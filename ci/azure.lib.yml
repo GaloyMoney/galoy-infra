@@ -43,6 +43,7 @@ ARM_SUBSCRIPTION_ID: #@ data.values.testflight_azure_subscription_id
 KUBE_HOST: #@ data.values.concourse_tf_kube_host
 KUBE_CA_CERT: #@ data.values.concourse_tf_kube_ca_cert
 KUBE_TOKEN: #@ data.values.concourse_tf_kube_token
+TESTFLIGHT_ADMINS: #@ data.values.testflight_azure_admins
 #@ end
 
 #@ def azure_testflight_bootstrap_job():

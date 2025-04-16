@@ -1,6 +1,19 @@
+data "azuread_application_published_app_ids" "well_known" {}
+data "azuread_service_principal" "msgraph" {
+  client_id = data.azuread_application_published_app_ids.well_known.result.MicrosoftGraph
+}
 # Create an application
 resource "azuread_application" "inception" {
   display_name = local.inception_app_name
+
+  required_resource_access {
+    resource_app_id = data.azuread_application_published_app_ids.well_known.result.MicrosoftGraph
+
+    resource_access {
+      id   = data.azuread_service_principal.msgraph.app_role_ids["User.Read.All"]
+      type = "Role"
+    }
+  }
 }
 provider "azurerm" {
   features {
