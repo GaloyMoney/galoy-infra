@@ -6,26 +6,11 @@ module "bootstrap" {
   name_prefix = var.name_prefix
 }
 
-output "tf_state_storage_blob_name" {
-  value = module.bootstrap.tf_state_storage_blob_name
-}
 output "tf_state_storage_container" {
   value = module.bootstrap.tf_state_storage_container
 }
-output "tf_state_storage_location" {
-  value = module.bootstrap.tf_state_storage_location
-}
 output "tf_state_storage_account" {
   value = module.bootstrap.tf_state_storage_account
-}
-output "tf_state_storage_blob_id" {
-  value = module.bootstrap.tf_state_storage_blob_id
-}
-output "tf_state_storage_container_id" {
-  value = module.bootstrap.tf_state_storage_container_id
-}
-output "tf_state_storage_account_id" {
-  value = module.bootstrap.tf_state_storage_account_id
 }
 output "resource_group_name" {
   value = module.bootstrap.resource_group
@@ -46,4 +31,7 @@ output "name_prefix" {
 output "access_key" {
   value     = module.bootstrap.tf_state_access_key
   sensitive = true
+}
+output "inception_sp_id" {
+  value = module.bootstrap.inception_sp_id
 }

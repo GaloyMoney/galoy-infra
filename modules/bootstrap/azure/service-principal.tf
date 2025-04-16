@@ -23,7 +23,7 @@ provider "azurerm" {
   }
 }
 # Create a service principal
-resource "azuread_service_principal" "bootstrap" {
+resource "azuread_service_principal" "inception" {
   client_id = azuread_application.inception.client_id
 }
 
@@ -35,8 +35,8 @@ resource "azuread_application_password" "inception_app_password" {
 data "azurerm_subscription" "current" {}
 
 # Create Contributor role assignment for Service Principal
-resource "azurerm_role_assignment" "bootstrap_spn_contributor" {
+resource "azurerm_role_assignment" "inception_contributor" {
   scope                = data.azurerm_subscription.current.id
   role_definition_name = "Contributor"
-  principal_id         = azuread_service_principal.bootstrap.object_id
+  principal_id         = azuread_service_principal.inception.object_id
 }
