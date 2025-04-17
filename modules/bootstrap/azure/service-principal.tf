@@ -40,3 +40,26 @@ resource "azurerm_role_assignment" "inception_contributor" {
   role_definition_name = "Contributor"
   principal_id         = azuread_service_principal.inception.object_id
 }
+
+resource "azurerm_role_definition" "bootstrap" {
+  name        = "Bootstrap for ${local.name_prefix}"
+  scope       = data.azurerm_subscription.current.id
+  description = "Role for bootstrapping inception tf files"
+
+  permissions {
+    actions = [
+      "Microsoft.Authorization/roleAssignments/write",
+      "Microsoft.Authorization/roleAssignments/delete",
+    ]
+  }
+
+  assignable_scopes = [
+    data.azurerm_subscription.current.id,
+  ]
+}
+
+resource "azurerm_role_assignment" "inception_bootstrap" {
+  scope                = data.azurerm_subscription.current.id
+  role_definition_name = azurerm_role_definition.bootstrap.name
+  principal_id         = azuread_service_principal.inception.object_id
+}
