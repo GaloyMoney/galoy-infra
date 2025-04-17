@@ -28,7 +28,7 @@ curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | tee
   && AZ_REPO=$(lsb_release -cs) \
   && echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | tee /etc/apt/sources.list.d/azure-cli.list \
   && apt-get update -y \
-  && apt-get install azure-cli -y
+  && apt-get install azure-cli -y \
   && az extension add --name ssh
 
 curl -LO https://storage.googleapis.com/kubernetes-release/release/v${kubectl_version}/bin/linux/amd64/kubectl
