@@ -37,6 +37,7 @@ resource "azuread_app_role_assignment" "inception" {
 # Create Application password (client secret)
 resource "azuread_application_password" "inception_app_password" {
   application_id = azuread_application.inception.id
+  end_date_relative = "25920h"
 }
 
 data "azurerm_subscription" "current" {}
