@@ -27,6 +27,13 @@ resource "azuread_service_principal" "inception" {
   client_id = azuread_application.inception.client_id
 }
 
+# Create app role assignment for Service Principal
+resource "azuread_app_role_assignment" "inception" {
+  app_role_id         = data.azuread_service_principal.msgraph.app_role_ids["User.Read.All"]
+  principal_object_id = azuread_service_principal.inception.object_id
+  resource_object_id  = data.azuread_service_principal.msgraph.object_id
+}
+
 # Create Application password (client secret)
 resource "azuread_application_password" "inception_app_password" {
   application_id = azuread_application.inception.id
