@@ -43,6 +43,7 @@ resource "azurerm_virtual_machine" "bastion" {
       kubectl_version : local.kubectl_version
       k9s_version : local.k9s_version
       opentofu_version : local.opentofu_version
+      name_prefix : local.name_prefix
     }))
   }
   os_profile_linux_config {
