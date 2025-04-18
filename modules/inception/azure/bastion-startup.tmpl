@@ -18,6 +18,7 @@ cat <<EOF > /etc/profile.d/aliases.sh
 alias k="kubectl"
 alias g="git"
 alias gs="git status"
+alias kauth="az aks get-credentials --resource-group ${name_prefix} --name ${name_prefix}-cluster"
 
 export KUBE_CONFIG_PATH=~/.kube/config
 export BRIA_ADMIN_API_URL=http://10.1.2.2:2743
