@@ -16,7 +16,6 @@ resource "azurerm_kubernetes_cluster" "primary" {
     auto_scaling_enabled = true
     min_count            = local.min_default_node_count
     max_count            = local.max_default_node_count
-    node_count           = 1
     vm_size              = local.node_default_machine_type
     vnet_subnet_id       = data.azurerm_subnet.dmz.id
   }
