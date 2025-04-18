@@ -1,6 +1,6 @@
 variable "name_prefix" {}
 module "bootstrap" {
-  #source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/bootstrap/azure?ref=be6d6b0"
+  #source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/bootstrap/azure?ref=8d19440"
   source = "../../../modules/bootstrap/azure"
 
   name_prefix = var.name_prefix
