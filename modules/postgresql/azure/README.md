@@ -78,7 +78,6 @@ module "postgresql_with_replica" {
 |------|-------------|---------|
 | `subnet_name` | Name of subnet to use (will create one if null) | `null` |
 | `region` | Azure region | `"eastus"` |
-| `destroyable` | Whether the DB is destroyable | `false` |
 | `user_can_create_db` | Allow user to create databases | `false` |
 | `sku_name` | SKU name for the server | `"GP_Standard_D2s_v3"` |
 | `storage_mb` | Storage in MB | `32768` |

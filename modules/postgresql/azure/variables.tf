@@ -6,9 +6,6 @@ variable "instance_name" {}
 variable "region" {
   default = "eastus"
 }
-variable "destroyable" {
-  default = false
-}
 variable "user_can_create_db" {
   default = false
 }
@@ -86,7 +83,6 @@ locals {
   instance_name                  = var.instance_name
   postgresql_version             = var.postgresql_version
   destination_postgresql_version = var.destination_postgresql_version
-  destroyable                    = var.destroyable
   sku_name                       = var.sku_name
   storage_mb                     = var.storage_mb
   max_connections                = var.max_connections
