@@ -6,25 +6,16 @@ source pipeline-tasks/ci/tasks/helpers.sh
 
 pushd repo/examples/azure
 
-update_examples_git_ref
+update_examples_git_ref || true
 
-init_azure
 init_kubeconfig
 init_bootstrap_azure
 
-write_users
+# Get the name prefix from bootstrap output
+name_prefix=$(cd bootstrap && tofu output name_prefix | jq -r)
 
-bin/prep-inception.sh
+# Configure SSH for bastion host
+az ssh config -g ${name_prefix} -n ${name_prefix}-bastion -f ./sshconfig
 
-bastion_name="$(cd inception && tofu output bastion_name | jq -r)"
-bastion_zone="$(cd inception && tofu output bastion_zone | jq -r)"
-export BASTION_USER="sa_$(cat ${CI_ROOT}/azure-creds.json  | jq -r '.client_id')"
-export ADDITIONAL_SSH_OPTS="-o StrictHostKeyChecking=no -i ${CI_ROOT}/login.ssh"
-
-bin/prep-postgresql.sh
-
-az vm run-command invoke \
-  --resource-group $(cd inception && tofu output resource_group | jq -r) \
-  --name ${bastion_name} \
-  --command-id RunShellScript \
-  --scripts "cd repo-pg/examples/azure; export TF_VAR_destroyable_postgres=true; export AZURE_CREDENTIALS=\$(pwd)/azure-creds.json; echo yes | make destroy-postgresql"
+# Execute teardown on bastion host
+ssh -F ./sshconfig ${name_prefix}-${name_prefix}-bastion -- 'cd repo-pg/examples/azure; echo yes | make destroy-postgresql'
