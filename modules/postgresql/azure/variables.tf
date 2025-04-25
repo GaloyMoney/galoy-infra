@@ -30,21 +30,12 @@ variable "postgresql_version" {
   default     = "14"
   description = "The version of PostgreSQL to use"
 }
-variable "destination_postgresql_version" {
-  default     = "15"
-  description = "The version of PostgreSQL to use for migration destination"
-}
 variable "databases" {
   type        = list(string)
   description = "List of database names to create"
 }
 variable "replication" {
   description = "Enable logical replication for the PostgreSQL instance"
-  type        = bool
-  default     = false
-}
-variable "provision_read_replica" {
-  description = "Provision read replica"
   type        = bool
   default     = false
 }
@@ -63,16 +54,6 @@ variable "private_dns_zone_id" {
   type        = string
   default     = null
 }
-variable "prep_upgrade_as_source_db" {
-  description = "Configure source destination instance to be upgradable via Database Migration Service"
-  type        = bool
-  default     = false
-}
-variable "pre_promotion" {
-  description = "Configure the destination instance which becomes the source after the terraform to act nicely with the migration service"
-  type        = bool
-  default     = false
-}
 
 locals {
   # subscription_id                = var.subscription_id
@@ -82,16 +63,11 @@ locals {
   region                         = var.region
   instance_name                  = var.instance_name
   postgresql_version             = var.postgresql_version
-  destination_postgresql_version = var.destination_postgresql_version
   sku_name                       = var.sku_name
   storage_mb                     = var.storage_mb
   max_connections                = var.max_connections
   databases                      = var.databases
-  migration_databases            = concat(var.databases, ["postgres"])
   replication                    = var.replication
-  provision_read_replica         = var.provision_read_replica
-  prep_upgrade_as_source_db      = var.prep_upgrade_as_source_db
-  pre_promotion                  = var.pre_promotion
   backup_retention_days          = var.backup_retention_days
   geo_redundant_backup_enabled   = var.geo_redundant_backup_enabled
   database_port                  = 5432

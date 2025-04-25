@@ -16,15 +16,3 @@ module "postgresql" {
   user_can_create_db   = true
   databases            = ["test"]
 }
-
-# Output connection information
-output "postgresql_connection" {
-  value     = module.postgresql.source_instance.conn
-  sensitive = true
-}
-
-output "postgresql_test_creds" {
-  value     = module.postgresql.creds["test"]
-  sensitive = true
-}
-

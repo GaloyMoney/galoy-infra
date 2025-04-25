@@ -13,9 +13,7 @@ output "creds" {
       user      = module.database[db].user
       password  = module.database[db].password
       conn      = "postgres://${module.database[db].user}:${module.database[db].password}@${azurerm_postgresql_flexible_server.instance.fqdn}:5432/${db}"
-      read_conn = local.provision_read_replica ? "postgres://${module.database[db].user}:${module.database[db].password}@${azurerm_postgresql_flexible_server.replica[0].fqdn}:5432/${db}" : ""
       host      = azurerm_postgresql_flexible_server.instance.fqdn
-      read_host = local.provision_read_replica ? azurerm_postgresql_flexible_server.replica[0].fqdn : ""
     }
   }
   sensitive = true
@@ -46,15 +44,3 @@ output "server_id" {
 output "resource_group_name" {
   value = local.resource_group_name
 }
-
-# output "vnet" {
-#   value = "/subscriptions/${local.subscription_id}/resourceGroups/${local.resource_group_name}/providers/Microsoft.Network/virtualNetworks/${local.virtual_network_name}"
-# }
-
-output "source_instance" {
-  value = {
-    conn = "postgres://${azurerm_postgresql_flexible_server.instance.administrator_login}:${random_password.admin.result}@${azurerm_postgresql_flexible_server.instance.fqdn}:5432/postgres"
-  }
-  sensitive = true
-}
-

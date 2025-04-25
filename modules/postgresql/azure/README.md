@@ -8,9 +8,7 @@ This module provisions an Azure Database for PostgreSQL Flexible Server with pri
 - Private networking integration with existing VNet or auto-created subnet
 - Creates multiple databases with appropriate users and permissions
 - Configurable backup retention and geo-redundancy
-- Optional read replica provisioning
 - Logical replication support
-- Database migration preparation between versions
 - Detailed logging options
 
 ## Prerequisites
@@ -43,25 +41,6 @@ module "postgresql" {
 }
 ```
 
-### With Read Replica
-
-```hcl
-module "postgresql_with_replica" {
-  source = "path/to/modules/postgresql/azure"
-
-  instance_name          = "my-pg-with-replica"
-  subscription_id        = "your-subscription-id"
-  resource_group_name    = "your-resource-group"
-  virtual_network_name   = "your-vnet-name"
-
-  databases              = ["app", "analytics"]
-  provision_read_replica = true
-  replication            = true
-  sku_name               = "GP_Standard_D4s_v3"
-  storage_mb             = 65536
-}
-```
-
 ## Required Input Variables
 
 | Name | Description |
@@ -84,14 +63,10 @@ module "postgresql_with_replica" {
 | `max_connections` | Maximum allowed connections | `0` (use Azure default) |
 | `enable_detailed_logging` | Enable detailed logging | `false` |
 | `postgresql_version` | PostgreSQL version | `"14"` |
-| `destination_postgresql_version` | Version for migration destination | `"15"` |
 | `replication` | Enable logical replication | `false` |
-| `provision_read_replica` | Create a read replica | `false` |
 | `backup_retention_days` | Backup retention period in days | `7` |
 | `geo_redundant_backup_enabled` | Enable geo-redundant backups | `false` |
 | `private_dns_zone_id` | ID of existing private DNS zone | `null` |
-| `prep_upgrade_as_source_db` | Configure as migration source | `false` |
-| `pre_promotion` | Configure as migration destination | `false` |
 
 ## Outputs
 
@@ -105,7 +80,6 @@ module "postgresql_with_replica" {
 | `server_id` | The ID of the PostgreSQL Flexible Server |
 | `resource_group_name` | The resource group name |
 | `vnet` | The virtual network resource path |
-| `source_instance` | Connection string for the source instance (sensitive) |
 
 ## Differences from GCP Module
 
@@ -118,15 +92,13 @@ module "postgresql_with_replica" {
 
 ## Known Limitations and Considerations
 
-1. **Migration Support**: The migration capabilities are different from GCP. Azure Data Migration Service should be configured separately for full migration capabilities.
+1. **Parameter Handling**: Azure PostgreSQL has different parameter configurations than GCP. Some parameters might not be directly translatable.
 
-2. **Parameter Handling**: Azure PostgreSQL has different parameter configurations than GCP. Some parameters might not be directly translatable.
+2. **Logical Replication**: While supported, logical replication in Azure PostgreSQL may have different configuration requirements than GCP.
 
-3. **Logical Replication**: While supported, logical replication in Azure PostgreSQL may have different configuration requirements than GCP.
+3. **Network Configuration**: Azure requires a dedicated subnet with proper delegation for PostgreSQL Flexible Server.
 
-4. **Network Configuration**: Azure requires a dedicated subnet with proper delegation for PostgreSQL Flexible Server.
-
-5. **Firewall Rules**: Azure PostgreSQL Flexible Server uses different firewall concepts than GCP Cloud SQL.
+4. **Firewall Rules**: Azure PostgreSQL Flexible Server uses different firewall concepts than GCP Cloud SQL.
 
 ## Maintenance and Scaling
 
