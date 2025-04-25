@@ -102,21 +102,6 @@ resource "azurerm_postgresql_flexible_server_configuration" "logical_decoding" {
   value     = "logical"
 }
 
-# Configure read replica if requested
-resource "azurerm_postgresql_flexible_server" "replica" {
-  count               = local.provision_read_replica ? 1 : 0
-  name                = "${local.instance_name}-${random_id.db_name_suffix.hex}-replica"
-  resource_group_name = local.resource_group_name
-  location            = local.region
-  version             = local.postgresql_version
-  source_server_id    = azurerm_postgresql_flexible_server.instance.id
-
-  storage_mb = local.storage_mb
-  sku_name   = local.sku_name
-
-  create_mode = "Replica"
-}
-
 module "database" {
   for_each = toset(local.databases)
   source   = "./database"
