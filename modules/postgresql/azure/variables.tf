@@ -57,19 +57,19 @@ variable "private_dns_zone_id" {
 
 locals {
   # subscription_id                = var.subscription_id
-  resource_group_name            = var.resource_group_name
-  virtual_network_name           = var.virtual_network_name
-  subnet_name                    = var.subnet_name
-  region                         = var.region
-  instance_name                  = var.instance_name
-  postgresql_version             = var.postgresql_version
-  sku_name                       = var.sku_name
-  storage_mb                     = var.storage_mb
-  max_connections                = var.max_connections
-  databases                      = var.databases
-  replication                    = var.replication
-  backup_retention_days          = var.backup_retention_days
-  geo_redundant_backup_enabled   = var.geo_redundant_backup_enabled
-  database_port                  = 5432
+  resource_group_name          = var.resource_group_name
+  virtual_network_name         = var.virtual_network_name
+  subnet_name                  = var.subnet_name
+  region                       = var.region
+  instance_name                = var.instance_name
+  postgresql_version           = var.postgresql_version
+  sku_name                     = var.sku_name
+  storage_mb                   = var.storage_mb
+  max_connections              = var.max_connections
+  databases                    = var.databases
+  replication                  = var.replication
+  backup_retention_days        = var.backup_retention_days
+  geo_redundant_backup_enabled = var.geo_redundant_backup_enabled
+  database_port                = 5432
 }
 

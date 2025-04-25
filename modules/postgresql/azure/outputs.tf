@@ -9,11 +9,11 @@ output "private_fqdn" {
 output "creds" {
   value = {
     for db in local.databases : db => {
-      db_name   = db
-      user      = module.database[db].user
-      password  = module.database[db].password
-      conn      = "postgres://${module.database[db].user}:${module.database[db].password}@${azurerm_postgresql_flexible_server.instance.fqdn}:5432/${db}"
-      host      = azurerm_postgresql_flexible_server.instance.fqdn
+      db_name  = db
+      user     = module.database[db].user
+      password = module.database[db].password
+      conn     = "postgres://${module.database[db].user}:${module.database[db].password}@${azurerm_postgresql_flexible_server.instance.fqdn}:5432/${db}"
+      host     = azurerm_postgresql_flexible_server.instance.fqdn
     }
   }
   sensitive = true
