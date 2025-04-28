@@ -31,4 +31,9 @@ for i in {1..60}; do
 done
 set -e
 
-ssh -F ./sshconfig ${name_prefix}-${name_prefix}-bastion -- 'cd repo/examples/azure; echo yes | make postgresql'
+ssh -F ./sshconfig ${name_prefix}-${name_prefix}-bastion -- 'cd repo/examples/azure; \
+  export ARM_CLIENT_ID=${ARM_CLIENT_ID}; \
+  export ARM_CLIENT_SECRET=${ARM_CLIENT_SECRET}; \
+  export ARM_TENANT_ID=${ARM_TENANT_ID}; \
+  export ARM_SUBSCRIPTION_ID=${ARM_SUBSCRIPTION_ID}; \
+  echo yes | make postgresql'
