@@ -11,7 +11,7 @@ update_examples_git_ref || true
 init_kubeconfig
 init_bootstrap_azure
 
-az login --service-principal -u ${AZURE_CLIENT_ID} -p ${AZURE_CLIENT_SECRET} -t ${AZURE_TENANT_ID}
+az login --service-principal -u ${ARM_CLIENT_ID} -p ${ARM_CLIENT_SECRET} -t ${ARM_TENANT_ID}
 bin/prep-postgresql.sh
 
 name_prefix=$(cd bootstrap && tofu output name_prefix | jq -r)
