@@ -32,10 +32,10 @@ groups:
   - #@ testflight_platform_job_name(cloud)
   - #@ testflight_cleanup_job_name(cloud)
   - #@ bump_repos_job_name(cloud)
-  #@ if cloud == "gcp":
-  - #@ testflight_smoketest_job_name(cloud)
   - #@ testflight_postgresql_job_name(cloud)
   - #@ testflight_cleanup_postgresql_job_name(cloud)
+  #@ if cloud == "gcp":
+  - #@ testflight_smoketest_job_name(cloud)
   #@ end
 #@ end
 #@ for/end cloud in supported_iaas:
@@ -49,10 +49,10 @@ groups:
   - #@ testflight_platform_job_name(cloud)
   - #@ testflight_cleanup_job_name(cloud)
   - #@ bump_repos_job_name(cloud)
-  #@ if cloud == "gcp":
-  - #@ testflight_smoketest_job_name(cloud)
   - #@ testflight_postgresql_job_name(cloud)
   - #@ testflight_cleanup_postgresql_job_name(cloud)
+  #@ if cloud == "gcp":
+  - #@ testflight_smoketest_job_name(cloud)
   #@ end
 #@ end
 - name: image
