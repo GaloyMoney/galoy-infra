@@ -40,4 +40,4 @@ az ssh config -g ${resource_group_name} -n ${name_prefix}-bastion -f ./sshconfig
 ADDITIONAL_SSH_OPTS=${ADDITIONAL_SSH_OPTS:-""}
 echo "Syncing ${REPO_ROOT##*/} to bastion"
 rsync --exclude '**/.terraform/**' --exclude '**.terrafor*' -avr -e "ssh -F ./sshconfig -o StrictHostKeyChecking=no ${ADDITIONAL_SSH_OPTS}" \
-  ${REPO_ROOT}/ ${1}-${1}-bastion:${REPO_ROOT_DIR}
+  ${REPO_ROOT}/ ${name_prefix}-${name_prefix}-bastion:${REPO_ROOT_DIR}
