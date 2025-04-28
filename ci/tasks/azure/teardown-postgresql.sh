@@ -26,7 +26,7 @@ name_prefix=$(cd bootstrap && tofu output name_prefix | jq -r)
 # Configure SSH for bastion host
 az ssh config -g ${name_prefix} -n ${name_prefix}-bastion -f ./sshconfig
 
-ssh -F ./sshconfig ${name_prefix}-${name_prefix}-bastion -- "cd repo/examples/azure; \
+ssh -F ./sshconfig -o StrictHostKeyChecking=no ${name_prefix}-${name_prefix}-bastion -- "cd repo/examples/azure; \
   export ARM_CLIENT_ID=${ARM_CLIENT_ID}; \
   export ARM_CLIENT_SECRET=${ARM_CLIENT_SECRET}; \
   export ARM_TENANT_ID=${ARM_TENANT_ID}; \
