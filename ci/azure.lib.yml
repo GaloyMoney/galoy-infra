@@ -4,7 +4,9 @@
 #@   "testflight_bootstrap_job_name",
 #@   "testflight_inception_job_name",
 #@   "testflight_platform_job_name",
+#@   "testflight_postgresql_job_name",
 #@   "testflight_cleanup_job_name",
+#@   "testflight_cleanup_postgresql_job_name",
 #@   "bump_repos_job_name",
 #@   "build_pipeline_image_job_name",
 #@   "modules_resource_name")
@@ -138,6 +140,76 @@ plan:
     params: #@ azure_testflight_task_params()
     run:
       path: pipeline-tasks/ci/tasks/azure/platform.sh
+#@ end
+
+#@ def azure_testflight_postgresql_job():
+name: #@ testflight_postgresql_job_name("azure")
+serial: true
+plan:
+- get: azure-testflight-lock
+  passed:
+  - #@ testflight_inception_job_name("azure")
+- in_parallel:
+  - get: #@ modules_resource_name("azure")
+    trigger: true
+    passed:
+    - #@ testflight_inception_job_name("azure")
+  - get: repo
+    passed:
+    - #@ testflight_inception_job_name("azure")
+  - { get: pipeline-tasks }
+  - { get: azure-testflight-uid }
+- task: postgresql
+  attempts: 4
+  config:
+    platform: linux
+    image_resource: #@ task_image_config()
+    inputs:
+    - name: pipeline-tasks
+    - name: repo
+    - name: #@ modules_resource_name("azure")
+      path: modules
+    - name: azure-testflight-uid
+      path: testflight-uid
+    params: #@ azure_testflight_task_params()
+    run:
+      path: pipeline-tasks/ci/tasks/azure/postgresql.sh
+#@ end
+
+#@ def azure_testflight_cleanup_postgresql_job():
+name: #@ testflight_cleanup_postgresql_job_name("azure")
+serial: true
+plan:
+- get: azure-testflight-lock
+  passed:
+  - #@ testflight_postgresql_job_name("azure")
+- in_parallel:
+  - get: #@ modules_resource_name("azure")
+    trigger: true
+    passed:
+    - #@ testflight_postgresql_job_name("azure")
+  - get: repo
+    passed:
+    - #@ testflight_postgresql_job_name("azure")
+  - { get: pipeline-tasks }
+  - { get: azure-testflight-uid }
+- task: teardown
+  attempts: 6
+  config:
+    platform: linux
+    image_resource: #@ task_image_config()
+    inputs:
+    - name: pipeline-tasks
+    - name: repo
+    - name: #@ modules_resource_name("azure")
+      path: modules
+    - name: azure-testflight-uid
+      path: testflight-uid
+    outputs:
+    - name: repo
+    params: #@ azure_testflight_task_params()
+    run:
+      path: pipeline-tasks/ci/tasks/azure/teardown-postgresql.sh
 #@ end
 
 #@ def azure_testflight_cleanup_job():
@@ -300,6 +372,8 @@ source:
 - #@ azure_testflight_bootstrap_job()
 - #@ azure_testflight_inception_job()
 - #@ azure_testflight_platform_job()
+- #@ azure_testflight_postgresql_job()
+- #@ azure_testflight_cleanup_postgresql_job()
 - #@ azure_testflight_cleanup_job()
 - #@ azure_bump_repos_job()
 - #@ build_pipeline_image_job()

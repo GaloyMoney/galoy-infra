@@ -37,3 +37,6 @@ terraform.tf
 *-creds.json
 
 .direnv
+
+az_ssh_config
+sshconfig
