@@ -11,6 +11,13 @@ update_examples_git_ref || true
 init_kubeconfig
 init_bootstrap_azure
 
+pushd bootstrap
+
+export ARM_CLIENT_ID=$(tofu output client_id | jq -r)
+export ARM_CLIENT_SECRET=$(tofu output client_secret | jq -r)
+
+popd
+
 az login --service-principal -u ${ARM_CLIENT_ID} -p ${ARM_CLIENT_SECRET} -t ${ARM_TENANT_ID}
 bin/prep-postgresql.sh
 
