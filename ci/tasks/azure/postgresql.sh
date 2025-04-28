@@ -31,4 +31,4 @@ for i in {1..60}; do
 done
 set -e
 
-ssh -F ./sshconfig ${name_prefix}-${name_prefix}-bastion -- 'cd repo-pg/examples/azure; echo yes | make postgresql'
+ssh -F ./sshconfig ${name_prefix}-${name_prefix}-bastion -- 'cd repo/examples/azure; echo yes | make postgresql'
