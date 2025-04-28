@@ -16,6 +16,12 @@ platform:
 	cd platform \
 		&& $(TF) apply
 
+postgresql:
+	export ARM_ACCESS_KEY=$(cd bootstrap && $(TF) output -json access_key | jq -r ".access_key")
+	cd postgresql \
+		&& $(TF) init \
+		&& $(TF) apply
+
 inception:
 	export ARM_ACCESS_KEY=$(cd bootstrap && $(TF) output -json access_key | jq -r ".access_key")
 	bin/prep-inception.sh
@@ -39,5 +45,10 @@ destroy-platform:
 	cd platform \
 		&& $(TF) destroy
 
+destroy-postgresql:
+	export ARM_ACCESS_KEY=$(cd bootstrap && $(TF) output access_key | jq -r)
+	cd postgresql \
+		&& $(TF) init \
+		&& $(TF) destroy -auto-approve
 
 .PHONY: bootstrap inception platform
