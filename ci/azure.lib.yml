@@ -220,14 +220,17 @@ plan:
 - get: azure-testflight-lock
   passed:
   - #@ testflight_platform_job_name("azure")
+  - #@ testflight_cleanup_postgresql_job_name("azure")
 - in_parallel:
   - get: #@ modules_resource_name("azure")
     trigger: true
     passed:
     - #@ testflight_platform_job_name("azure")
+    - #@ testflight_cleanup_postgresql_job_name("azure")
   - get: repo
     passed:
     - #@ testflight_platform_job_name("azure")
+    - #@ testflight_cleanup_postgresql_job_name("azure")
   - { get: pipeline-tasks }
   - { get: azure-testflight-uid }
 - task: teardown
