@@ -31,6 +31,7 @@ source:
   - modules/bootstrap/azure
   - modules/inception/azure
   - modules/platform/azure
+  - modules/postgresql/azure
   - modules/services
   uri: #@ data.values.git_uri
   branch: #@ data.values.git_branch
