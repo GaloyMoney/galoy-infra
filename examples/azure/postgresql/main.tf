@@ -9,10 +9,8 @@ variable "name_prefix" {}
 module "postgresql" {
   source = "../../../modules/postgresql/azure"
 
-  instance_name        = "${var.name_prefix}-pg"
-  resource_group_name  = var.name_prefix
-  virtual_network_name = "${var.name_prefix}-vnet"
-  subnet_name          = "${var.name_prefix}-dmz"
-  user_can_create_db   = true
-  databases            = ["test"]
+  instance_name       = "${var.name_prefix}-pg"
+  resource_group_name = var.name_prefix
+  user_can_create_db  = true
+  databases           = ["test"]
 }
