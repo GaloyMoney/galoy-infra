@@ -49,7 +49,6 @@ resource "azurerm_private_dns_zone_virtual_network_link" "postgres" {
 
 locals {
   private_dns_zone_id = var.private_dns_zone_id != null ? var.private_dns_zone_id : azurerm_private_dns_zone.postgres.id
-  subnet_id           = var.subnet_name != null ? data.azurerm_subnet.subnet.id : azurerm_subnet.postgres_subnet.id
 }
 
 resource "azurerm_postgresql_flexible_server" "instance" {
