@@ -12,7 +12,7 @@ data "azurerm_subnet" "subnet" {
 data "azurerm_private_dns_zone_virtual_network_link" "postgres" {
   name                  = "${local.resource_group_name}-link"
   private_dns_zone_name = "privatelink.postgres.database.azure.com"
-  resource_group_name   = data.azurerm_resource_group.resource_group.name
+  resource_group_name   = local.resource_group_name
 }
 
 resource "random_id" "db_name_suffix" {
