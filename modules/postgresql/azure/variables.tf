@@ -51,16 +51,11 @@ variable "private_dns_zone_id" {
   type        = string
   default     = null
 }
-variable "delegated_subnet_name" {
-  description = "The name of the delegated subnet"
-  type        = string
-  default     = null
-}
 
 locals {
   resource_group_name          = var.resource_group_name
   virtual_network_name         = "${local.resource_group_name}-vnet"
-  subnet_name                  = "${local.resource_group_name}-dmz"
+  subnet_name                  = "${local.resource_group_name}-postgres"
   region                       = var.region
   instance_name                = var.instance_name
   postgresql_version           = var.postgresql_version
@@ -72,6 +67,5 @@ locals {
   backup_retention_days        = var.backup_retention_days
   geo_redundant_backup_enabled = var.geo_redundant_backup_enabled
   database_port                = 5432
-  delegated_subnet_name        = var.delegated_subnet_name != null ? var.delegated_subnet_name : "${local.instance_name}-subnet"
 }
 
