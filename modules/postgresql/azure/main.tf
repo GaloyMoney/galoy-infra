@@ -9,10 +9,9 @@ data "azurerm_subnet" "subnet" {
   resource_group_name  = local.resource_group_name
 }
 
-data "azurerm_private_dns_zone_virtual_network_link" "postgres" {
-  name                  = "${local.resource_group_name}-link"
-  private_dns_zone_name = "privatelink.postgres.database.azure.com"
-  resource_group_name   = local.resource_group_name
+data "azurerm_private_dns_zone" "postgres" {
+  name                = "privatelink.postgres.database.azure.com"
+  resource_group_name = local.resource_group_name
 }
 
 resource "random_id" "db_name_suffix" {
@@ -31,7 +30,7 @@ resource "azurerm_postgresql_flexible_server" "instance" {
   version                       = local.postgresql_version
   public_network_access_enabled = false
   delegated_subnet_id           = data.azurerm_subnet.subnet.id
-  private_dns_zone_id           = data.azurerm_private_dns_zone_virtual_network_link.postgres.id
+  private_dns_zone_id           = data.azurerm_private_dns_zone.postgres.id
   administrator_login           = replace("${local.instance_name}pgadmin", "-", "")
   administrator_password        = random_password.admin.result
   zone                          = 1
