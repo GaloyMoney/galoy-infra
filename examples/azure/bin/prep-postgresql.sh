@@ -21,7 +21,7 @@ terraform {
     resource_group_name = "${resource_group_name}"
     storage_account_name = "${tf_state_storage_account}"
     container_name       = "${tf_state_storage_container}"
-    key                  = "postgresql.tfstate"
+    key                  = "${name_prefix}/postgresql.tfstate"
   }
 }
 EOF
