@@ -147,7 +147,7 @@ resource "azurerm_network_security_group" "postgres" {
 
 # Associate the NSG with the PostgreSQL subnet
 resource "azurerm_subnet_network_security_group_association" "postgres" {
-  subnet_id                 = var.delegated_subnet_name == null ? azurerm_subnet.postgres_subnet.id : data.azurerm_subnet.subnet.id
+  subnet_id                 = var.delegated_subnet_name == null ? azurerm_subnet.postgres_subnet[0].id : data.azurerm_subnet.subnet[0].id
   network_security_group_id = azurerm_network_security_group.postgres.id
 }
 
