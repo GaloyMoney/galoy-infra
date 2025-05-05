@@ -59,6 +59,7 @@ resource "azurerm_postgresql_flexible_server" "instance" {
   location                      = local.region
   version                       = local.postgresql_version
   public_network_access_enabled = false
+  delegated_subnet_id           = var.delegated_subnet_name == null ? azurerm_subnet.postgres_subnet[0].id : data.azurerm_subnet.subnet[0].id
   private_dns_zone_id           = local.private_dns_zone_id
   administrator_login           = replace("${local.instance_name}pgadmin", "-", "")
   administrator_password        = random_password.admin.result
