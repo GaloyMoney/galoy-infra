@@ -4,7 +4,8 @@ data "azurerm_virtual_network" "vnet" {
 }
 
 data "azurerm_subnet" "subnet" {
-  name                 = local.subnet_name
+  count                = var.delegated_subnet_name != null ? 1 : 0
+  name                 = local.delegated_subnet_name
   virtual_network_name = data.azurerm_virtual_network.vnet.name
   resource_group_name  = local.resource_group_name
 }
@@ -19,7 +20,8 @@ resource "random_password" "admin" {
 }
 
 resource "azurerm_subnet" "postgres_subnet" {
-  name                 = "${local.instance_name}-subnet"
+  count                = var.delegated_subnet_name == null ? 1 : 0
+  name                 = local.delegated_subnet_name
   resource_group_name  = local.resource_group_name
   virtual_network_name = data.azurerm_virtual_network.vnet.name
   address_prefixes     = [cidrsubnet(data.azurerm_virtual_network.vnet.address_space[0], 8, 10)]
@@ -57,7 +59,6 @@ resource "azurerm_postgresql_flexible_server" "instance" {
   location                      = local.region
   version                       = local.postgresql_version
   public_network_access_enabled = false
-  delegated_subnet_id           = azurerm_subnet.postgres_subnet.id
   private_dns_zone_id           = local.private_dns_zone_id
   administrator_login           = replace("${local.instance_name}pgadmin", "-", "")
   administrator_password        = random_password.admin.result
@@ -146,7 +147,7 @@ resource "azurerm_network_security_group" "postgres" {
 
 # Associate the NSG with the PostgreSQL subnet
 resource "azurerm_subnet_network_security_group_association" "postgres" {
-  subnet_id                 = azurerm_subnet.postgres_subnet.id
+  subnet_id                 = var.delegated_subnet_name == null ? azurerm_subnet.postgres_subnet.id : data.azurerm_subnet.subnet.id
   network_security_group_id = azurerm_network_security_group.postgres.id
 }
 
