@@ -12,8 +12,8 @@ cepler_gates_branch: cepler-gates
 cepler_gates_file: cepler-gates/infra.yml
 
 docker_registry: us.gcr.io/galoyorg
-docker_registry_user: ((docker-creds.username))
-docker_registry_password: ((docker-creds.password))
+gar_registry_user: ((gar-creds.username))
+gar_registry_password: ((gar-creds.password))
 
 concourse_tf_kube_host:  ((tf-backend-creds.host))
 concourse_tf_kube_ca_cert:  ((tf-backend-creds.ca_cert))

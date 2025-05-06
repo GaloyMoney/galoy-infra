@@ -18,8 +18,8 @@
 #@ def task_image_config():
 type: registry-image
 source:
-  username: #@ data.values.docker_registry_user
-  password: #@ data.values.docker_registry_password
+  username: #@ data.values.gar_registry_user
+  password: #@ data.values.gar_registry_password
   repository: #@ pipeline_image()
 #@ end
 
@@ -333,8 +333,8 @@ name: azure-pipeline-image
 type: registry-image
 source:
   tag: latest
-  username: #@ data.values.docker_registry_user
-  password: #@ data.values.docker_registry_password
+  username: #@ data.values.gar_registry_user
+  password: #@ data.values.gar_registry_password
   repository: #@ pipeline_image()
 #@ end
 
