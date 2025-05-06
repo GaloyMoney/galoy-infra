@@ -24,6 +24,16 @@
               (azure-cli.withExtensions [azure-cli.extensions.ssh])
               jq
             ];
+
+            shellHook = ''
+              # Read Azure profile and set subscription ID
+              if [ -f ~/.azure/azureProfile.json ]; then
+                export ARM_SUBSCRIPTION_ID=$(jq -r '.subscriptions[0].id' ~/.azure/azureProfile.json)
+                echo "Set ARM_SUBSCRIPTION_ID to $ARM_SUBSCRIPTION_ID"
+              else
+                echo "Warning: ~/.azure/azureProfile.json not found, do az login"
+              fi
+            '';
           };
 
         formatter = alejandra;
