@@ -83,8 +83,8 @@ jobs:
       image_resource:
         type: registry-image
         source:
-          username: #@ data.values.docker_registry_user
-          password: #@ data.values.docker_registry_password
+          username: #@ data.values.gar_registry_user
+          password: #@ data.values.gar_registry_password
           repository: #@ data.values.docker_registry + "/galoy-deployments-pipeline"
       inputs:
       - name: repo
