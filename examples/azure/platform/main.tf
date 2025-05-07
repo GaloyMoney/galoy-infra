@@ -11,7 +11,7 @@ variable "cluster_location" {
 }
 
 module "platform" {
-  #source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/platform/gcp?ref=a1af0de"
+  #source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/platform/gcp?ref=63a514a"
   source = "../../../modules/platform/azure"
 
   name_prefix               = var.name_prefix
