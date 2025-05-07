@@ -24,7 +24,7 @@ variable "enable_detailed_logging" {
   default     = false
 }
 variable "postgresql_version" {
-  default     = "14"
+  default     = "16"
   description = "The version of PostgreSQL to use"
 }
 variable "databases" {

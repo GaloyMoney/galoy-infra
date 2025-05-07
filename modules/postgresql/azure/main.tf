@@ -50,6 +50,13 @@ resource "azurerm_postgresql_flexible_server_configuration" "max_connections" {
   value     = tostring(local.max_connections)
 }
 
+# Enable azure extensions
+resource "azurerm_postgresql_flexible_server_configuration" "azure_extensions" {
+  name      = "azure.extensions"
+  server_id = azurerm_postgresql_flexible_server.instance.id
+  value     = "PG_TRGM,BTREE_GIN"
+}
+
 # Configure detailed logging if enabled
 resource "azurerm_postgresql_flexible_server_configuration" "log_statement" {
   count     = var.enable_detailed_logging ? 1 : 0
