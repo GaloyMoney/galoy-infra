@@ -1,6 +1,6 @@
 variable "name_prefix" {}
 variable "network_prefix" {
-  default = "10.0"
+  default = "10.1"
 }
 variable "node_default_machine_type" {
   default = "Standard_DS2_v2"
