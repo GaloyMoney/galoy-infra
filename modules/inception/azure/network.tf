@@ -9,7 +9,7 @@ resource "azurerm_subnet" "dmz" {
   name                 = "${local.name_prefix}-dmz"
   resource_group_name  = data.azurerm_resource_group.resource_group.name
   virtual_network_name = azurerm_virtual_network.vnet.name
-  address_prefixes     = ["${local.network_prefix}.2.0/24"]
+  address_prefixes     = ["${local.network_prefix}.0.0/24"]
 }
 
 resource "azurerm_subnet" "postgres" {
