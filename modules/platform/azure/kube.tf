@@ -23,8 +23,8 @@ resource "azurerm_kubernetes_cluster" "primary" {
   network_profile {
     network_plugin = "azure"
     network_policy = "azure"
-    service_cidr   = "10.0.4.0/24"
-    dns_service_ip = "10.0.4.10"
+    service_cidr   = "192.168.64.0/18"
+    dns_service_ip = "192.168.64.10"
   }
 
   private_cluster_enabled = true
