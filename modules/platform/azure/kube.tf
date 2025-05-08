@@ -27,6 +27,9 @@ resource "azurerm_kubernetes_cluster" "primary" {
     dns_service_ip = "10.0.4.10"
   }
 
+  private_cluster_enabled = true
+  private_dns_zone_id     = "System"
+
   identity {
     type = "SystemAssigned"
   }
