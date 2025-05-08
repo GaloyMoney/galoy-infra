@@ -17,7 +17,7 @@ resource "azurerm_kubernetes_cluster" "primary" {
     min_count            = local.min_default_node_count
     max_count            = local.max_default_node_count
     vm_size              = local.node_default_machine_type
-    vnet_subnet_id       = data.azurerm_subnet.dmz.id
+    vnet_subnet_id       = azurerm_subnet.cluster.id
   }
 
   network_profile {
