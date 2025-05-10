@@ -3,7 +3,6 @@ locals {
   bria_version     = "0.1.108"
   bitcoin_version  = "25.2"
   cepler_version   = "0.7.15"
-  lnd_version      = "0.18.0-beta"
   kubectl_version  = "1.30.4"
   k9s_version      = "0.32.5"
   bos_version      = "18.2.0"
@@ -54,7 +53,6 @@ resource "google_compute_instance" "bastion" {
     cepler_version : local.cepler_version
     kubectl_version : local.kubectl_version
     k9s_version : local.k9s_version
-    lnd_version : local.lnd_version
     bos_version : local.bos_version
     kratos_version : local.kratos_version
     opentofu_version : local.opentofu_version
