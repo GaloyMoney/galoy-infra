@@ -32,7 +32,7 @@ source:
   - modules/inception/azure
   - modules/platform/azure
   - modules/postgresql/azure
-  - modules/services
+  - modules/smoketest
   uri: #@ data.values.git_uri
   branch: #@ data.values.git_branch
   private_key: #@ data.values.github_private_key
@@ -143,6 +143,41 @@ plan:
       path: pipeline-tasks/ci/tasks/azure/platform.sh
 #@ end
 
+#@ def azure_testflight_smoketest_job():
+name: #@ testflight_smoketest_job_name("azure")
+serial: true
+plan:
+- get: azure-testflight-lock
+  passed:
+  - #@ testflight_platform_job_name("azure")
+- in_parallel:
+  - get: #@ modules_resource_name("azure")
+    trigger: true
+    passed:
+    - #@ testflight_platform_job_name("azure")
+  - get: repo
+    passed:
+    - #@ testflight_platform_job_name("azure")
+  - { get: pipeline-tasks }
+  - get: azure-testflight-uid
+    passed:
+    - #@ testflight_platform_job_name("azure")
+- task: smoketest
+  config:
+    platform: linux
+    image_resource: #@ task_image_config()
+    inputs:
+    - name: pipeline-tasks
+    - name: repo
+    - name: #@ modules_resource_name("azure")
+      path: modules
+    - name: azure-testflight-uid
+      path: testflight-uid
+    params: #@ azure_testflight_task_params()
+    run:
+      path: pipeline-tasks/ci/tasks/azure/smoketest.sh
+#@ end
+
 #@ def azure_testflight_postgresql_job():
 name: #@ testflight_postgresql_job_name("azure")
 serial: true
@@ -219,20 +254,23 @@ serial: true
 plan:
 - get: azure-testflight-lock
   passed:
-  - #@ testflight_platform_job_name("azure")
+  - #@ testflight_smoketest_job_name("azure")
   - #@ testflight_cleanup_postgresql_job_name("azure")
 - in_parallel:
   - get: #@ modules_resource_name("azure")
     trigger: true
     passed:
-    - #@ testflight_platform_job_name("azure")
+    - #@ testflight_smoketest_job_name("azure")
     - #@ testflight_cleanup_postgresql_job_name("azure")
   - get: repo
     passed:
-    - #@ testflight_platform_job_name("azure")
+    - #@ testflight_smoketest_job_name("azure")
     - #@ testflight_cleanup_postgresql_job_name("azure")
   - { get: pipeline-tasks }
-  - { get: azure-testflight-uid }
+  - get: azure-testflight-uid
+    passed:
+    - #@ testflight_smoketest_job_name("azure")
+    - #@ testflight_cleanup_postgresql_job_name("azure")
 - task: teardown
   config:
     platform: linux
@@ -376,6 +414,7 @@ source:
 - #@ azure_testflight_bootstrap_job()
 - #@ azure_testflight_inception_job()
 - #@ azure_testflight_platform_job()
+- #@ azure_testflight_smoketest_job()
 - #@ azure_testflight_postgresql_job()
 - #@ azure_testflight_cleanup_postgresql_job()
 - #@ azure_testflight_cleanup_job()

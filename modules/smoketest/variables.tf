@@ -10,7 +10,6 @@ locals {
   cluster_endpoint = var.cluster_endpoint
   cluster_ca_cert  = var.cluster_ca_cert
 
-  galoy_namespace        = "${local.name_prefix}-galoy"
   concourse_namespace    = "${local.name_prefix}-concourse"
   bitcoin_namespace      = "${local.name_prefix}-bitcoin"
   smoketest_namespace    = "${local.name_prefix}-smoketest"
