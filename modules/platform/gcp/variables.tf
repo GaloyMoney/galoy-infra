@@ -31,9 +31,6 @@ variable "min_default_node_count" {
 variable "max_default_node_count" {
   default = 3
 }
-variable "deploy_lnd_ips" {
-  default = false
-}
 
 locals {
   name_prefix               = var.name_prefix
@@ -42,8 +39,6 @@ locals {
   project                   = var.gcp_project
   region                    = var.region
   network_prefix            = var.network_prefix
-  lnd1_internal_ip          = "${local.network_prefix}.1.1"
-  lnd2_internal_ip          = "${local.network_prefix}.1.2"
   kube_version              = var.kube_version
   destroyable_cluster       = var.destroyable_cluster
   node_default_machine_type = var.node_default_machine_type
@@ -53,5 +48,4 @@ locals {
   cluster_location          = var.cluster_zone == "" ? local.region : "${local.region}-${var.cluster_zone}"
   postgres_tier             = var.postgres_tier
   pg_ha                     = var.pg_ha
-  deploy_lnd_ips            = var.deploy_lnd_ips
 }
