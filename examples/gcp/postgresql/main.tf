@@ -5,7 +5,7 @@ variable "destroyable_postgres" {
 }
 
 module "postgresql" {
-  source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/postgresql/gcp?ref=0e25c76"
+  source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/postgresql/gcp?ref=7005338"
   # source = "../../../modules/postgresql/gcp"
 
   instance_name          = "${var.name_prefix}-pg"
@@ -19,7 +19,7 @@ module "postgresql" {
 }
 
 module "postgresql_migration_source" {
-  source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/postgresql/gcp?ref=0e25c76"
+  source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/postgresql/gcp?ref=7005338"
   # source = "../../../modules/postgresql/gcp"
 
   instance_name             = "${var.name_prefix}-pg"
@@ -35,7 +35,7 @@ module "postgresql_migration_source" {
 }
 
 module "postgresql_migration_destination" {
-  source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/postgresql/gcp?ref=0e25c76"
+  source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/postgresql/gcp?ref=7005338"
   # source = "../../../modules/postgresql/gcp"
 
   instance_name          = "${var.name_prefix}-pg"
