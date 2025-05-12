@@ -40,5 +40,6 @@ output "cluster_endpoint" {
 }
 
 output "cluster_ca_cert" {
-  value = module.platform.cluster_ca_cert
+  value     = module.platform.cluster_ca_cert
+  sensitive = true
 }
