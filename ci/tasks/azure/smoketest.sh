@@ -19,7 +19,7 @@ export ARM_CLIENT_SECRET=$(tofu output client_secret | jq -r)
 popd
 
 az login --service-principal -u ${ARM_CLIENT_ID} -p ${ARM_CLIENT_SECRET} -t ${ARM_TENANT_ID}
-bin/prep-smoktest.sh
+bin/prep-smoketest.sh
 
 name_prefix=$(cd bootstrap && tofu output name_prefix | jq -r)
 
