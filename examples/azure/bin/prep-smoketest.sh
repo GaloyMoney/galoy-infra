@@ -39,3 +39,13 @@ EOT
 EOF
 
 popd
+
+# Create ssh config file
+rm ./sshconfig || true
+rm -r ./az_ssh_config || true
+az ssh config -g ${resource_group_name} -n ${name_prefix}-bastion -f ./sshconfig
+
+ADDITIONAL_SSH_OPTS=${ADDITIONAL_SSH_OPTS:-""}
+echo "Syncing ${REPO_ROOT##*/} to bastion"
+rsync --exclude '**/.terraform/**' --exclude '**.terrafor*' -avr -e "ssh -F ./sshconfig -o StrictHostKeyChecking=no ${ADDITIONAL_SSH_OPTS}" \
+  ${REPO_ROOT}/ ${name_prefix}-${name_prefix}-bastion:${REPO_ROOT_DIR}
