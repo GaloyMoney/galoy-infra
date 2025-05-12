@@ -6,19 +6,24 @@ variable "name_prefix" {}
 variable "cluster_endpoint" {}
 variable "cluster_ca_cert" {}
 
-data "azurerm_client_config" "current" {}
+data "azurerm_kubernetes_cluster" "primary" {
+  name                = "${var.name_prefix}-cluster"
+  resource_group_name = "${var.name_prefix}"
+}
 
 provider "kubernetes" {
-  host                   = var.cluster_endpoint
-  token                  = data.azurerm_client_config.current.access_token
-  cluster_ca_certificate = var.cluster_ca_cert
+  host                   = data.azurerm_kubernetes_cluster.primary.kube_config.0.host
+  client_certificate     = base64decode(data.azurerm_kubernetes_cluster.primary.kube_config.0.client_certificate)
+  client_key             = base64decode(data.azurerm_kubernetes_cluster.primary.kube_config.0.client_key)
+  cluster_ca_certificate = base64decode(data.azurerm_kubernetes_cluster.primary.kube_config.0.cluster_ca_certificate)
 }
 
 provider "helm" {
   kubernetes {
-    host                   = var.cluster_endpoint
-    token                  = data.azurerm_client_config.current.access_token
-    cluster_ca_certificate = var.cluster_ca_cert
+    host                   = data.azurerm_kubernetes_cluster.primary.kube_config.0.host
+    client_certificate     = base64decode(data.azurerm_kubernetes_cluster.primary.kube_config.0.client_certificate)
+    client_key             = base64decode(data.azurerm_kubernetes_cluster.primary.kube_config.0.client_key)
+    cluster_ca_certificate = base64decode(data.azurerm_kubernetes_cluster.primary.kube_config.0.cluster_ca_certificate)
   }
 }
 
