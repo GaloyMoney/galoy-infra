@@ -1,16 +1,14 @@
+provider "azurerm" {
+  features {}
+}
+
 variable "name_prefix" {}
 variable "cluster_endpoint" {}
 variable "cluster_ca_cert" {}
 
-data "google_client_config" "default" {
-  provider = google-beta
-}
+data "google_client_config" "default" {}
 
 provider "kubernetes" {
-  experiments {
-    manifest_resource = true
-  }
-
   host                   = var.cluster_endpoint
   token                  = data.google_client_config.default.access_token
   cluster_ca_certificate = var.cluster_ca_cert
@@ -25,7 +23,7 @@ provider "helm" {
 }
 
 module "smoketest" {
-  source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/smoketest?ref=7005338"
+  source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/smoketest?ref=0e25c76"
   # source = "../../../modules/smoketest"
 
   name_prefix      = var.name_prefix

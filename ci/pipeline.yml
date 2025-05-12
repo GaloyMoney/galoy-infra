@@ -34,9 +34,7 @@ groups:
   - #@ bump_repos_job_name(cloud)
   - #@ testflight_postgresql_job_name(cloud)
   - #@ testflight_cleanup_postgresql_job_name(cloud)
-  #@ if cloud == "gcp":
   - #@ testflight_smoketest_job_name(cloud)
-  #@ end
 #@ end
 #@ for/end cloud in supported_iaas:
   - #@ build_pipeline_image_job_name(cloud)
@@ -51,9 +49,7 @@ groups:
   - #@ bump_repos_job_name(cloud)
   - #@ testflight_postgresql_job_name(cloud)
   - #@ testflight_cleanup_postgresql_job_name(cloud)
-  #@ if cloud == "gcp":
   - #@ testflight_smoketest_job_name(cloud)
-  #@ end
 #@ end
 - name: image
   jobs:

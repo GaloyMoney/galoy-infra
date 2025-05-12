@@ -34,3 +34,11 @@ output "kube_config" {
 output "cluster_name" {
   value = module.platform.cluster_name
 }
+
+output "cluster_endpoint" {
+  value = module.platform.master_endpoint
+}
+
+output "cluster_ca_cert" {
+  value = module.platform.cluster_ca_cert
+}
