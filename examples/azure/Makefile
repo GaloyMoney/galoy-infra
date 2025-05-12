@@ -29,6 +29,12 @@ inception:
 		&& $(TF) init \
 		&& $(TF) apply
 
+smoketest:
+	bin/prep-smoketest.sh
+	cd smoketest \
+		&& $(TF) init \
+		&& $(TF) apply
+
 destroy-inception:
 	export ARM_ACCESS_KEY=$(cd bootstrap && $(TF) output access_key | jq -r)
 	cd inception \
@@ -43,6 +49,10 @@ destroy-inception:
 destroy-platform:
 	export ARM_ACCESS_KEY=$(cd bootstrap && $(TF) output access_key | jq -r)
 	cd platform \
+		&& $(TF) destroy
+
+destroy-smoketest:
+	cd smoketest \
 		&& $(TF) destroy
 
 destroy-postgresql:
