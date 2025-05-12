@@ -4,6 +4,7 @@
 #@   "testflight_bootstrap_job_name",
 #@   "testflight_inception_job_name",
 #@   "testflight_platform_job_name",
+#@   "testflight_smoketest_job_name",
 #@   "testflight_postgresql_job_name",
 #@   "testflight_cleanup_job_name",
 #@   "testflight_cleanup_postgresql_job_name",
