@@ -61,4 +61,4 @@ destroy-postgresql:
 		&& $(TF) init \
 		&& $(TF) destroy -auto-approve
 
-.PHONY: bootstrap inception platform postgresql
+.PHONY: bootstrap inception platform postgresql smoketest
