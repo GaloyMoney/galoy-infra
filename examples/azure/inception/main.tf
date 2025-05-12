@@ -14,7 +14,7 @@ variable "inception_sp_id" {}
 module "inception" {
   source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/inception/azure?ref=afe67c2"
   # source = "../../../modules/inception/azure"
-  users  = var.users
+  users = var.users
 
   name_prefix     = var.name_prefix
   inception_sp_id = var.inception_sp_id
