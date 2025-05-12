@@ -15,13 +15,16 @@ pushd bootstrap
 
 export ARM_CLIENT_ID=$(tofu output client_id | jq -r)
 export ARM_CLIENT_SECRET=$(tofu output client_secret | jq -r)
+name_prefix=$(tofu output name_prefix | jq -r)
 
 popd
 
 az login --service-principal -u ${ARM_CLIENT_ID} -p ${ARM_CLIENT_SECRET} -t ${ARM_TENANT_ID}
-bin/prep-smoketest.sh
 
-name_prefix=$(cd bootstrap && tofu output name_prefix | jq -r)
+bin/prep-inception.sh
+bin/prep-platform.sh
+
+bin/prep-smoketest.sh
 
 set +e
 for i in {1..60}; do

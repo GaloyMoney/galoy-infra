@@ -2,9 +2,6 @@
 
 set -eu
 
-REPO_ROOT=$(git rev-parse --show-toplevel)
-REPO_ROOT_DIR="${REPO_ROOT##*/}"
-
 pushd bootstrap
 
 tf_state_storage_account=$(tofu output tf_state_storage_account | jq -r)
