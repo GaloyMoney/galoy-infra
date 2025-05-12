@@ -30,7 +30,6 @@ inception:
 		&& $(TF) apply
 
 smoketest:
-	bin/prep-smoketest.sh
 	cd smoketest \
 		&& $(TF) init \
 		&& $(TF) apply
