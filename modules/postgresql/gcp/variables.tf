@@ -23,10 +23,10 @@ variable "enable_detailed_logging" {
   default     = false
 }
 variable "database_version" {
-  default = "POSTGRES_14"
+  default = "POSTGRES_17"
 }
 variable "destination_database_version" {
-  default = "POSTGRES_15"
+  default = "POSTGRES_17"
 }
 variable "big_query_viewers" {
   default = []
