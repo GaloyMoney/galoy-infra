@@ -8,7 +8,7 @@ variable "cluster_ca_cert" {}
 
 data "azurerm_kubernetes_cluster" "primary" {
   name                = "${var.name_prefix}-cluster"
-  resource_group_name = "${var.name_prefix}"
+  resource_group_name = var.name_prefix
 }
 
 provider "kubernetes" {
