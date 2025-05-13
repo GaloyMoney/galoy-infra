@@ -202,6 +202,7 @@ resource "google_sql_database_instance" "destination_instance" {
 
   settings {
     tier                        = var.tier
+    edition                     = "ENTERPRISE"
     availability_type           = var.highly_available ? "REGIONAL" : "ZONAL"
     deletion_protection_enabled = false
 

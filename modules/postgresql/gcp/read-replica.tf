@@ -10,6 +10,7 @@ resource "google_sql_database_instance" "replica" {
 
   settings {
     tier              = local.tier
+    edition           = "ENTERPRISE"
     availability_type = local.highly_available ? "REGIONAL" : "ZONAL"
 
     dynamic "database_flags" {
