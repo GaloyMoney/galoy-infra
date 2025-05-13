@@ -17,6 +17,7 @@ resource "google_sql_database_instance" "instance" {
 
   settings {
     tier                        = local.tier
+    edition                     = "ENTERPRISE"
     availability_type           = local.highly_available ? "REGIONAL" : "ZONAL"
     deletion_protection_enabled = !local.destroyable
 
