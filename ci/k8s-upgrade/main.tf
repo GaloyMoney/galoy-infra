@@ -1,6 +1,6 @@
 locals {
   version_prefix = "1.30."
-  project        = "galoy-infra-testflight"
+  project        = "infra-testflight"
 }
 
 data "google_container_engine_versions" "uscentral1" {
