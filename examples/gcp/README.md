@@ -11,8 +11,8 @@ This means that when cloning the repository the example _should_ work as is with
 
 To execute this example end-to-end first you must clone the repository and cd into this folder:
 ```
-$ git clone https://github.com/GaloyMoney/galoy-infra.git
-$ cd galoy-infra/examples/gcp
+$ git clone https://github.com/blinkbitcoin/blink-infra.git
+$ cd blink-infra/examples/gcp
 ```
 
 ## Bootstrap phase

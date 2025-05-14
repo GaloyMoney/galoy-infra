@@ -11,7 +11,7 @@ Before proceeding, please review the [known limitations](https://cloud.google.co
 
 ```hcl
 module "postgresql_migration_source" {
-source                      = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/postgresql/gcp?ref=<git_reference>"
+source                      = "git::https://github.com/blinkbitcoin/blink-infra.git//modules/postgresql/gcp?ref=<git_reference>"
 # source = "../../../modules/postgresql/gcp"
 
 instance_name               = "${var.name_prefix}-pg"
@@ -184,7 +184,7 @@ Modify your source destination's `main.tf` to reflect the new destination instan
 
 ```hcl
 module "postgresql" {
-  #source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/postgresql/gcp?ref=689daa7"
+  #source = "git::https://github.com/blinkbitcoin/blink-infra.git//modules/postgresql/gcp?ref=689daa7"
   source = "../../../modules/postgresql/gcp"
 
   instance_name          = "test-pg"
@@ -244,7 +244,7 @@ Disable `pre_promotion` flag,
 
 ```hcl
 module "postgresql" {
-  #source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/postgresql/gcp?ref=689daa7"
+  #source = "git::https://github.com/blinkbitcoin/blink-infra.git//modules/postgresql/gcp?ref=689daa7"
   source = "../../../modules/postgresql/gcp"
 
   instance_name          = "test-pg"

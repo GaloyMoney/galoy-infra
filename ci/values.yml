@@ -1,11 +1,11 @@
 #@data/values
 ---
 git_uri: git@github.com:blinkbitcoin/blink-infra.git
-git_branch: main
+git_branch: kn/initial_after_fork
 git_version_branch: testflight-name-prefix-uid-branch
 github_private_key: ((github-blinkbitcoin.private_key))
 
-deployments_git_uri: git@github.com:GaloyMoney/blink-deployments.git
+deployments_git_uri: git@github.com:blinkbitcoin/blink-deployments.git
 concourse_locks_git_uri: git@github.com:blinkbitcoin/concourse-locks.git
 
 #! Not used?!
