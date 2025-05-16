@@ -7,7 +7,7 @@ aws-bootstrap:
 	&& $(TF) apply
 
 aws-destroy-bootstrap:
-	cd modules/bootstrap/aws \
+	cd bootstrap \
 	&& $(TF) destroy -auto-approve
 
 .PHONY: aws-bootstrap aws-destroy-bootstrap
