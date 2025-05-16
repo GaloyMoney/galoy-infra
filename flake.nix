@@ -23,6 +23,7 @@
               ytt
               (azure-cli.withExtensions [azure-cli.extensions.ssh])
               jq
+              awscli 
             ];
 
             shellHook = ''
