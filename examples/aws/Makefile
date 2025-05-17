@@ -1,12 +1,12 @@
 TF := tofu
 
 
-aws-bootstrap:
+bootstrap:
 	cd bootstrap \
 	&& $(TF) init \
 	&& $(TF) apply
 
-aws-destroy-bootstrap:
+destroy-bootstrap:
 	cd bootstrap \
 	&& $(TF) destroy -auto-approve
 
