@@ -1,0 +1,45 @@
+# File: bastion-startup.tmpl
+<<EOF
+#!/bin/bash
+set -e
+
+# AWS CLI
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o /tmp/awscliv2.zip
+unzip /tmp/awscliv2.zip -d /tmp && /tmp/aws/install
+
+# Azure CLI
+curl -sL https://aka.ms/InstallAzureCLIDeb | bash
+
+# Google Cloud SDK
+echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.cloud.google.com/apt cloud-sdk main" \
+  | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+apt-get update && apt-get install -y google-cloud-sdk
+
+# Kubernetes tools
+curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
+chmod +x kubectl && mv kubectl /usr/local/bin/
+
+curl https://get.helm.sh/helm-v3.7.0-linux-amd64.tar.gz | tar zx && mv linux-amd64/helm /usr/local/bin/
+
+wget https://github.com/derailed/k9s/releases/download/v0.24.10/k9s_Linux_x86_64.tar.gz -O /tmp/k9s.tar.gz
+tar -xzf /tmp/k9s.tar.gz -C /usr/local/bin k9s
+
+# Terraform & OpenTofu
+curl -LO https://releases.hashicorp.com/terraform/1.1.7/terraform_1.1.7_linux_amd64.zip
+unzip terraform_1.1.7_linux_amd64.zip -d /usr/local/bin/
+
+curl -LO https://cdn.hashicorp.org/open-tofu/tf0_0.2.5_linux_amd64.zip
+unzip tf0_0.2.5_linux_amd64.zip -d /usr/local/bin && mv tf /usr/local/bin/ofu
+
+# Make
+apt-get install -y make
+
+# Aliases
+cat << 'ALIAS' >> /etc/profile.d/custom_aliases.sh
+alias tf='terraform'
+alias ofu='ofu'
+alias k='kubectl'
+alias k9='k9s'
+alias kauth='kubectl --context $KUBECONFIG'
+ALIAS
+EOF
