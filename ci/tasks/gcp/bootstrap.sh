@@ -20,7 +20,8 @@ init_bootstrap_gcp
 echo "    --> write_users"
 write_users
 
-echo "    --> make bootstrap"
+SERVICE_ACCOUNT=$(echo $GOOGLE_CREDENTIALS | jq -r '.client_email')
+echo "    --> make bootstrap with user $SERVICE_ACCOUNT"
 echo yes | TF_VAR_tf_state_bucket_force_destroy=true \
   make bootstrap
 

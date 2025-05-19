@@ -28,5 +28,7 @@ cleanup_inception_key
 echo "    --> bin/prep-platform.sh"
 bin/prep-platform.sh
 
-echo "    --> make platform"
+SERVICE_ACCOUNT=$(echo $GOOGLE_CREDENTIALS | jq -r '.client_email')
+
+echo "    --> make platform with user $SERVICE_ACCOUNT"
 echo yes | make platform

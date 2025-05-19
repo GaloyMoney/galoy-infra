@@ -23,7 +23,8 @@ write_users
 echo "    --> bin/prep-inception.sh"
 bin/prep-inception.sh
 
-echo "    --> make inception"
+SERVICE_ACCOUNT=$(echo $GOOGLE_CREDENTIALS | jq -r '.client_email')
+echo "    --> make inception with user $SERVICE_ACCOUNT"
 echo yes | GOOGLE_CREDENTIALS=$(cat inception-sa-creds.json) make inception
 
 echo "    --> cleanup_inception_key"
