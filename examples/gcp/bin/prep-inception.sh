@@ -19,13 +19,16 @@ popd
 echo "    --> create inception-sa-creds.json"
 gcloud iam service-accounts keys create inception-sa-creds.json \
   --iam-account=${inception_email}
+# hint for fixes:
+# ERROR: (gcloud.iam.service-accounts.keys.create) FAILED_PRECONDITION: Precondition check failed.
+# that means that the quota for service account keys is reached.
 
 export GOOGLE_CREDENTIALS=$(cat inception-sa-creds.json)
 
 pushd inception
 
-echo "    --> create terraform.tfvars"
-cat <<EOF > terraform.tfvars
+echo "    --> create terraform.tf"
+cat <<EOF > terraform.tf
 terraform {
   backend "gcs" {
     bucket = "${tf_state_bucket_name}"
