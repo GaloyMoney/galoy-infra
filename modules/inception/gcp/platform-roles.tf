@@ -52,6 +52,7 @@ resource "google_project_iam_custom_role" "platform_make" {
     "compute.urlMaps.use",
     "compute.zones.get",
     "compute.zones.list",
+    "container.clusters.create",
     "servicenetworking.services.addPeering",
     "servicenetworking.services.get",
     "cloudsql.instances.create",
