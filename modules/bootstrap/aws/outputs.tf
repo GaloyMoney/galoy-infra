@@ -13,3 +13,7 @@ output "tf_lock_table_name" {
 output "aws_region" {
   value = local.region
 }
+
+output "name_prefix" {
+  value = var.name_prefix
+}

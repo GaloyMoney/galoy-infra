@@ -8,34 +8,18 @@ variable "aws_region" {
   type        = string
 }
 
-variable "tf_state_bucket_name" {
-  description = "Override the default bucket name"
-  type        = string
-  default     = ""
-}
-
 variable "tf_state_bucket_force_destroy" {
   description = "Allow `terraform destroy` to delete the state bucket"
   type        = bool
-  default     = false
 }
 
-variable "tf_lock_table_name" {
-  description = "Override the DynamoDB table name; leave blank to auto-derive"
-  type        = string
-  default     = ""
-}
 
-variable "external_users" {
-  description = "Optional list of external e-mail addresses for IAM users"
-  type        = list(string)
-  default     = []
-}
+
 
 locals {
   region           = var.aws_region
-  bucket_name      = var.tf_state_bucket_name != "" ? var.tf_state_bucket_name : "${var.name_prefix}-tf-state"
-  lock_table_name  = var.tf_lock_table_name != "" ? var.tf_lock_table_name : "${var.name_prefix}-tf-lock"
+  bucket_name      = "${var.name_prefix}-tf-state"
+  lock_table_name  = "${var.name_prefix}-tf-lock"
   force_destroy    = var.tf_state_bucket_force_destroy
   inception_role   = "${var.name_prefix}-inception-tf"
   bootstrap_policy = "${var.name_prefix}-bootstrap"

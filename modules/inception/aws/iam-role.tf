@@ -19,9 +19,22 @@ resource "aws_iam_role" "bastion" {
   tags = local.default_tags
 }
 
+# Enhanced SSM permissions for the bastion
 resource "aws_iam_role_policy_attachment" "bastion_ssm" {
   role       = aws_iam_role.bastion.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+
+# Additional session manager permissions
+resource "aws_iam_role_policy_attachment" "bastion_ssm_session" {
+  role       = aws_iam_role.bastion.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"
+}
+
+# CloudWatch logs integration for session logging
+resource "aws_iam_role_policy_attachment" "bastion_cloudwatch" {
+  role       = aws_iam_role.bastion.name
+  policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
 }
 
 resource "aws_iam_instance_profile" "bastion" {
@@ -30,17 +43,7 @@ resource "aws_iam_instance_profile" "bastion" {
   tags = local.default_tags
 }
 
-variable "eks_oidc_issuer_url" {
-  description = "OIDC issuer URL for EKS (leave empty to skip IRSA)"
-  type        = string
-  default     = ""
-}
 
-variable "eks_oidc_thumbprint_list" {
-  description = "OIDC issuer thumbprint list (leave empty to skip IRSA)"
-  type        = list(string)
-  default     = []
-}
 
 resource "aws_iam_openid_connect_provider" "eks" {
   count           = var.eks_oidc_issuer_url != "" ? 1 : 0

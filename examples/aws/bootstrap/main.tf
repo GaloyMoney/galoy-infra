@@ -1,16 +1,7 @@
-
 variable "name_prefix" {}
 variable "aws_region"  { default = "us-east-1" }
 
-variable "tf_state_bucket_force_destroy" { default = false }
-variable "tf_state_bucket_name"          { default = "" }
-variable "tf_lock_table_name"            { default = "" }
-
-variable "external_users" {
-  type    = list(string)
-  default = []
-}
-
+variable "tf_state_bucket_force_destroy" { default = true }
 
 module "bootstrap" {
   #source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/bootstrap/aws?ref=<commit-sha>"
@@ -18,9 +9,6 @@ module "bootstrap" {
   name_prefix                   = var.name_prefix
   aws_region                    = var.aws_region
   tf_state_bucket_force_destroy = var.tf_state_bucket_force_destroy
-  tf_state_bucket_name          = var.tf_state_bucket_name
-  tf_lock_table_name            = var.tf_lock_table_name
-  external_users                = var.external_users
 }
 
 
