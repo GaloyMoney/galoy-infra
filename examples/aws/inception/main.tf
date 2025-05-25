@@ -26,7 +26,7 @@ module "inception" {
 
 
   name_prefix                  = var.name_prefix
-  region                   = var.region
+  region                       = var.region
   backups_bucket_force_destroy = var.backups_bucket_force_destroy
 
   vpc_cidr = var.vpc_cidr
