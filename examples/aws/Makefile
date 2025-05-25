@@ -1,15 +1,10 @@
 TF := tofu
 
-
 bootstrap:
 	cd bootstrap \
 		&& $(TF) init \
-		&& $(TF) apply -auto-approve
+		&& $(TF) apply --auto-approve
 	bin/prep-inception.sh
-
-destroy-bootstrap:
-	cd bootstrap \
-	&& $(TF) destroy -auto-approve
 
 inception:
 	bin/prep-inception.sh
@@ -17,11 +12,22 @@ inception:
 		&& $(TF) init \
 		&& $(TF) apply
 
-destroy-inception:
-	bin/prep-inception.sh
-	cd inception \
+platform:
+	bin/prep-platform.sh
+	cd platform \
 		&& $(TF) init \
+		&& $(TF) apply
+
+destroy-bootstrap:
+	cd bootstrap \
 		&& $(TF) destroy -auto-approve
 
+destroy-inception:
+	cd inception \
+		&& $(TF) destroy -auto-approve
 
-.PHONY: bootstrap inception destroy-bootstrap destroy-inception
+destroy-platform:
+	cd platform \
+		&& $(TF) destroy -auto-approve
+
+.PHONY: bootstrap inception platform destroy-bootstrap destroy-inception destroy-platform

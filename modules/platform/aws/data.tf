@@ -1,20 +1,23 @@
 data "aws_vpc" "inception" {
-  id = var.vpc_id
+  id = local.vpc_id
 }
 
-data "aws_subnets" "private" {
-  ids = var.private_subnet_ids
-}
-
-data "aws_subnet" "public_dmz" {
-  for_each = toset(var.public_subnet_ids)
+data "aws_subnet" "dmz" {
+  for_each = toset(data.terraform_remote_state.inception.outputs.dmz_subnet_ids)
   id       = each.value
 }
 
 data "aws_iam_role" "eks_cluster" {
-  arn = var.eks_cluster_role_arn
+  name = split("/", var.eks_cluster_role_arn)[1]
 }
 
 data "aws_iam_role" "eks_nodes" {
-  arn = var.eks_nodes_role_arn
+  name = split("/", var.eks_nodes_role_arn)[1]
 }
+
+data "terraform_remote_state" "inception" {
+  backend = "s3"
+  config  = var.inception_state_backend
+}
+
+

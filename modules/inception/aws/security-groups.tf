@@ -3,24 +3,16 @@ resource "aws_security_group" "bastion" {
   description = "Security group for bastion host (SSM access only)"
   vpc_id      = aws_vpc.main.id
 
-  # No SSH ingress - removed port 22 entry to fully secure the bastion
   
-  # Allow only necessary outbound traffic
   egress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    description = "Allow HTTPS outbound for SSM and package updates"
+    from_port         = 443
+    to_port           = 443
+    protocol          = "tcp"
+    security_groups   = [aws_security_group.endpoints.id]
+    description       = "HTTPS to VPC endpoints (SSM / EC2Messages)"
   }
 
-  egress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    description = "Allow HTTP outbound for package repositories"
+  tags = { 
+  Name = local.bastion_sg_name 
   }
-
-  tags = { Name = local.bastion_sg_name }
 }

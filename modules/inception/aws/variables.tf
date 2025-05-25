@@ -3,7 +3,7 @@ variable "name_prefix" {
   type        = string
 }
 
-variable "aws_region" {
+variable "region" {
   description = "AWS region"
   type        = string
 }
@@ -11,16 +11,85 @@ variable "aws_region" {
 variable "backups_bucket_force_destroy" {
   description = "Allow destroy backups bucket"
   type        = bool
-  default     = false
+  default     = true
 }
-variable "eks_oidc_issuer_url" {
-  description = "OIDC issuer URL for EKS (leave empty to skip IRSA)"
+
+variable "vpc_cidr" {
+  description = "CIDR for the main VPC"
+  type        = string
+  default     = "10.0.0.0/16"
+}
+
+variable "azs" {
+  description = "Public-subnet AZ ➜ CIDR map"
+  type        = map(string)
+  default     = { "us-east-1a" = "10.0.0.0/24", "us-east-1b" = "10.0.1.0/24" }
+}
+
+variable "azs_dmz" {
+  description = "DMZ-subnet AZ ➜ CIDR map"
+  type        = map(string)
+  default     = { "us-east-1a" = "10.0.10.0/24", "us-east-1b" = "10.0.11.0/24" }
+}
+
+variable "cluster_name" {
+  description = "Name of the EKS cluster"
   type        = string
   default     = ""
 }
 
-variable "eks_oidc_thumbprint_list" {
-  description = "OIDC issuer thumbprint list (leave empty to skip IRSA)"
-  type        = list(string)
-  default     = []
+variable "bastion_revoke_on_exit" {
+  description = "Whether to revoke SSO session on bastion exit"
+  type        = bool
+  default     = false
 }
+
+variable "kubectl_version" {
+  description = "Version of kubectl to install"
+  type        = string
+  default     = "1.28.0"
+}
+
+variable "bria_version" {
+  description = "Version of bria to install"
+  type        = string
+  default     = "0.1.0"
+}
+
+variable "cepler_version" {
+  description = "Version of cepler to install"
+  type        = string
+  default     = "0.1.0"
+}
+
+variable "bitcoin_version" {
+  description = "Version of Bitcoin Core to install"
+  type        = string
+  default     = "25.0"
+}
+
+variable "k9s_version" {
+  description = "Version of k9s to install"
+  type        = string
+  default     = "0.27.3"
+}
+
+variable "kratos_version" {
+  description = "Version of kratos to install"
+  type        = string
+  default     = "1.0.0"
+}
+
+variable "bos_version" {
+  description = "Version of balanceofsatoshis to install"
+  type        = string
+  default     = "12.0.0"
+}
+
+variable "bastion_instance_type" {
+  description = "Instance type for the bastion host"
+  type        = string
+  default     = "t3.micro"
+}
+
+

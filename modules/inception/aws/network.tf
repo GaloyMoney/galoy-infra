@@ -1,52 +1,49 @@
 resource "aws_vpc" "main" {
-  cidr_block = local.vpc_cidr
-  tags = { Name = local.vpc_name }
+  cidr_block           = local.vpc_cidr
+  enable_dns_support   = true
+  enable_dns_hostnames = true
+
+  tags = merge(local.default_tags, {
+    Name = "${local.prefix}-vpc"
+  })
 }
 
-locals {
-  public_map  = zipmap(local.public_subnet_names, local.public_subnet_cidrs)
-  private_map = zipmap(local.private_subnet_names, local.private_subnet_cidrs)
-}
 
 resource "aws_subnet" "public" {
-  for_each                = local.public_map
+  for_each                = var.azs            
   vpc_id                  = aws_vpc.main.id
   cidr_block              = each.value
-  availability_zone       = local.azs[tonumber(regex(".*-(\\d+)$", each.key)[0])]
+  availability_zone       = each.key
   map_public_ip_on_launch = true
-  tags = { Name = each.key }
-}
 
-resource "aws_subnet" "private" {
-  for_each                = local.private_map
-  vpc_id                  = aws_vpc.main.id
-  cidr_block              = each.value
-  availability_zone       = local.azs[tonumber(regex(".*-(\\d+)$", each.key)[0])]
-  map_public_ip_on_launch = false
-  tags = { Name = each.key }
+  tags = merge(local.default_tags, {
+    Name                     = "${local.prefix}-public-${each.key}"
+    "kubernetes.io/role/elb" = "1"
+  })
 }
 
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.main.id
-  tags   = { Name = "${local.prefix}-igw" }
+  tags   = merge(local.default_tags, { Name = "${local.prefix}-igw" })
 }
 
 resource "aws_eip" "nat" {
-  count = length(local.azs)
+  count = length(var.azs)
   vpc   = true
-  tags  = { Name = "${local.prefix}-nat-${count.index}" }
+  tags  = merge(local.default_tags, { Name = "${local.prefix}-nat-${count.index}" })
 }
 
-resource "aws_nat_gateway" "gw" {
-  count         = length(local.azs)
+resource "aws_nat_gateway" "nat" {
+  count         = length(var.azs)
   allocation_id = aws_eip.nat[count.index].id
-  subnet_id     = aws_subnet.public[local.public_subnet_names[count.index]].id
-  tags          = { Name = "${local.prefix}-nat-${count.index}" }
+  subnet_id     = element(values(aws_subnet.public)[*].id, count.index)
+
+  tags = merge(local.default_tags, { Name = "${local.prefix}-nat-${count.index}" })
 }
 
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.main.id
-  tags   = { Name = "${local.prefix}-rt-public" }
+  tags   = merge(local.default_tags, { Name = "${local.prefix}-rt-public" })
 }
 
 resource "aws_route" "public_internet" {
@@ -61,21 +58,74 @@ resource "aws_route_table_association" "public_assoc" {
   route_table_id = aws_route_table.public.id
 }
 
-resource "aws_route_table" "private" {
-  for_each = aws_subnet.private
+
+
+
+resource "aws_subnet" "dmz_private" {
+  for_each                = local.azs_dmz
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = each.value
+  availability_zone       = each.key
+  map_public_ip_on_launch = false
+
+  tags = merge(local.default_tags, {
+    Name = "${local.prefix}-dmz-${each.key}"
+  })
+}
+
+locals {
+  nat_ids_by_az = { for idx, az in keys(var.azs) :
+    az => aws_nat_gateway.nat[idx].id
+  }
+}
+
+resource "aws_route_table" "dmz" {
+  for_each = aws_subnet.dmz_private
   vpc_id   = aws_vpc.main.id
-  tags     = { Name = "${each.key}-rt-private" }
+
+  route {
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = local.nat_ids_by_az[each.key]
+  }
+
+  tags = local.default_tags
 }
 
-resource "aws_route" "private_nat" {
-  count                   = length(aws_nat_gateway.gw)
-  route_table_id          = aws_route_table.private[local.private_subnet_names[count.index]].id
-  destination_cidr_block  = "0.0.0.0/0"
-  nat_gateway_id          = aws_nat_gateway.gw[count.index].id
-}
-
-resource "aws_route_table_association" "private_assoc" {
-  for_each       = aws_subnet.private
+resource "aws_route_table_association" "dmz_assoc" {
+  for_each       = aws_subnet.dmz_private
   subnet_id      = each.value.id
-  route_table_id = aws_route_table.private[each.key].id
+  route_table_id = aws_route_table.dmz[each.key].id
+}
+
+
+resource "aws_security_group" "endpoints" {
+  name   = "${local.prefix}-endpoints"
+  vpc_id = aws_vpc.main.id
+
+  ingress {
+    description = "HTTPS from bastion subnet"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = [for subnet in aws_subnet.dmz_private : subnet.cidr_block]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = local.default_tags
+}
+
+resource "aws_vpc_endpoint" "ssm" {
+  vpc_id              = aws_vpc.main.id
+  service_name        = "com.amazonaws.${var.region}.ssm"
+  vpc_endpoint_type   = "Interface"
+  subnet_ids          = values(aws_subnet.dmz_private)[*].id
+  security_group_ids  = [aws_security_group.endpoints.id]
+  private_dns_enabled = true
+  tags                = local.default_tags
 }

@@ -3,12 +3,16 @@ output "vpc_id" {
 }
 
 output "public_subnet_ids" {
-  value = [for sn in aws_subnet.public : sn.id]
+  value = [for sn in aws_subnet.public: sn.id]
 }
 
-output "private_subnet_ids" {
-  value = [for sn in aws_subnet.private : sn.id]
-}
+output "nat_gateway_ids" {
+   value = [for n in aws_nat_gateway.nat: n.id] 
+} 
+
+output "dmz_subnet_ids" { 
+  value = [for s in aws_subnet.dmz_private: s.id]
+} 
 
 output "bastion_security_group_id" {
   value = aws_security_group.bastion.id
@@ -36,4 +40,12 @@ output "cloudtrail_trail_name" {
 
 output "bastion_instance_profile" {
   value = aws_iam_instance_profile.bastion.name
+}
+
+output "eks_cluster_role_arn" { 
+  value = aws_iam_role.eks_cluster.arn 
+}
+
+output "eks_nodes_role_arn"   { 
+  value = aws_iam_role.eks_nodes.arn 
 }

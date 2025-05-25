@@ -52,7 +52,38 @@ resource "aws_iam_policy" "bootstrap" {
   })
 }
 
+resource "aws_iam_policy" "inception" {
+  name        = "${local.inception_role}-policy"
+  description = "Permissions for inception phase"
+
+  policy = jsonencode({
+    Version : "2012-10-17",
+    Statement : [
+      {
+        Effect : "Allow",
+        Action : [
+          "ec2:*",
+          "iam:*",
+          "s3:*",
+          "dynamodb:*",
+          "cloudtrail:*",
+          "kms:*",
+          "eks:*",
+          "autoscaling:*",
+          "elasticloadbalancing:*"
+        ],
+        Resource : "*"
+      }
+    ]
+  })
+}
+
 resource "aws_iam_role_policy_attachment" "bootstrap" {
   role       = aws_iam_role.inception.name
   policy_arn = aws_iam_policy.bootstrap.arn
+}
+
+resource "aws_iam_role_policy_attachment" "inception" {
+  role       = aws_iam_role.inception.name
+  policy_arn = aws_iam_policy.inception.arn
 }
