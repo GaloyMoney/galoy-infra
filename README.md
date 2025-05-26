@@ -1,6 +1,6 @@
 # blink-infra
 
-This repository contains [terraform](https://www.terraform.io) definitions to bring up a robust infrastructure implementation suitable for running the [blink](https://github.com/GaloyMoney/blink) stack.
+This repository contains [terraform](https://www.terraform.io) definitions to bring up a robust infrastructure implementation suitable for running the [blink](https://github.com/blinkbitcoin/blink) stack.
 It is production ready by default.
 
 The infrastructure is organized into 4 modules that must be executed in sequence.

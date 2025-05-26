@@ -17,11 +17,15 @@ EOF
   cat <<EOF > ${CI_ROOT}/login.ssh.pub
 ${SSH_PUB_KEY}
 EOF
+  SERVICE_ACCOUNT=$(cat ${CI_ROOT}/gcloud-creds.json | jq -r '.client_email')
+  echo "    --> gcloud auth activate-service-account with user $SERVICE_ACCOUNT"
   gcloud auth activate-service-account --key-file ${CI_ROOT}/gcloud-creds.json
+  echo "    --> gcloud config set project \"${TF_VAR_gcp_project}\""
   gcloud config set project "${TF_VAR_gcp_project}"
 }
 
 function init_kubeconfig() {
+  echo "    --> init_kubeconfig"
   cat <<EOF > ${CI_ROOT}/ca.cert
 ${KUBE_CA_CERT}
 EOF
@@ -89,7 +93,7 @@ function update_examples_git_ref() {
     exit 1
   fi
 
-  echo "Bumping examples to '${MODULES_GIT_REF}'"
+  echo "    --> Bumping examples to '${MODULES_GIT_REF}'"
   sed -i'' "s/ref=.*\"/ref=${MODULES_GIT_REF}\"/" bootstrap/main.tf
   sed -i'' "s/ref=.*\"/ref=${MODULES_GIT_REF}\"/" inception/main.tf
   sed -i'' "s/ref=.*\"/ref=${MODULES_GIT_REF}\"/" platform/main.tf
@@ -98,14 +102,16 @@ function update_examples_git_ref() {
 }
 
 function make_commit() {
+  echo "    --> git user config"
+
   if [[ -z $(git config --global user.email) ]]; then
-    git config --global user.email "bot@galoy.io"
+    git config --global user.email "202112752+blinkbitcoinbot@users.noreply.github.com"
   fi
   if [[ -z $(git config --global user.name) ]]; then
-    git config --global user.name "CI Bot"
+    git config --global user.name "CI blinkbitcoinbot"
   fi
 
-
+  echo "    --> git merge (${BRANCH}) + commit -m '${1}'"
   (cd $(git rev-parse --show-toplevel)
     git merge --no-edit ${BRANCH}
     git add -A
