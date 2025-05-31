@@ -1,4 +1,3 @@
-
 variable "name_prefix" {}
 variable "aws_region" { default = "us-east-1" }
 
@@ -21,7 +20,6 @@ variable "azs_cluster" {
   type    = map(string)
   default = {
     "us-east-1a" = "10.0.20.0/24"
-    "us-east-1b" = "10.0.21.0/24"
   }
 }
 

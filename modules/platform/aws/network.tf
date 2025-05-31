@@ -17,7 +17,7 @@ resource "aws_route_table" "cluster" {
 
   route {
     cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = local.nat_gateway_ids[index(keys(var.azs_cluster), each.key)]
+    nat_gateway_id = local.nat_gateway_ids[0]
   }
 
   tags = {
@@ -29,6 +29,6 @@ resource "aws_route_table_association" "cluster_assoc" {
   for_each = aws_subnet.cluster_private
 
   subnet_id      = each.value.id
-  route_table_id = aws_route_table.cluster[each.value.availability_zone].id
+  route_table_id = aws_route_table.cluster[each.key].id
 }
 

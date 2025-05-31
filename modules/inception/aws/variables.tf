@@ -23,13 +23,17 @@ variable "vpc_cidr" {
 variable "azs" {
   description = "Public-subnet AZ ➜ CIDR map"
   type        = map(string)
-  default     = { "us-east-1a" = "10.0.0.0/24", "us-east-1b" = "10.0.1.0/24" }
+  default     = {
+    "us-east-1a" = "10.0.1.0/24"
+  }
 }
 
 variable "azs_dmz" {
   description = "DMZ-subnet AZ ➜ CIDR map"
   type        = map(string)
-  default     = { "us-east-1a" = "10.0.10.0/24", "us-east-1b" = "10.0.11.0/24" }
+  default     = {
+    "us-east-1a" = "10.0.2.0/24"
+  }
 }
 
 variable "cluster_name" {

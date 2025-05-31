@@ -13,7 +13,7 @@ resource "aws_eks_cluster" "primary" {
     endpoint_private_access = true
     endpoint_public_access  = false
     security_group_ids     = [aws_security_group.cluster_api.id]
-    subnet_ids             = local.dmz_subnet_ids
+    subnet_ids             = [for subnet in aws_subnet.cluster_private : subnet.id]
   }
 
   kubernetes_network_config {

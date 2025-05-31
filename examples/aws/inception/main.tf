@@ -8,7 +8,6 @@ variable "azs" {
   type    = map(string)
   default = {
     "us-east-1a" = "10.0.0.0/24"
-    "us-east-1b" = "10.0.1.0/24"
   }
 }
 
@@ -16,7 +15,6 @@ variable "azs_dmz" {
   type    = map(string)
   default = {
     "us-east-1a" = "10.0.10.0/24"
-    "us-east-1b" = "10.0.11.0/24"
   }
 }
 

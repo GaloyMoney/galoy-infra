@@ -7,7 +7,7 @@ output "public_subnet_ids" {
 }
 
 output "nat_gateway_ids" {
-   value = [for n in aws_nat_gateway.nat: n.id] 
+   value = [aws_nat_gateway.nat.id]
 } 
 
 output "dmz_subnet_ids" { 

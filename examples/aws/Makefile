@@ -18,6 +18,16 @@ platform:
 		&& $(TF) init \
 		&& $(TF) apply
 
+# PostgreSQL targets
+postgresql:
+	@echo "Setting up PostgreSQL and opening shell..."
+	@bin/postgresql.sh shell
+
+destroy-postgresql:
+	@echo "Destroying PostgreSQL infrastructure..."
+	@bin/postgresql.sh destroy
+	@echo "PostgreSQL infrastructure destroyed"
+
 destroy-bootstrap:
 	cd bootstrap \
 		&& $(TF) destroy -auto-approve
@@ -30,4 +40,4 @@ destroy-platform:
 	cd platform \
 		&& $(TF) destroy -auto-approve
 
-.PHONY: bootstrap inception platform destroy-bootstrap destroy-inception destroy-platform
+.PHONY: bootstrap inception platform postgresql postgresql-destroy destroy-bootstrap destroy-inception destroy-platform
