@@ -18,15 +18,11 @@ platform:
 		&& $(TF) init \
 		&& $(TF) apply
 
-# PostgreSQL targets
 postgresql:
-	@echo "Setting up PostgreSQL and opening shell..."
 	@bin/postgresql.sh shell
 
 destroy-postgresql:
-	@echo "Destroying PostgreSQL infrastructure..."
 	@bin/postgresql.sh destroy
-	@echo "PostgreSQL infrastructure destroyed"
 
 destroy-bootstrap:
 	cd bootstrap \

@@ -49,8 +49,15 @@ check_requirements() {
 }
 
 get_bastion_instance_id() {
+    local name_prefix
+    name_prefix=$(get_terraform_output "name_prefix")
+    if [ -z "$name_prefix" ]; then
+        echo "Error: Could not get name_prefix from Terraform output"
+        return 1
+    fi
+    
     local instance_id
-    instance_id=$(aws ssm describe-instance-information --filters "Key=tag:Name,Values=hard-test-af-bastion" | jq -r '.InstanceInformationList[0].InstanceId')
+    instance_id=$(aws ssm describe-instance-information --filters "Key=tag:Name,Values=${name_prefix}-bastion" | jq -r '.InstanceInformationList[0].InstanceId')
     
     if [ -z "$instance_id" ] || [ "$instance_id" = "null" ]; then
         echo "Error: Could not find running bastion instance"
