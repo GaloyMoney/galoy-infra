@@ -5,70 +5,67 @@ set -eu
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 MODULE_ROOT="$( cd "$SCRIPT_DIR/.." && pwd )"
 
-# Source utility functions
 source "$SCRIPT_DIR/utils.sh"
 
-# Check requirements
 check_requirements || exit 1
 
-# Function to setup PostgreSQL
 setup_postgresql() {
     local workspace_dir="$1"
     local create_databases="${2:-false}"
 
     cd "$workspace_dir"
 
-    # Initialize Terraform
     tofu init || {
         echo "Error: Failed to initialize Terraform"
         return 1
     }
 
-    # Create or update terraform.tfvars
     if [ -f "terraform.tfvars" ]; then
-        # Update create_databases value
-        sed -i '' "s/create_databases = .*/create_databases = $create_databases/" terraform.tfvars
+        sed -i '' "s/create_databases = .*/create_databases = false/" terraform.tfvars
     else
         echo "Error: terraform.tfvars not found"
         return 1
     fi
 
-    # Get bastion instance ID first
+    if ! tofu apply -auto-approve -target=module.postgresql.aws_db_instance.instance; then
+        echo "Error: Failed to apply Terraform configuration"
+        return 1
+    fi
+
+    local endpoint
+    endpoint=$(tofu output -raw postgresql_endpoint)
+    if [ -z "$endpoint" ]; then
+        echo "Error: Failed to get PostgreSQL endpoint"
+        return 1
+    fi
+
     local instance_id
-    instance_id=$(get_bastion_instance_id "$workspace_dir") || {
+    instance_id=$(get_bastion_instance_id) || {
         echo "Error: Failed to get bastion instance ID"
         return 1
     }
 
-    # Get the endpoint from existing state if it exists
-    local endpoint
-    endpoint=$(tofu output -raw postgresql_endpoint 2>/dev/null || echo "")
-
-    # If we have an endpoint, set up port forwarding before apply
-    if [ -n "$endpoint" ]; then
-        echo "Setting up port forwarding to existing endpoint..."
-        setup_port_forwarding "$endpoint" "$instance_id"
+    echo "Setting up port forwarding to $endpoint..."
+    if ! setup_port_forwarding "$endpoint" "$instance_id"; then
+        echo "Error: Failed to setup port forwarding"
+        cleanup_port_forwarding
+        return 1
     fi
 
-    # Apply Terraform configuration
+    echo "Waiting for port forwarding to be established..."
+    if ! wait_for_port "localhost" "5433" 30; then
+        echo "Error: Port forwarding not established"
+        cleanup_port_forwarding
+        return 1
+    fi
+
+    if [ "$create_databases" = "true" ]; then
+        sed -i '' "s/create_databases = .*/create_databases = true/" terraform.tfvars
+    fi
+
     if ! tofu apply -auto-approve; then
         echo "Error: Failed to apply Terraform configuration"
-        cleanup_port_forwarding
         return 1
-    fi
-
-    # Get the final endpoint and setup port forwarding if needed
-    endpoint=$(tofu output -raw postgresql_endpoint)
-    if [ -z "$endpoint" ]; then
-        echo "Error: Failed to get PostgreSQL endpoint"
-        cleanup_port_forwarding
-        return 1
-    fi
-
-    # If this is a new endpoint, setup port forwarding
-    if [ -n "$endpoint" ]; then
-        echo "Setting up port forwarding to new endpoint..."
-        setup_port_forwarding "$endpoint" "$instance_id"
     fi
 
     echo "PostgreSQL setup completed successfully"
@@ -80,7 +77,6 @@ setup_postgresql() {
     return 0
 }
 
-# Main
 if [ "$#" -lt 1 ]; then
     echo "Usage: $0 <workspace_dir> [create_databases]"
     exit 1

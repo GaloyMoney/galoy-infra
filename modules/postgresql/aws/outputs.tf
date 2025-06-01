@@ -35,21 +35,8 @@ output "admin-creds" {
   sensitive = true
 }
 
-output "connection_profile_credentials" {
-  value = local.prep_upgrade_as_source_db ? {
-    source_connection_profile_id      = module.migration[0].source_connection_profile_id
-    destination_connection_profile_id = module.migration[0].destination_connection_profile_id
-  } : {}
-}
-
 output "vpc" {
   value = data.aws_vpc.vpc.id
-}
-
-output "migration_destination_instance" {
-  value = local.prep_upgrade_as_source_db ? {
-    conn = "postgres://postgres:${module.migration[0].postgres_user_password}@${module.migration[0].destination_instance_endpoint}/postgres"
-  } : {}
 }
 
 output "source_instance" {

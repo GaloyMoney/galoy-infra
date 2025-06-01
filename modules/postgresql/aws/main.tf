@@ -48,11 +48,7 @@ data "aws_subnets" "database" {
 resource "aws_subnet" "database" {
   count             = 2
   vpc_id            = data.aws_vpc.vpc.id
-  cidr_block        = cidrsubnet(data.aws_vpc.vpc.cidr_block, 8, 
-    local.name_prefix == "${var.name_prefix}-pg" ? local.primary_subnet_offset + count.index :
-    local.name_prefix == "${var.name_prefix}-pg-source" ? local.source_subnet_offset + count.index :
-    local.dest_subnet_offset + count.index
-  )
+  cidr_block        = cidrsubnet(data.aws_vpc.vpc.cidr_block, 8, local.primary_subnet_offset + count.index)
   availability_zone = data.aws_availability_zones.available.names[count.index]
 
   tags = {
@@ -153,7 +149,6 @@ resource "aws_security_group" "postgres" {
     }
   }
 
-  # Allow access from bastion host
   ingress {
     from_port       = local.database_port
     to_port         = local.database_port
@@ -207,7 +202,7 @@ resource "aws_db_parameter_group" "postgres" {
   }
 
   dynamic "parameter" {
-    for_each = local.replication || local.prep_upgrade_as_source_db ? [{
+    for_each = local.replication ? [{
       name  = "rds.logical_replication"
       value = "1"
     }] : []
@@ -218,7 +213,6 @@ resource "aws_db_parameter_group" "postgres" {
     }
   }
 
-  # Performance optimization parameters
   parameter {
     name         = "shared_buffers"
     value        = "{DBInstanceClassMemory/4}"
@@ -281,11 +275,11 @@ resource "aws_db_instance" "instance" {
 
   multi_az               = local.highly_available
   publicly_accessible    = var.publicly_accessible
-  deletion_protection    = local.prep_upgrade_as_source_db ? false : !local.destroyable
+  deletion_protection    = !local.destroyable
 
-  backup_retention_period = local.pre_promotion ? 0 : var.backup_retention_period
-  backup_window          = local.pre_promotion ? null : var.backup_window
-  maintenance_window     = local.pre_promotion ? null : var.maintenance_window
+  backup_retention_period = var.backup_retention_period
+  backup_window          = var.backup_window
+  maintenance_window     = var.maintenance_window
   auto_minor_version_upgrade = true
 
   skip_final_snapshot = var.skip_final_snapshot
@@ -338,7 +332,6 @@ resource "aws_db_instance" "replica" {
   skip_final_snapshot    = true
   deletion_protection    = false
   
-  # Always set these for replicas to ensure clean deletion
   apply_immediately     = true
   auto_minor_version_upgrade = false
 
@@ -357,7 +350,6 @@ resource "aws_db_instance" "replica" {
   ]
 }
 
-# Create an IAM role for RDS IAM authentication
 resource "aws_iam_role" "rds_iam" {
   name = "${local.instance_name}-${random_id.db_name_suffix.hex}-iam-role"
 
@@ -375,7 +367,6 @@ resource "aws_iam_role" "rds_iam" {
   })
 }
 
-# Store credentials in AWS Secrets Manager
 resource "aws_secretsmanager_secret" "postgres_creds" {
   name = "${local.instance_name}-${random_id.db_name_suffix.hex}-creds"
 }
@@ -388,12 +379,11 @@ resource "aws_secretsmanager_secret_version" "postgres_creds" {
   })
 }
 
-# Create a null resource to ensure the RDS instance is ready
 resource "null_resource" "wait_for_db" {
   depends_on = [aws_db_instance.instance]
 
   provisioner "local-exec" {
-    command = "sleep 30"  # Wait for RDS to be fully ready
+    command = "sleep 30"  
   }
 }
 
@@ -408,8 +398,6 @@ provider "postgresql" {
   superuser       = false
 }
 
-
-
 module "database" {
   count    = var.create_databases ? length(local.databases) : 0
   source   = "./database"
@@ -423,26 +411,6 @@ module "database" {
   replication        = local.replication
 
   depends_on = [null_resource.wait_for_db]
-}
-
-module "migration" {
-  count                           = local.prep_upgrade_as_source_db ? 1 : 0
-  source                          = "./migration"
-  region                          = local.region
-  database_port                   = local.database_port
-  instance_name                   = local.instance_name
-  destroyable                     = local.destroyable
-  instance_class                  = local.instance_class
-  highly_available                = local.highly_available
-  enable_detailed_logging         = var.enable_detailed_logging
-  replication                     = local.replication
-  destination_database_version    = local.destination_database_version
-  migration_databases             = local.migration_databases
-  max_connections                 = local.max_connections
-  vpc_id                          = data.aws_vpc.vpc.id
-  subnet_ids                      = aws_subnet.database[*].id
-  source_instance_endpoint        = aws_db_instance.instance.endpoint
-  depends_on                      = [aws_db_instance.instance, module.database]
 }
 
 resource "aws_iam_role" "monitoring" {
@@ -477,7 +445,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilization_high" {
   statistic          = "Average"
   threshold          = "80"
   alarm_description  = "This metric monitors RDS CPU utilization"
-  alarm_actions      = []  # Add SNS topic ARN if needed
+  alarm_actions      = []  
 
   dimensions = {
     DBInstanceIdentifier = aws_db_instance.instance.id
@@ -492,9 +460,9 @@ resource "aws_cloudwatch_metric_alarm" "free_storage_space_low" {
   namespace          = "AWS/RDS"
   period             = "300"
   statistic          = "Average"
-  threshold          = "5000000000"  # 5GB in bytes
+  threshold          = "5000000000"
   alarm_description  = "This metric monitors RDS free storage space"
-  alarm_actions      = []  # Add SNS topic ARN if needed
+  alarm_actions      = [] 
 
   dimensions = {
     DBInstanceIdentifier = aws_db_instance.instance.id
@@ -509,10 +477,9 @@ resource "aws_cloudwatch_metric_alarm" "freeable_memory_low" {
   namespace          = "AWS/RDS"
   period             = "300"
   statistic          = "Average"
-  threshold          = "100000000"  # 100MB in bytes
+  threshold          = "100000000"  
   alarm_description  = "This metric monitors RDS freeable memory"
-  alarm_actions      = []  # Add SNS topic ARN if needed
-
+  alarm_actions      = []  
   dimensions = {
     DBInstanceIdentifier = aws_db_instance.instance.id
   }
@@ -528,14 +495,12 @@ resource "aws_cloudwatch_metric_alarm" "connection_count_high" {
   statistic          = "Average"
   threshold          = local.max_connections > 0 ? local.max_connections * 0.8 : 100
   alarm_description  = "This metric monitors RDS connection count"
-  alarm_actions      = []  # Add SNS topic ARN if needed
-
+  alarm_actions      = []  
   dimensions = {
     DBInstanceIdentifier = aws_db_instance.instance.id
   }
 }
 
-# Add data source for bastion security group
 data "aws_security_group" "bastion" {
   filter {
     name   = "tag:Name"

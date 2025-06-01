@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# Common utility functions for PostgreSQL module operations
-
-# Get terraform output with error handling
 get_terraform_output() {
     local output_name="$1"
     local output
@@ -14,7 +11,6 @@ get_terraform_output() {
     echo "$output"
 }
 
-# Wait for port to be available
 wait_for_port() {
     local host="$1"
     local port="$2"
@@ -35,7 +31,6 @@ wait_for_port() {
     return 0
 }
 
-# Check required commands
 check_requirements() {
     local required_cmds=("aws" "jq" "tofu")
     local missing_cmds=()
@@ -53,49 +48,57 @@ check_requirements() {
     return 0
 }
 
-# Get bastion instance ID from inception module
 get_bastion_instance_id() {
-    local workspace_dir="$1"
-    local project_root
-    project_root=$(dirname "$(dirname "$workspace_dir")")
-    
-    pushd "$project_root/inception" >/dev/null || {
-        echo "Error: Could not find inception directory"
-        return 1
-    }
-    
     local instance_id
-    instance_id=$(tofu output -raw bastion_instance_id 2>/dev/null)
-    popd >/dev/null
+    instance_id=$(aws ssm describe-instance-information --filters "Key=tag:Name,Values=hard-test-af-bastion" | jq -r '.InstanceInformationList[0].InstanceId')
     
-    if [ -z "$instance_id" ]; then
-        echo "Error: Could not get bastion instance ID from inception module"
+    if [ -z "$instance_id" ] || [ "$instance_id" = "null" ]; then
+        echo "Error: Could not find running bastion instance"
         return 1
     fi
     
     echo "$instance_id"
 }
 
-# Setup port forwarding
 setup_port_forwarding() {
     local endpoint="$1"
     local instance_id="$2"
 
-    # Kill any existing port forwarding sessions
+    local hostname
+    hostname=$(echo "$endpoint" | cut -d':' -f1)
+
+    local ip_address
+    ip_address=$(dig +short "$hostname")
+    
+    if [ -z "$ip_address" ]; then
+        echo "Error: Could not resolve $hostname to IP address"
+        return 1
+    fi
+
     pkill -f "session-m" || true
     sleep 2
 
-    echo "Setting up port forwarding to $endpoint..."
+    echo "Setting up port forwarding to $ip_address..."
     aws ssm start-session \
         --target "$instance_id" \
         --document-name AWS-StartPortForwardingSessionToRemoteHost \
-        --parameters "{\"host\":[\"$endpoint\"],\"portNumber\":[\"5432\"],\"localPortNumber\":[\"5433\"]}" &
+        --parameters "{\"host\":[\"$ip_address\"],\"portNumber\":[\"5432\"],\"localPortNumber\":[\"5433\"]}" &
 
-    # Give it a moment to establish
-    sleep 5
+    local attempts=0
+    while ! nc -z localhost 5433 >/dev/null 2>&1; do
+        ((attempts++))
+        if [ $attempts -ge 15 ]; then
+            echo "Error: Failed to establish port forwarding after 30 seconds"
+            return 1
+        fi
+        echo "Waiting for port forwarding to be established..."
+        sleep 2
+    done
+
+    echo "Port forwarding established successfully"
+    return 0
 }
 
-# Cleanup port forwarding
 cleanup_port_forwarding() {
     echo "Cleaning up port forwarding..."
     pkill -f "session-m" || true
