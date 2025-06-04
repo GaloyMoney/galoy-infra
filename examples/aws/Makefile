@@ -21,6 +21,11 @@ platform:
 postgresql:
 	@bin/postgresql.sh shell
 
+smoketest:
+	cd smoketest \
+		&& $(TF) init \
+		&& $(TF) apply
+
 destroy-postgresql:
 	@bin/postgresql.sh destroy
 
@@ -36,4 +41,8 @@ destroy-platform:
 	cd platform \
 		&& $(TF) destroy -auto-approve
 
-.PHONY: bootstrap inception platform postgresql postgresql-destroy destroy-bootstrap destroy-inception destroy-platform
+destroy-smoketest:
+	cd smoketest \
+		&& $(TF) destroy
+
+.PHONY: bootstrap inception platform postgresql smoketest postgresql-destroy destroy-bootstrap destroy-inception destroy-platform destroy-smoketest

@@ -21,6 +21,10 @@ setup_config() {
     local region=$(tofu output aws_region | jq -r)
     popd >/dev/null
 
+    pushd "$PROJECT_ROOT/inception" >/dev/null
+    local bastion_instance_id=$(tofu output bastion_instance_id | jq -r)
+    popd >/dev/null
+
     mkdir -p "$POSTGRESQL_DIR"
     pushd "$POSTGRESQL_DIR" >/dev/null
     
@@ -37,6 +41,7 @@ EOF
 cat <<EOF > terraform.tfvars
 name_prefix = "${name_prefix}"
 region = "${region}"
+bastion_instance_id = "${bastion_instance_id}"
 create_databases = true
 EOF
     popd >/dev/null

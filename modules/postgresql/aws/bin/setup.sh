@@ -7,8 +7,6 @@ MODULE_ROOT="$( cd "$SCRIPT_DIR/.." && pwd )"
 
 source "$SCRIPT_DIR/utils.sh"
 
-check_requirements || exit 1
-
 setup_postgresql() {
     local workspace_dir="$1"
     local create_databases="${2:-false}"

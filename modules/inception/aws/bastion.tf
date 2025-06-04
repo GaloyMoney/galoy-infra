@@ -16,12 +16,8 @@ locals {
     cluster_name    = local.cluster_name
     project         = local.name_prefix
     kubectl_version = local.kubectl_version
-    bria_version    = local.bria_version
-    cepler_version  = local.cepler_version
-    bitcoin_version = local.bitcoin_version
     k9s_version     = local.k9s_version
     kratos_version  = local.kratos_version
-    bos_version     = local.bos_version
     bastion_revoke_on_exit = local.bastion_revoke_on_exit
   })
 }

@@ -31,39 +31,22 @@ wait_for_port() {
     return 0
 }
 
-check_requirements() {
-    local required_cmds=("aws" "jq" "tofu")
-    local missing_cmds=()
-
-    for cmd in "${required_cmds[@]}"; do
-        if ! command -v "$cmd" &> /dev/null; then
-            missing_cmds+=("$cmd")
-        fi
-    done
-
-    if [ ${#missing_cmds[@]} -ne 0 ]; then
-        echo "Error: Required commands not found: ${missing_cmds[*]}"
-        return 1
-    fi
-    return 0
-}
-
 get_bastion_instance_id() {
-    local name_prefix
-    name_prefix=$(get_terraform_output "name_prefix")
-    if [ -z "$name_prefix" ]; then
-        echo "Error: Could not get name_prefix from Terraform output"
+    local tfvars_file="$workspace_dir/terraform.tfvars"
+    if [ ! -f "$tfvars_file" ]; then
+        echo "Error: terraform.tfvars not found in $workspace_dir" >&2
         return 1
     fi
-    
+
+
     local instance_id
-    instance_id=$(aws ssm describe-instance-information --filters "Key=tag:Name,Values=${name_prefix}-bastion" | jq -r '.InstanceInformationList[0].InstanceId')
-    
-    if [ -z "$instance_id" ] || [ "$instance_id" = "null" ]; then
-        echo "Error: Could not find running bastion instance"
+    instance_id=$(grep bastion_instance_id "$tfvars_file" | cut -d'"' -f2)
+
+    if [ -z "$instance_id" ]; then
+        echo "Error: Could not parse bastion_instance_id from terraform.tfvars" >&2
         return 1
     fi
-    
+
     echo "$instance_id"
 }
 

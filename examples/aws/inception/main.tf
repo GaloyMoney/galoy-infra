@@ -40,6 +40,7 @@ output "dmz_subnet_ids"    { value = module.inception.dmz_subnet_ids }
 output "nat_gateway_ids"   { value = module.inception.nat_gateway_ids }
 
 output "bastion_hostname"       { value = module.inception.bastion_hostname }
+output "bastion_instance_id"    { value = module.inception.bastion_instance_id }
 output "bastion_security_group" { value = module.inception.bastion_security_group_id }
 output "backups_bucket_name"    { value = module.inception.backups_bucket_name }
 

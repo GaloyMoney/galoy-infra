@@ -54,24 +54,6 @@ variable "kubectl_version" {
   default     = "1.28.0"
 }
 
-variable "bria_version" {
-  description = "Version of bria to install"
-  type        = string
-  default     = "0.1.0"
-}
-
-variable "cepler_version" {
-  description = "Version of cepler to install"
-  type        = string
-  default     = "0.1.0"
-}
-
-variable "bitcoin_version" {
-  description = "Version of Bitcoin Core to install"
-  type        = string
-  default     = "25.0"
-}
-
 variable "k9s_version" {
   description = "Version of k9s to install"
   type        = string
@@ -84,16 +66,22 @@ variable "kratos_version" {
   default     = "1.0.0"
 }
 
-variable "bos_version" {
-  description = "Version of balanceofsatoshis to install"
-  type        = string
-  default     = "12.0.0"
-}
-
 variable "bastion_instance_type" {
   description = "Instance type for the bastion host"
   type        = string
   default     = "t3.micro"
+}
+
+variable "users" {
+  description = "List of users with access permissions"
+  type = list(object({
+    id        = string
+    bastion   = bool
+    inception = bool
+    platform  = bool
+    logs      = bool
+  }))
+  default = []
 }
 
 

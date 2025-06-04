@@ -44,7 +44,8 @@ variable "azs_cluster" {
   description = "Map of availability zones to CIDR blocks for cluster subnets"
   type        = map(string)
   default     = {
-    "us-east-1a" = "10.0.20.0/24"
+    "us-east-1a" = "10.0.20.0/24",
+    "us-east-1b" = "10.0.21.0/24",
   }
 }
 

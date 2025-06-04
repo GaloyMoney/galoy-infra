@@ -1,28 +1,22 @@
 #!/bin/bash
 
-sed -i'' 's/pam_mkhomedir.so$/pam_mkhomedir.so umask=0077/' /etc/pam.d/sshd # Make all files private by default
+sed -i'' 's/pam_mkhomedir.so$/pam_mkhomedir.so umask=0077/' /etc/pam.d/sshd
 
-# Install HashiCorp repository for Vault
 curl -fsSL https://apt.releases.hashicorp.com/gpg | gpg --dearmor | tee /usr/share/keyrings/hashicorp-archive-keyring.gpg >/dev/null
 echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/hashicorp.list
 
-# Install AWS CLI
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 unzip awscliv2.zip
 ./aws/install
 rm -rf aws awscliv2.zip
 
-# Keep make and terraform the first items installed as they are needed
-# for testflight to complete
-apt-get update && apt-get install -y make jq tree wget redis postgresql vault unzip gnupg
+apt-get update && apt-get install -y make jq tree wget postgresql vault unzip gnupg
 
-# Install OpenTofu (Terraform alternative)
 curl --proto '=https' --tlsv1.2 -fsSL https://get.opentofu.org/install-opentofu.sh -o install-opentofu.sh \
   && chmod +x install-opentofu.sh \
   && ./install-opentofu.sh --install-method standalone --opentofu-version ${opentofu_version} \
   && rm -f install-opentofu.sh
 
-# Setup useful aliases and environment variables
 cat <<EOF > /etc/profile.d/aliases.sh
 alias tf="terraform"
 alias k="kubectl"
@@ -32,9 +26,6 @@ alias kauth="aws eks update-kubeconfig --region ${region} --name ${cluster_name}
 
 export GALOY_ENVIRONMENT=${project}
 export KUBE_CONFIG_PATH=~/.kube/config
-export BRIA_ADMIN_API_URL=http://10.1.2.2:2743
-export BRIA_API_URL=http://10.1.2.1:2742
-source <(bos completion bash)
 EOF
 
 %{ if bastion_revoke_on_exit }
@@ -46,78 +37,37 @@ trap onExit EXIT
 EOF
 %{ endif }
 
-# Install kubectl
 curl -LO https://storage.googleapis.com/kubernetes-release/release/v${kubectl_version}/bin/linux/amd64/kubectl
 chmod +x ./kubectl
 mv ./kubectl /usr/local/bin
 
-# Install helm
 curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
 
-# Install AWS eksctl
 curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
 mv /tmp/eksctl /usr/local/bin
 
-# Install bria
-mkdir bria && cd bria \
-  && wget https://github.com/GaloyMoney/bria/releases/download/${bria_version}/bria-x86_64-unknown-linux-musl-${bria_version}.tar.gz -O bria.tar.gz \
-  && tar --strip-components=1 -xf bria.tar.gz \
-  && mv bria /usr/local/bin && cd ../ && rm -rf ./bria
-
-# Install carvel tools (ytt, kbld, etc.)
 wget -O- https://carvel.dev/install.sh | bash
 
-# Install cepler
-wget https://github.com/bodymindarts/cepler/releases/download/v${cepler_version}/cepler-x86_64-unknown-linux-musl-${cepler_version}.tar.gz \
-  && tar -zxvf cepler-x86_64-unknown-linux-musl-${cepler_version}.tar.gz \
-  && mv cepler-x86_64-unknown-linux-musl-${cepler_version}/cepler /usr/local/bin \
-  && chmod +x /usr/local/bin/cepler \
-  && rm -rf ./cepler-*
-
-# Install Bitcoin Core
-wget https://bitcoincore.org/bin/bitcoin-core-${bitcoin_version}/bitcoin-${bitcoin_version}-x86_64-linux-gnu.tar.gz \
-  && tar -xvf bitcoin-${bitcoin_version}-x86_64-linux-gnu.tar.gz \
-  && mv bitcoin-${bitcoin_version}/bin/* /usr/local/bin \
-  && rm -rf bitcoin-${bitcoin_version}* 
-
-# Install MongoDB tools
-wget -qO - https://www.mongodb.org/static/pgp/server-5.0.asc | apt-key add - \
-  && echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu $(lsb_release -cs)/mongodb-org/5.0 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-5.0.list \
-  && apt-get update \
-  && apt-get install -y mongodb-org-tools
-
-# Install k9s
 mkdir k9s && cd k9s \
    && wget https://github.com/derailed/k9s/releases/download/v${k9s_version}/k9s_Linux_amd64.tar.gz \
    && tar -xvf k9s_Linux_amd64.tar.gz \
    && mv k9s /usr/local/bin \
    && cd .. && rm -rf k9s*
 
-# Install Kratos
 mkdir kratos && cd kratos \
    && wget https://github.com/ory/kratos/releases/download/v${kratos_version}/kratos_${kratos_version}-linux_64bit.tar.gz \
    && tar -xvf kratos_${kratos_version}-linux_64bit.tar.gz \
    && mv kratos /usr/local/bin \
    && cd .. && rm -rf kratos*
 
-# Install Node.js and balance of satoshis
-curl -sL https://deb.nodesource.com/setup_20.x | bash - \
-  && apt-get install -y nodejs \
-  && npm config set prefix '/usr' \
-  && npm i -g balanceofsatoshis@${bos_version} \
-  && ln -s ../lib/node_modules/balanceofsatoshis/bos /usr/bin/
-
-# Install AWS Session Manager plugin for AWS CLI
 curl "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/ubuntu_64bit/session-manager-plugin.deb" -o "session-manager-plugin.deb"
 dpkg -i session-manager-plugin.deb
 rm session-manager-plugin.deb
 
-# Install AWS EKS IAM authenticator
 curl -o aws-iam-authenticator https://s3.amazonaws.com/amazon-eks/1.21.2/2021-07-05/bin/linux/amd64/aws-iam-authenticator
 chmod +x ./aws-iam-authenticator
 mv ./aws-iam-authenticator /usr/local/bin
 
-# Install AWS SSM agent
 mkdir -p /tmp/ssm
 cd /tmp/ssm
 wget https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/debian_amd64/amazon-ssm-agent.deb

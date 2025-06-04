@@ -13,7 +13,12 @@ variable "create_databases" {
   description = "Whether to create the databases"
   type        = bool
   default     = false
-} 
+}
+
+variable "bastion_instance_id" {
+  description = "ID of the bastion instance for port forwarding"
+  type        = string
+}
 
 module "postgresql" {
   source = "../../../modules/postgresql/aws"
@@ -21,6 +26,7 @@ module "postgresql" {
   name_prefix = var.name_prefix
   instance_name = "${var.name_prefix}-pg"
   region = var.region
+  bastion_instance_id = var.bastion_instance_id
 
   instance_class = "db.t3.micro"
   database_version = "14"

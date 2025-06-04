@@ -12,6 +12,11 @@ variable "instance_name" {
   type        = string
 }
 
+variable "bastion_instance_id" {
+  description = "ID of the bastion instance for port forwarding"
+  type        = string
+}
+
 variable "database_version" {
   description = "PostgreSQL version to use"
   type        = string
