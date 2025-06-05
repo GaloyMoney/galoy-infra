@@ -48,7 +48,7 @@ mv ./kubectl /usr/local/bin
 curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
 
 mkdir bria && cd bria \
-  && wget https://github.com/GaloyMoney/bria/releases/download/${bria_version}/bria-x86_64-unknown-linux-musl-${bria_version}.tar.gz -O bria.tar.gz \
+  && wget https://github.com/blinkbitcoin/bria/releases/download/${bria_version}/bria-x86_64-unknown-linux-musl-${bria_version}.tar.gz -O bria.tar.gz \
   && tar --strip-components=1 -xf bria.tar.gz \
   && mv bria /usr/local/bin && cd ../ && rm -rf ./bria
 
