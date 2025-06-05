@@ -1,12 +1,12 @@
 locals {
   tag              = "${local.name_prefix}-bastion"
-  bria_version     = "0.1.108"
-  bitcoin_version  = "25.2"
+  bria_version     = "0.1.114"
+  bitcoin_version  = "27.0"
   cepler_version   = "0.7.15"
-  lnd_version      = "0.18.0-beta"
+  lnd_version      = "0.18.5-beta"
   kubectl_version  = "1.30.4"
-  k9s_version      = "0.32.5"
-  bos_version      = "18.2.0"
+  k9s_version      = "0.50.6"
+  bos_version      = "19.4.14"
   kratos_version   = "0.11.1"
   opentofu_version = "1.8.2"
 }
