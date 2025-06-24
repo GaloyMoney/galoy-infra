@@ -18,6 +18,7 @@ resource "azurerm_kubernetes_cluster" "primary" {
     max_count            = local.max_default_node_count
     vm_size              = local.node_default_machine_type
     vnet_subnet_id       = azurerm_subnet.cluster.id
+    temporary_name_for_rotation = "rotation"
   }
 
   network_profile {
