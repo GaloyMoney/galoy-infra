@@ -12,7 +12,7 @@ variable "users" {
 variable "inception_sp_id" {}
 
 module "inception" {
-  source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/inception/azure?ref=3725255"
+  source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/inception/azure?ref=80052e7"
   # source = "../../../modules/inception/azure"
   users = var.users
 

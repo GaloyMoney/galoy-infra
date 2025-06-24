@@ -7,7 +7,7 @@ variable "name_prefix" {}
 
 # Basic PostgreSQL Instance
 module "postgresql" {
-  source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/postgresql/azure?ref=3725255"
+  source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/postgresql/azure?ref=80052e7"
   # source = "../../../modules/postgresql/azure"
 
   instance_name       = "${var.name_prefix}-pg"
