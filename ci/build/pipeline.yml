@@ -1,0 +1,602 @@
+groups:
+- name: all
+  jobs:
+  - gcp-testflight-bootstrap
+  - gcp-testflight-inception
+  - gcp-testflight-platform
+  - gcp-testflight-cleanup
+  - gcp-bump-repos
+  - gcp-testflight-smoketest
+  - gcp-testflight-postgresql
+  - gcp-testflight-postgresql-cleanup
+  - build-gcp-pipeline-image
+  - check-and-upgrade-k8s
+- name: gcp-testflight
+  jobs:
+  - gcp-testflight-bootstrap
+  - gcp-testflight-inception
+  - gcp-testflight-platform
+  - gcp-testflight-cleanup
+  - gcp-bump-repos
+  - gcp-testflight-smoketest
+  - gcp-testflight-postgresql
+  - gcp-testflight-postgresql-cleanup
+- name: image
+  jobs:
+  - build-gcp-pipeline-image
+- name: k8s-upgrade
+  jobs:
+  - check-and-upgrade-k8s
+jobs:
+- name: gcp-testflight-bootstrap
+  serial: true
+  plan:
+  - put: gcp-testflight-lock
+    params:
+      claim: gcp-testflight
+  - in_parallel:
+    - get: gcp-modules
+      trigger: true
+    - get: repo
+    - get: pipeline-tasks
+    - get: gcp-testflight-uid
+    - get: bootstrap-tf-state
+  - task: bootstrap
+    attempts: 4
+    config:
+      platform: linux
+      image_resource:
+        type: registry-image
+        source:
+          username: ((docker-creds.username))
+          password: ((docker-creds.password))
+          repository: us.gcr.io/galoy-org/gcp-infra-pipeline
+      inputs:
+      - name: pipeline-tasks
+      - name: repo
+      - name: gcp-modules
+        path: modules
+      - name: gcp-testflight-uid
+        path: testflight-uid
+      - name: bootstrap-tf-state
+      outputs:
+      - name: bootstrap-tf-state
+      params:
+        GOOGLE_CREDENTIALS: ((testflight-gcp-creds.creds_json))
+        SSH_PRIVATE_KEY: ((testflight-ssh.ssh_private_key))
+        SSH_PUB_KEY: ((testflight-ssh.ssh_public_key))
+        TESTFLIGHT_ADMINS: []
+        TF_VAR_gcp_project: infra-testflight
+        TF_VAR_enable_services: false
+        BRANCH: kn/scrub_project
+      run:
+        path: pipeline-tasks/ci/tasks/gcp/bootstrap.sh
+  - put: bootstrap-tf-state
+    params:
+      repository: bootstrap-tf-state
+      rebase: true
+- name: gcp-testflight-inception
+  serial: true
+  plan:
+  - get: gcp-testflight-lock
+    passed:
+    - gcp-testflight-bootstrap
+  - in_parallel:
+    - get: gcp-modules
+      trigger: true
+      passed:
+      - gcp-testflight-bootstrap
+    - get: repo
+      passed:
+      - gcp-testflight-bootstrap
+    - get: pipeline-tasks
+    - get: gcp-testflight-uid
+      passed:
+      - gcp-testflight-bootstrap
+    - get: bootstrap-tf-state
+      passed:
+      - gcp-testflight-bootstrap
+  - task: inception
+    attempts: 4
+    config:
+      platform: linux
+      image_resource:
+        type: registry-image
+        source:
+          username: ((docker-creds.username))
+          password: ((docker-creds.password))
+          repository: us.gcr.io/galoy-org/gcp-infra-pipeline
+      inputs:
+      - name: pipeline-tasks
+      - name: repo
+      - name: gcp-modules
+        path: modules
+      - name: gcp-testflight-uid
+        path: testflight-uid
+      - name: bootstrap-tf-state
+      params:
+        GOOGLE_CREDENTIALS: ((testflight-gcp-creds.creds_json))
+        SSH_PRIVATE_KEY: ((testflight-ssh.ssh_private_key))
+        SSH_PUB_KEY: ((testflight-ssh.ssh_public_key))
+        TESTFLIGHT_ADMINS: []
+        TF_VAR_gcp_project: infra-testflight
+        TF_VAR_enable_services: false
+        BRANCH: kn/scrub_project
+      run:
+        path: pipeline-tasks/ci/tasks/gcp/inception.sh
+- name: gcp-testflight-platform
+  serial: true
+  plan:
+  - get: gcp-testflight-lock
+    passed:
+    - gcp-testflight-inception
+  - in_parallel:
+    - get: gcp-modules
+      trigger: true
+      passed:
+      - gcp-testflight-inception
+    - get: repo
+      passed:
+      - gcp-testflight-inception
+    - get: pipeline-tasks
+    - get: gcp-testflight-uid
+      passed:
+      - gcp-testflight-inception
+    - get: bootstrap-tf-state
+      passed:
+      - gcp-testflight-bootstrap
+  - task: platform
+    config:
+      platform: linux
+      image_resource:
+        type: registry-image
+        source:
+          username: ((docker-creds.username))
+          password: ((docker-creds.password))
+          repository: us.gcr.io/galoy-org/gcp-infra-pipeline
+      inputs:
+      - name: pipeline-tasks
+      - name: repo
+      - name: gcp-modules
+        path: modules
+      - name: gcp-testflight-uid
+        path: testflight-uid
+      - name: bootstrap-tf-state
+      params:
+        GOOGLE_CREDENTIALS: ((testflight-gcp-creds.creds_json))
+        SSH_PRIVATE_KEY: ((testflight-ssh.ssh_private_key))
+        SSH_PUB_KEY: ((testflight-ssh.ssh_public_key))
+        TESTFLIGHT_ADMINS: []
+        TF_VAR_gcp_project: infra-testflight
+        TF_VAR_enable_services: false
+        BRANCH: kn/scrub_project
+      run:
+        path: pipeline-tasks/ci/tasks/gcp/platform.sh
+- name: gcp-testflight-smoketest
+  serial: true
+  plan:
+  - get: gcp-testflight-lock
+    passed:
+    - gcp-testflight-platform
+  - in_parallel:
+    - get: gcp-modules
+      trigger: true
+      passed:
+      - gcp-testflight-platform
+      - gcp-testflight-postgresql
+    - get: repo
+      passed:
+      - gcp-testflight-platform
+    - get: pipeline-tasks
+    - get: gcp-testflight-uid
+      passed:
+      - gcp-testflight-platform
+    - get: bootstrap-tf-state
+      passed:
+      - gcp-testflight-bootstrap
+  - task: smoketest
+    config:
+      platform: linux
+      image_resource:
+        type: registry-image
+        source:
+          username: ((docker-creds.username))
+          password: ((docker-creds.password))
+          repository: us.gcr.io/galoy-org/gcp-infra-pipeline
+      inputs:
+      - name: pipeline-tasks
+      - name: repo
+      - name: gcp-modules
+        path: modules
+      - name: gcp-testflight-uid
+        path: testflight-uid
+      - name: bootstrap-tf-state
+      params:
+        GOOGLE_CREDENTIALS: ((testflight-gcp-creds.creds_json))
+        SSH_PRIVATE_KEY: ((testflight-ssh.ssh_private_key))
+        SSH_PUB_KEY: ((testflight-ssh.ssh_public_key))
+        TESTFLIGHT_ADMINS: []
+        TF_VAR_gcp_project: infra-testflight
+        TF_VAR_enable_services: false
+        BRANCH: kn/scrub_project
+      run:
+        path: pipeline-tasks/ci/tasks/gcp/smoketest.sh
+- name: gcp-testflight-postgresql
+  serial: true
+  plan:
+  - get: gcp-testflight-lock
+    passed:
+    - gcp-testflight-inception
+  - in_parallel:
+    - get: gcp-modules
+      trigger: true
+      passed:
+      - gcp-testflight-inception
+    - get: repo
+      passed:
+      - gcp-testflight-inception
+    - get: pipeline-tasks
+    - get: gcp-testflight-uid
+      passed:
+      - gcp-testflight-inception
+    - get: bootstrap-tf-state
+      passed:
+      - gcp-testflight-bootstrap
+  - task: postgresql
+    attempts: 4
+    config:
+      platform: linux
+      image_resource:
+        type: registry-image
+        source:
+          username: ((docker-creds.username))
+          password: ((docker-creds.password))
+          repository: us.gcr.io/galoy-org/gcp-infra-pipeline
+      inputs:
+      - name: pipeline-tasks
+      - name: repo
+      - name: gcp-modules
+        path: modules
+      - name: gcp-testflight-uid
+        path: testflight-uid
+      - name: bootstrap-tf-state
+      params:
+        GOOGLE_CREDENTIALS: ((testflight-gcp-creds.creds_json))
+        SSH_PRIVATE_KEY: ((testflight-ssh.ssh_private_key))
+        SSH_PUB_KEY: ((testflight-ssh.ssh_public_key))
+        TESTFLIGHT_ADMINS: []
+        TF_VAR_gcp_project: infra-testflight
+        TF_VAR_enable_services: false
+        BRANCH: kn/scrub_project
+      run:
+        path: pipeline-tasks/ci/tasks/gcp/postgresql.sh
+- name: gcp-testflight-postgresql-cleanup
+  serial: true
+  plan:
+  - get: gcp-testflight-lock
+    passed:
+    - gcp-testflight-postgresql
+  - in_parallel:
+    - get: gcp-modules
+      trigger: true
+      passed:
+      - gcp-testflight-postgresql
+    - get: repo
+      passed:
+      - gcp-testflight-postgresql
+    - get: pipeline-tasks
+    - get: gcp-testflight-uid
+      passed:
+      - gcp-testflight-postgresql
+    - get: bootstrap-tf-state
+      passed:
+      - gcp-testflight-bootstrap
+  - task: teardown
+    attempts: 6
+    config:
+      platform: linux
+      image_resource:
+        type: registry-image
+        source:
+          username: ((docker-creds.username))
+          password: ((docker-creds.password))
+          repository: us.gcr.io/galoy-org/gcp-infra-pipeline
+      inputs:
+      - name: pipeline-tasks
+      - name: repo
+      - name: gcp-modules
+        path: modules
+      - name: gcp-testflight-uid
+        path: testflight-uid
+      - name: bootstrap-tf-state
+      outputs:
+      - name: repo
+      params:
+        GOOGLE_CREDENTIALS: ((testflight-gcp-creds.creds_json))
+        SSH_PRIVATE_KEY: ((testflight-ssh.ssh_private_key))
+        SSH_PUB_KEY: ((testflight-ssh.ssh_public_key))
+        TESTFLIGHT_ADMINS: []
+        TF_VAR_gcp_project: infra-testflight
+        TF_VAR_enable_services: false
+        BRANCH: kn/scrub_project
+      run:
+        path: pipeline-tasks/ci/tasks/gcp/teardown-postgresql.sh
+- name: gcp-testflight-cleanup
+  serial: true
+  plan:
+  - get: gcp-testflight-lock
+    passed:
+    - gcp-testflight-smoketest
+    - gcp-testflight-postgresql-cleanup
+  - in_parallel:
+    - get: gcp-modules
+      trigger: true
+      passed:
+      - gcp-testflight-smoketest
+      - gcp-testflight-postgresql-cleanup
+    - get: repo
+      passed:
+      - gcp-testflight-smoketest
+      - gcp-testflight-postgresql-cleanup
+    - get: pipeline-tasks
+    - get: gcp-testflight-uid
+      passed:
+      - gcp-testflight-smoketest
+      - gcp-testflight-postgresql-cleanup
+    - get: bootstrap-tf-state
+      passed:
+      - gcp-testflight-bootstrap
+  - task: teardown
+    config:
+      platform: linux
+      image_resource:
+        type: registry-image
+        source:
+          username: ((docker-creds.username))
+          password: ((docker-creds.password))
+          repository: us.gcr.io/galoy-org/gcp-infra-pipeline
+      inputs:
+      - name: pipeline-tasks
+      - name: repo
+      - name: gcp-modules
+        path: modules
+      - name: gcp-testflight-uid
+        path: testflight-uid
+      - name: bootstrap-tf-state
+      outputs:
+      - name: repo
+      - name: bootstrap-tf-state
+      params:
+        GOOGLE_CREDENTIALS: ((testflight-gcp-creds.creds_json))
+        SSH_PRIVATE_KEY: ((testflight-ssh.ssh_private_key))
+        SSH_PUB_KEY: ((testflight-ssh.ssh_public_key))
+        TESTFLIGHT_ADMINS: []
+        TF_VAR_gcp_project: infra-testflight
+        TF_VAR_enable_services: false
+        BRANCH: kn/scrub_project
+      run:
+        path: pipeline-tasks/ci/tasks/gcp/teardown.sh
+  - in_parallel:
+    - put: gcp-testflight-lock
+      params:
+        release: gcp-testflight-lock
+    - put: gcp-testflight-uid
+      params:
+        bump: patch
+    - put: bootstrap-tf-state
+      params:
+        repository: bootstrap-tf-state
+        rebase: true
+- name: gcp-bump-repos
+  plan:
+  - in_parallel:
+    - get: galoy-staging
+    - get: gcp-modules
+      trigger: true
+      passed:
+      - gcp-testflight-cleanup
+    - get: repo
+      trigger: true
+      passed:
+      - gcp-testflight-cleanup
+      params:
+        fetch_tags: false
+    - get: pipeline-tasks
+    - get: gcp-testflight-uid
+      passed:
+      - gcp-testflight-cleanup
+  - task: bump-repos
+    config:
+      platform: linux
+      image_resource:
+        type: registry-image
+        source:
+          username: ((docker-creds.username))
+          password: ((docker-creds.password))
+          repository: us.gcr.io/galoy-org/gcp-infra-pipeline
+      inputs:
+      - name: galoy-staging
+      - name: pipeline-tasks
+      - name: gcp-modules
+        path: modules
+      - name: repo
+      - name: gcp-testflight-uid
+        path: testflight-uid
+      outputs:
+      - name: repo
+      - name: galoy-staging
+      params:
+        BRANCH: kn/scrub_project
+        GITHUB_SSH_KEY: ((github-blinkbitcoin.private_key))
+      run:
+        path: pipeline-tasks/ci/tasks/gcp/bump-repos.sh
+  - in_parallel:
+    - put: repo
+      params:
+        repository: repo
+        rebase: true
+    - put: galoy-staging
+      params:
+        repository: galoy-staging
+        rebase: true
+- name: build-gcp-pipeline-image
+  serial: true
+  plan:
+  - get: gcp-pipeline-image-def
+    trigger: true
+  - task: build
+    config:
+      platform: linux
+      image_resource:
+        type: registry-image
+        source:
+          repository: gcr.io/kaniko-project/executor
+          tag: debug
+      inputs:
+      - name: gcp-pipeline-image-def
+      outputs:
+      - name: image
+      run:
+        path: /kaniko/executor
+        args:
+        - --context=gcp-pipeline-image-def/ci/image/gcp
+        - --use-new-run
+        - --single-snapshot
+        - --cache=false
+        - --no-push
+        - --tar-path=image/image.tar
+  - put: gcp-pipeline-image
+    params:
+      image: image/image.tar
+- name: check-and-upgrade-k8s
+  plan:
+  - in_parallel:
+    - get: every-1h
+      trigger: true
+    - get: repo
+    - get: pipeline-tasks
+  - task: check-and-upgrade-k8s
+    config:
+      platform: linux
+      image_resource:
+        type: registry-image
+        source:
+          username: ((docker-creds.username))
+          password: ((docker-creds.password))
+          repository: us.gcr.io/galoy-org/galoy-deployments-pipeline
+      inputs:
+      - name: repo
+      - name: pipeline-tasks
+      outputs:
+      - name: repo
+      params:
+        BRANCH: kn/scrub_project
+        GOOGLE_CREDENTIALS: ((testflight-gcp-creds.creds_json))
+      run:
+        path: pipeline-tasks/ci/tasks/check-and-upgrade-k8s.sh
+  - put: repo
+    params:
+      repository: repo
+      rebase: true
+resources:
+- name: repo
+  type: git
+  source:
+    ignore_paths:
+    - ci/*[^md]
+    uri: git@github.com:blinkbitcoin/blink-infra.git
+    branch: kn/scrub_project
+    private_key: ((github-blinkbitcoin.private_key))
+  webhook_token: ((webhook.secret))
+- name: pipeline-tasks
+  type: git
+  source:
+    paths:
+    - ci/tasks/*
+    - ci/k8s-upgrade/*
+    - Makefile
+    uri: git@github.com:blinkbitcoin/blink-infra.git
+    branch: kn/scrub_project
+    private_key: ((github-blinkbitcoin.private_key))
+- name: galoy-staging
+  type: git
+  source:
+    uri: git@github.com:blinkbitcoin/blink-deployments.git
+    branch: main
+    private_key: ((github-blinkbitcoin.private_key))
+- name: gcp-modules
+  type: git
+  webhook_token: ((webhook.secret))
+  source:
+    paths:
+    - modules/bootstrap/gcp
+    - modules/inception/gcp
+    - modules/platform/gcp
+    - modules/postgresql/gcp
+    - modules/smoketest/gcp
+    uri: git@github.com:blinkbitcoin/blink-infra.git
+    branch: kn/scrub_project
+    private_key: ((github-blinkbitcoin.private_key))
+- name: gcp-pipeline-image
+  type: registry-image
+  source:
+    tag: latest
+    username: ((docker-creds.username))
+    password: ((docker-creds.password))
+    repository: us.gcr.io/galoy-org/gcp-infra-pipeline
+- name: gcp-pipeline-image-def
+  type: git
+  source:
+    paths:
+    - ci/image/gcp/Dockerfile
+    uri: git@github.com:blinkbitcoin/blink-infra.git
+    branch: kn/scrub_project
+    private_key: ((github-blinkbitcoin.private_key))
+- name: gcp-testflight-uid
+  type: semver
+  source:
+    initial_version: 0.0.0
+    driver: git
+    file: version
+    uri: git@github.com:blinkbitcoin/blink-infra.git
+    branch: testflight-name-prefix-uid-branch
+    private_key: ((github-blinkbitcoin.private_key))
+- name: gcp-testflight-lock
+  type: pool
+  source:
+    uri: git@github.com:blinkbitcoin/concourse-locks.git
+    branch: main
+    pool: gcp-infra-testflight
+    private_key: ((github-blinkbitcoin.private_key))
+- name: bootstrap-tf-state
+  type: git
+  source:
+    uri: git@github.com:blinkbitcoin/blink-infra-bootstrap-tfstate.git
+    branch: main
+    private_key: ((github-blinkbitcoin.private_key))
+- name: every-1h
+  type: time
+  icon: clock-outline
+  source:
+    interval: 1h
+resource_types:
+- name: terraform
+  type: docker-image
+  source:
+    repository: ljfranklin/terraform-resource
+    tag: latest
+- name: cepler-in
+  type: registry-image
+  source:
+    repository: cepler/cepler-concourse-resource
+    tag: latest
+- name: cepler-out
+  type: registry-image
+  source:
+    repository: cepler/cepler-concourse-resource
+    tag: latest
+- name: honeymarker
+  type: docker-image
+  source:
+    repository: us.gcr.io/galoy-org/honeymarker-resource
+    tag: edge

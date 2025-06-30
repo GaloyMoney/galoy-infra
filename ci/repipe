@@ -10,13 +10,12 @@ fi
 target="${FLY_TARGET:-ciblink}"
 team=dev
 
-TMPDIR=""
-TMPDIR=$(mktemp -d -t repipe.XXXXXX)
-trap "rm -rf ${TMPDIR}" INT TERM QUIT EXIT
+BUILDDIR="ci/build"
+mkdir -p $BUILDDIR
 
-ytt -f ci > ${TMPDIR}/pipeline.yml
+ytt -f ci > ${BUILDDIR}/pipeline.yml
 
 echo "Updating pipeline @ ${target}"
 
-fly -t ${target} set-pipeline --team=${team} -p blink-infra -c ${TMPDIR}/pipeline.yml
+fly -t ${target} set-pipeline --team=${team} -p blink-infra -c ${BUILDDIR}/pipeline.yml
 fly -t ${target} unpause-pipeline --team=${team} -p blink-infra

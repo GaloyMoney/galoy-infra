@@ -35,6 +35,7 @@ source:
   - modules/platform/gcp
   - modules/postgresql/gcp
   - modules/smoketest/gcp
+  #! - examples/gcp # maybe this would be useful as the scripts are also tested
   uri: #@ data.values.git_uri
   branch: #@ data.values.git_branch
   private_key: #@ data.values.github_private_key
@@ -45,9 +46,6 @@ GOOGLE_CREDENTIALS: #@ data.values.testflight_gcp_creds
 SSH_PRIVATE_KEY: #@ data.values.testflight_ssh_private_key
 SSH_PUB_KEY: #@ data.values.testflight_ssh_pub_key
 TESTFLIGHT_ADMINS: #@ data.values.testflight_admins
-KUBE_HOST: #@ data.values.concourse_tf_kube_host
-KUBE_CA_CERT: #@ data.values.concourse_tf_kube_ca_cert
-KUBE_TOKEN: #@ data.values.concourse_tf_kube_token
 TF_VAR_gcp_project: infra-testflight
 TF_VAR_enable_services: false
 BRANCH: #@ data.values.git_branch
@@ -65,6 +63,7 @@ plan:
   - { get: repo }
   - { get: pipeline-tasks }
   - { get: gcp-testflight-uid }
+  - { get: bootstrap-tf-state }
 - task: bootstrap
   attempts: 4
   config:
@@ -77,9 +76,16 @@ plan:
       path: modules
     - name: gcp-testflight-uid
       path: testflight-uid
+    - name: bootstrap-tf-state
+    outputs:
+    - name: bootstrap-tf-state
     params: #@ gcp_testflight_task_params()
     run:
       path: pipeline-tasks/ci/tasks/gcp/bootstrap.sh
+- put: bootstrap-tf-state
+  params:
+    repository: bootstrap-tf-state
+    rebase: true
 #@ end
 
 #@ def gcp_testflight_inception_job():
@@ -101,6 +107,9 @@ plan:
   - get: gcp-testflight-uid
     passed:
     - #@ testflight_bootstrap_job_name("gcp")
+  - get: bootstrap-tf-state
+    passed:
+    - #@ testflight_bootstrap_job_name("gcp")
 - task: inception
   attempts: 4
   config:
@@ -113,6 +122,7 @@ plan:
       path: modules
     - name: gcp-testflight-uid
       path: testflight-uid
+    - name: bootstrap-tf-state
     params: #@ gcp_testflight_task_params()
     run:
       path: pipeline-tasks/ci/tasks/gcp/inception.sh
@@ -137,6 +147,9 @@ plan:
   - get: gcp-testflight-uid
     passed:
     - #@ testflight_inception_job_name("gcp")
+  - get: bootstrap-tf-state
+    passed:
+    - #@ testflight_bootstrap_job_name("gcp")
 - task: platform
   config:
     platform: linux
@@ -148,6 +161,7 @@ plan:
       path: modules
     - name: gcp-testflight-uid
       path: testflight-uid
+    - name: bootstrap-tf-state
     params: #@ gcp_testflight_task_params()
     run:
       path: pipeline-tasks/ci/tasks/gcp/platform.sh
@@ -165,6 +179,10 @@ plan:
     trigger: true
     passed:
     - #@ testflight_platform_job_name("gcp")
+    #! not strictly necessary to make it dependent on the postgres but smoketest 
+    #! could test postgres as well and the bastion needs some more time  for the 
+    #! smoketest anyway (bootstrap script needs tofu to get installed which takes lots of time)
+    - #@ testflight_postgresql_job_name("gcp") 
   - get: repo
     passed:
     - #@ testflight_platform_job_name("gcp")
@@ -172,6 +190,9 @@ plan:
   - get: gcp-testflight-uid
     passed:
     - #@ testflight_platform_job_name("gcp")
+  - get: bootstrap-tf-state
+    passed:
+    - #@ testflight_bootstrap_job_name("gcp")
 - task: smoketest
   config:
     platform: linux
@@ -183,6 +204,7 @@ plan:
       path: modules
     - name: gcp-testflight-uid
       path: testflight-uid
+    - name: bootstrap-tf-state
     params: #@ gcp_testflight_task_params()
     run:
       path: pipeline-tasks/ci/tasks/gcp/smoketest.sh
@@ -207,6 +229,9 @@ plan:
   - get: gcp-testflight-uid
     passed:
     - #@ testflight_inception_job_name("gcp")
+  - get: bootstrap-tf-state
+    passed:
+    - #@ testflight_bootstrap_job_name("gcp")
 - task: postgresql
   attempts: 4
   config:
@@ -219,6 +244,7 @@ plan:
       path: modules
     - name: gcp-testflight-uid
       path: testflight-uid
+    - name: bootstrap-tf-state 
     params: #@ gcp_testflight_task_params()
     run:
       path: pipeline-tasks/ci/tasks/gcp/postgresql.sh
@@ -247,6 +273,9 @@ plan:
     passed:
     - #@ testflight_smoketest_job_name("gcp")
     - #@ testflight_cleanup_postgresql_job_name("gcp")
+  - get: bootstrap-tf-state
+    passed:
+    - #@ testflight_bootstrap_job_name("gcp")
 - task: teardown
   config:
     platform: linux
@@ -258,14 +287,17 @@ plan:
       path: modules
     - name: gcp-testflight-uid
       path: testflight-uid
+    - name: bootstrap-tf-state
     outputs:
     - name: repo
+    - name: bootstrap-tf-state
     params: #@ gcp_testflight_task_params()
     run:
       path: pipeline-tasks/ci/tasks/gcp/teardown.sh
 - in_parallel:
   - { put: gcp-testflight-lock, params: { release: gcp-testflight-lock }}
   - { put: gcp-testflight-uid, params: { bump: patch } }
+  - { put: bootstrap-tf-state, params: { repository: bootstrap-tf-state, rebase: true } }
 #@ end
 
 #@ def gcp_testflight_cleanup_postgresql_job():
@@ -287,6 +319,9 @@ plan:
   - get: gcp-testflight-uid
     passed:
     - #@ testflight_postgresql_job_name("gcp")
+  - get: bootstrap-tf-state
+    passed:
+    - #@ testflight_bootstrap_job_name("gcp")
 - task: teardown
   attempts: 6
   config:
@@ -299,6 +334,7 @@ plan:
       path: modules
     - name: gcp-testflight-uid
       path: testflight-uid
+    - name: bootstrap-tf-state
     outputs:
     - name: repo
     params: #@ gcp_testflight_task_params()
@@ -418,6 +454,15 @@ source:
   private_key: #@ data.values.github_private_key
 #@ end
 
+#@ def bootstrap_tf_state_resource():
+name: bootstrap-tf-state
+type: git
+source:
+  uri: git@github.com:blinkbitcoin/blink-infra-bootstrap-tfstate.git
+  branch: main
+  private_key: #@ data.values.github_private_key
+#@ end
+
 #@ def gcp_testflight_lock_resource():
 name: gcp-testflight-lock
 type: pool
@@ -448,4 +493,5 @@ source:
 - #@ pipeline_image_def_resource()
 - #@ gcp_testflight_uid_resource()
 - #@ gcp_testflight_lock_resource()
+- #@ bootstrap_tf_state_resource()
 #@ end

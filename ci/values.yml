@@ -1,7 +1,7 @@
 #@data/values
 ---
 git_uri: git@github.com:blinkbitcoin/blink-infra.git
-git_branch: kn/initial_after_fork
+git_branch: kn/scrub_project
 git_version_branch: testflight-name-prefix-uid-branch
 github_private_key: ((github-blinkbitcoin.private_key))
 
@@ -16,10 +16,6 @@ docker_registry: us.gcr.io/galoy-org
 docker_registry_user: ((docker-creds.username))
 docker_registry_password: ((docker-creds.password))
 
-concourse_tf_kube_host:  ((tf-backend-creds.host))
-concourse_tf_kube_ca_cert:  ((tf-backend-creds.ca_cert))
-concourse_tf_kube_token:  ((tf-backend-creds.token))
-
 testflight_gcp_creds: ((testflight-gcp-creds.creds_json))
 
 #! Not relevant for Blink right now
@@ -29,6 +25,6 @@ testflight_gcp_creds: ((testflight-gcp-creds.creds_json))
 #! testflight_azure_subscription_id: ((testflight-azure-creds.subscription_id))
 #! testflight_azure_admins: ((testflight-azure-admins.users_json))
 
-testflight_admins: ((testflight-admins.users_json))
+testflight_admins: []
 testflight_ssh_private_key: ((testflight-ssh.ssh_private_key))
 testflight_ssh_pub_key: ((testflight-ssh.ssh_public_key))
