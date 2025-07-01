@@ -68,7 +68,7 @@ jobs:
         TESTFLIGHT_ADMINS: []
         TF_VAR_gcp_project: infra-testflight
         TF_VAR_enable_services: false
-        BRANCH: kn/scrub_project
+        BRANCH: main
       run:
         path: pipeline-tasks/ci/tasks/gcp/bootstrap.sh
   - put: bootstrap-tf-state
@@ -121,7 +121,7 @@ jobs:
         TESTFLIGHT_ADMINS: []
         TF_VAR_gcp_project: infra-testflight
         TF_VAR_enable_services: false
-        BRANCH: kn/scrub_project
+        BRANCH: main
       run:
         path: pipeline-tasks/ci/tasks/gcp/inception.sh
 - name: gcp-testflight-platform
@@ -169,7 +169,7 @@ jobs:
         TESTFLIGHT_ADMINS: []
         TF_VAR_gcp_project: infra-testflight
         TF_VAR_enable_services: false
-        BRANCH: kn/scrub_project
+        BRANCH: main
       run:
         path: pipeline-tasks/ci/tasks/gcp/platform.sh
 - name: gcp-testflight-smoketest
@@ -218,7 +218,7 @@ jobs:
         TESTFLIGHT_ADMINS: []
         TF_VAR_gcp_project: infra-testflight
         TF_VAR_enable_services: false
-        BRANCH: kn/scrub_project
+        BRANCH: main
       run:
         path: pipeline-tasks/ci/tasks/gcp/smoketest.sh
 - name: gcp-testflight-postgresql
@@ -267,7 +267,7 @@ jobs:
         TESTFLIGHT_ADMINS: []
         TF_VAR_gcp_project: infra-testflight
         TF_VAR_enable_services: false
-        BRANCH: kn/scrub_project
+        BRANCH: main
       run:
         path: pipeline-tasks/ci/tasks/gcp/postgresql.sh
 - name: gcp-testflight-postgresql-cleanup
@@ -318,7 +318,7 @@ jobs:
         TESTFLIGHT_ADMINS: []
         TF_VAR_gcp_project: infra-testflight
         TF_VAR_enable_services: false
-        BRANCH: kn/scrub_project
+        BRANCH: main
       run:
         path: pipeline-tasks/ci/tasks/gcp/teardown-postgresql.sh
 - name: gcp-testflight-cleanup
@@ -373,7 +373,7 @@ jobs:
         TESTFLIGHT_ADMINS: []
         TF_VAR_gcp_project: infra-testflight
         TF_VAR_enable_services: false
-        BRANCH: kn/scrub_project
+        BRANCH: main
       run:
         path: pipeline-tasks/ci/tasks/gcp/teardown.sh
   - in_parallel:
@@ -426,7 +426,7 @@ jobs:
       - name: repo
       - name: galoy-staging
       params:
-        BRANCH: kn/scrub_project
+        BRANCH: main
         GITHUB_SSH_KEY: ((github-blinkbitcoin.private_key))
       run:
         path: pipeline-tasks/ci/tasks/gcp/bump-repos.sh
@@ -490,7 +490,7 @@ jobs:
       outputs:
       - name: repo
       params:
-        BRANCH: kn/scrub_project
+        BRANCH: main
         GOOGLE_CREDENTIALS: ((testflight-gcp-creds.creds_json))
       run:
         path: pipeline-tasks/ci/tasks/check-and-upgrade-k8s.sh
@@ -505,7 +505,7 @@ resources:
     ignore_paths:
     - ci/*[^md]
     uri: git@github.com:blinkbitcoin/blink-infra.git
-    branch: kn/scrub_project
+    branch: main
     private_key: ((github-blinkbitcoin.private_key))
   webhook_token: ((webhook.secret))
 - name: pipeline-tasks
@@ -516,7 +516,7 @@ resources:
     - ci/k8s-upgrade/*
     - Makefile
     uri: git@github.com:blinkbitcoin/blink-infra.git
-    branch: kn/scrub_project
+    branch: main
     private_key: ((github-blinkbitcoin.private_key))
 - name: galoy-staging
   type: git
@@ -535,7 +535,7 @@ resources:
     - modules/postgresql/gcp
     - modules/smoketest/gcp
     uri: git@github.com:blinkbitcoin/blink-infra.git
-    branch: kn/scrub_project
+    branch: main
     private_key: ((github-blinkbitcoin.private_key))
 - name: gcp-pipeline-image
   type: registry-image
@@ -550,7 +550,7 @@ resources:
     paths:
     - ci/image/gcp/Dockerfile
     uri: git@github.com:blinkbitcoin/blink-infra.git
-    branch: kn/scrub_project
+    branch: main
     private_key: ((github-blinkbitcoin.private_key))
 - name: gcp-testflight-uid
   type: semver
