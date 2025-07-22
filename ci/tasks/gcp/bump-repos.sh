@@ -28,6 +28,6 @@ EOF
 GITHUB_SSH_KEY_BASE64=$(base64 -w 0 ./github.key) make vendir
 
 echo "    --> make_commit "
-make_commit "chore(deps): bump galoy-infra gcp modules to '${MODULES_GIT_REF}'"
+make_commit "chore(deps): bump blink-infra gcp modules to '${MODULES_GIT_REF}'"
 
 echo "    --> Done in bump-repos.sh"

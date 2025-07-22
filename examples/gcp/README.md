@@ -1,4 +1,4 @@
-# galoy-infra gcp examples
+# blink-infra gcp examples
 
 This example shows how inputs to the individual modules could look like to bring up a production ready infrastructure.
 
@@ -44,7 +44,7 @@ Executing `make bootstrap` will execute `tofu apply` in the `bootstrap` folder a
 
 ## Inception phase
 
-Once bootstrap has been executed the [`inception`](./inception/main.tf) phase can provision the VPC network, bastion, roles and service accounts needed to install the complete galoy stack.
+Once bootstrap has been executed the [`inception`](./inception/main.tf) phase can provision the VPC network, bastion, roles and service accounts needed to install the complete blink stack.
 Execute it via:
 ```
 $ make inception

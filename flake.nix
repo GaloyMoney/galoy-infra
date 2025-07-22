@@ -1,5 +1,5 @@
 {
-  description = "Dev shell for galoy-infra";
+  description = "Dev shell for blink-infra";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";

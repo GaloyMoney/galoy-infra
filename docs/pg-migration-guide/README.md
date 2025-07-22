@@ -5,7 +5,7 @@ Before proceeding, please review the [known limitations](https://cloud.google.co
 
 # Step 1: Configure Source Instance and create connection profile
 - Decide upon a instance to upgrade:
-	- We are choosing the `rishi-pg14-volcano-staging-pg-a34e9984` instance, a PostgreSQL 14 instance managed via the `galoy-infra/modules/postgresql/gcp` Terraform module.
+	- We are choosing the `rishi-pg14-volcano-staging-pg-a34e9984` instance, a PostgreSQL 14 instance managed via the `blink-infra/modules/postgresql/gcp` Terraform module.
   ![decide-source](./assets/decide-source-instance.png)
 - On the tofu file of the decided instance, enable the `prep_upgrade_as_source_db` flag
 
@@ -165,7 +165,7 @@ $ tf output -json migration_sql_command
 ```
 
 #### Step 3.5.2
-Manipulate the old state to reflect the new state by running the two scripts located at `galoy-infra/examples/gcp/bin`
+Manipulate the old state to reflect the new state by running the two scripts located at `blink-infra/examples/gcp/bin`
 
 ```sh
 $ ./terraform-db-swap.sh <main.tf directory> <module-name>
