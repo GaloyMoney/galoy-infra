@@ -77,6 +77,8 @@ users = [
 ]
 ```
 
+**Note:** The `id` should be your Azure AD email address. For external users, use the format `"username_domain.com#EXT#"`.
+
 Execute it via:
 
 ```sh
