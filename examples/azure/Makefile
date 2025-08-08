@@ -13,7 +13,9 @@ destroy-bootstrap:
 
 platform:
 	export ARM_ACCESS_KEY=$(cd bootstrap && $(TF) output -json access_key | jq -r ".access_key")
+	bin/prep-platform.sh
 	cd platform \
+		&& $(TF) init \
 		&& $(TF) apply
 
 postgresql:
