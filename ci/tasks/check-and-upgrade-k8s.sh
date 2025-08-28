@@ -5,10 +5,11 @@ set -eu
 source pipeline-tasks/ci/tasks/helpers.sh
 pushd pipeline-tasks/ci/k8s-upgrade
 
-tofu init && tofu apply -auto-approve
+tofu init
+tofu apply -auto-approve
 LATEST_VERSION="$(tofu output -json | jq -r .latest_version.value)"
 
-if [[ $LATEST_VERSION == "" ]]; then
+if [[ -z "$LATEST_VERSION" || "$LATEST_VERSION" == "null" ]]; then
   echo "Failed to get latest version"
   exit 1
 fi
