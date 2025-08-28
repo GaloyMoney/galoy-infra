@@ -6,7 +6,6 @@ locals {
   kubectl_version  = "1.30.4"
   k9s_version      = "0.32.5"
   bos_version      = "18.2.0"
-  kratos_version   = "0.11.1"
   opentofu_version = "1.8.2"
 }
 data "google_compute_image" "bastion" {
@@ -54,7 +53,6 @@ resource "google_compute_instance" "bastion" {
     kubectl_version : local.kubectl_version
     k9s_version : local.k9s_version
     bos_version : local.bos_version
-    kratos_version : local.kratos_version
     opentofu_version : local.opentofu_version
   })
 
