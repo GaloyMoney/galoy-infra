@@ -29,4 +29,3 @@ else
 fi
 
 make_commit "chore: bump kubernetes to '${LATEST_VERSION}'"
-
