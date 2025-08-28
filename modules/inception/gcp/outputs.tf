@@ -11,10 +11,6 @@ output "cluster_sa" {
   value       = google_service_account.cluster_service_account.email
 }
 
-output "grafana_sa" {
-  description = "Service Account for grafana."
-  value       = google_service_account.grafana_service_account.email
-}
 
 output "backups_bucket_name" {
   description = "The name of the bucket where backups shall be stored"
