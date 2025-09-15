@@ -1,12 +1,13 @@
-TF:=tofu
+TF := tofu
 
 bootstrap:
 	cd bootstrap \
 		&& $(TF) init \
-		&& $(TF) apply
+		&& $(TF) apply --auto-approve
 	bin/prep-inception.sh
 
 inception:
+	bin/prep-inception.sh
 	cd inception \
 		&& $(TF) init \
 		&& $(TF) apply
