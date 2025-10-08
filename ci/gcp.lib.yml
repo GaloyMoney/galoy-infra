@@ -248,6 +248,7 @@ plan:
     - #@ testflight_smoketest_job_name("gcp")
     - #@ testflight_cleanup_postgresql_job_name("gcp")
 - task: teardown
+  attempts: 6
   config:
     platform: linux
     image_resource: #@ task_image_config()
