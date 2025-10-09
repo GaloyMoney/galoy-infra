@@ -1,5 +1,5 @@
 locals {
-  version_prefix = "1.31."
+  version_prefix = "1.32."
   project        = "galoy-infra-testflight"
 }
 
