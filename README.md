@@ -31,4 +31,4 @@ K8s versions can be upgraded at `ci/k8s-upgrade/main.tf`.
 
 Major version upgrades should be done with extreme attention as they may introduce breaking changes.
 
-Minor version upgrade should be done one version at a time (to go from `1.30` to `1.32`, for example, first upgrade to `1.31`). On each upgrade, let the version stream into our deployments and confirm everything works fine before moving on.
+Minor version upgrades should be done one version at a time (to go from `1.30` to `1.32`, for example, first upgrade to `1.31`). On each upgrade, let the version stream into our deployments and confirm everything works fine before moving on.
