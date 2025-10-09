@@ -29,6 +29,6 @@ A complete walkthrough of a rollout is documented in the [examples/gcp](./exampl
 
 K8s versions can be upgraded at `ci/k8s-upgrade/main.tf`.
 
-Major version upgrades should be done with extreme attention as they may introduce breaking changes.
+Even though kubernetes themselves state that [they follow semantic versioning](https://kubernetes.io/releases/), `minor` versions may contain breaking changes, which is not in accordance to semantic versioning. Thus, unlike with dependencies that respect semantic versioning, `minor` upgrades must be done with care and supervision.
 
-Minor version upgrades should be done one version at a time (to go from `1.30` to `1.32`, for example, first upgrade to `1.31`). On each upgrade, let the version stream into our deployments and confirm everything works fine before moving on.
+Given this, be aware that both `major` and `minor` version upgrades should be done one version at a time (to go from `1.30` to `1.32`, for example, first upgrade to `1.31`). And that, on each upgrade, you should let the version stream into our deployments and confirm everything works fine before moving on to a new version.
