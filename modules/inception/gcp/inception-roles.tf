@@ -20,6 +20,7 @@ resource "google_project_iam_custom_role" "inception_make" {
     "compute.instances.setTags",
     "compute.instances.getIamPolicy",
     "compute.instances.setIamPolicy",
+    "compute.instanceGroupManagers.list",
     "compute.globalAddresses.setLabels",
     "compute.routers.get",
     "compute.routers.create",
