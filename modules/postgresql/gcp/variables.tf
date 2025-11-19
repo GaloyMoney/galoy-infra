@@ -45,6 +45,11 @@ variable "provision_read_replica" {
   type        = bool
   default     = false
 }
+variable "public_read_replica" {
+  description = "Enable public IP access for the read replica"
+  type        = bool
+  default     = false
+}
 variable "big_query_connection_location" {
   default = "US"
 }
@@ -77,6 +82,7 @@ locals {
   big_query_viewers             = var.big_query_viewers
   replication                   = var.replication
   provision_read_replica        = var.provision_read_replica
+  public_read_replica           = var.public_read_replica
   big_query_connection_location = var.big_query_connection_location
   prep_upgrade_as_source_db     = var.prep_upgrade_as_source_db
   pre_promotion                 = var.pre_promotion

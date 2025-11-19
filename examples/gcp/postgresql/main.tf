@@ -16,6 +16,7 @@ module "postgresql" {
   databases              = ["test"]
   replication            = true
   provision_read_replica = true
+  public_read_replica    = true
 }
 
 module "postgresql_migration_source" {
