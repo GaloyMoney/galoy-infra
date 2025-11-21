@@ -109,6 +109,7 @@ module "database" {
   connection_users              = local.big_query_viewers
   replication                   = local.replication
   big_query_connection_location = local.big_query_connection_location
+  create_read_only_user         = local.public_read_replica
 }
 
 module "migration" {

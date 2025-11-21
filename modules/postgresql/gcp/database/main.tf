@@ -9,6 +9,11 @@ variable "connection_users" {
   type = list(string)
 }
 variable "big_query_connection_location" {}
+variable "create_read_only_user" {
+  description = "Create a read-only user for this database"
+  type        = bool
+  default     = false
+}
 
 output "user" {
   value = postgresql_role.user.name
@@ -16,6 +21,14 @@ output "user" {
 
 output "password" {
   value = random_password.user.result
+}
+
+output "read_only_user" {
+  value = var.create_read_only_user ? postgresql_role.read_only[0].name : null
+}
+
+output "read_only_password" {
+  value = var.create_read_only_user ? random_password.read_only[0].result : null
 }
 
 resource "random_password" "user" {
@@ -46,6 +59,19 @@ resource "postgresql_role" "replicator" {
   password    = random_password.replicator[0].result
   login       = true
   replication = true
+}
+
+resource "random_password" "read_only" {
+  count   = var.create_read_only_user ? 1 : 0
+  length  = 20
+  special = false
+}
+
+resource "postgresql_role" "read_only" {
+  count    = var.create_read_only_user ? 1 : 0
+  name     = "${var.db_name}-read-only"
+  password = random_password.read_only[0].result
+  login    = true
 }
 
 resource "postgresql_database" "db" {
@@ -105,6 +131,47 @@ resource "postgresql_grant" "grant_select_replicator" {
   object_type = "table"
 
   privileges = ["SELECT"]
+}
+
+resource "postgresql_grant" "grant_connect_read_only" {
+  count       = var.create_read_only_user ? 1 : 0
+  database    = postgresql_database.db.name
+  role        = postgresql_role.read_only[0].name
+  object_type = "database"
+
+  privileges = ["CONNECT"]
+
+  depends_on = [
+    postgresql_grant.revoke_public
+  ]
+}
+
+resource "postgresql_grant" "grant_usage_read_only" {
+  count       = var.create_read_only_user ? 1 : 0
+  database    = postgresql_database.db.name
+  role        = postgresql_role.read_only[0].name
+  schema      = "public"
+  object_type = "schema"
+
+  privileges = ["USAGE"]
+
+  depends_on = [
+    postgresql_grant.grant_connect_read_only
+  ]
+}
+
+resource "postgresql_grant" "grant_select_read_only" {
+  count       = var.create_read_only_user ? 1 : 0
+  database    = postgresql_database.db.name
+  role        = postgresql_role.read_only[0].name
+  schema      = "public"
+  object_type = "table"
+
+  privileges = ["SELECT"]
+
+  depends_on = [
+    postgresql_grant.grant_usage_read_only
+  ]
 }
 
 resource "random_password" "big_query" {
