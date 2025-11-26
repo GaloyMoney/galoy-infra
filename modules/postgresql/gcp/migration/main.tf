@@ -245,6 +245,7 @@ resource "google_sql_database_instance" "destination_instance" {
       ipv4_enabled                                  = false
       private_network                               = var.private_network
       enable_private_path_for_google_cloud_services = true
+      ssl_mode                                      = "ENCRYPTED_ONLY"
     }
   }
 
