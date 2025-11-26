@@ -61,6 +61,7 @@ resource "google_sql_database_instance" "replica" {
     ip_configuration {
       ipv4_enabled    = local.public_read_replica ? true : false
       private_network = data.google_compute_network.vpc.id
+      ssl_mode        = "ENCRYPTED_ONLY"
 
       dynamic "authorized_networks" {
         for_each = local.public_read_replica ? [1] : []
