@@ -65,6 +65,11 @@ resource "google_sql_database_instance" "instance" {
       }
     }
 
+    database_flags {
+      name  = "cloudsql.iam_authentication"
+      value = "on"
+    }
+
     backup_configuration {
       enabled                        = !local.pre_promotion
       point_in_time_recovery_enabled = !local.pre_promotion
@@ -97,6 +102,23 @@ resource "google_sql_user" "admin" {
   project  = local.gcp_project
 }
 
+resource "google_sql_user" "iam_user" {
+  for_each = toset(local.iam_users)
+
+  name     = each.value
+  instance = google_sql_database_instance.instance.name
+  project  = local.gcp_project
+  type     = "CLOUD_IAM_USER"
+}
+
+resource "google_project_iam_member" "cloudsql_instance_user" {
+  for_each = toset(local.iam_users)
+
+  project = local.gcp_project
+  role    = "roles/cloudsql.instanceUser"
+  member  = "user:${each.value}"
+}
+
 module "database" {
   for_each = toset(local.databases)
   source   = "./database"
@@ -111,6 +133,9 @@ module "database" {
   replication                   = local.replication
   big_query_connection_location = local.big_query_connection_location
   create_read_only_user         = local.public_read_replica
+  iam_users                     = local.iam_users
+
+  depends_on = [google_sql_user.iam_user]
 }
 
 module "migration" {
