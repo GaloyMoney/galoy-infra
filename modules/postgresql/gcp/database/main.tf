@@ -14,6 +14,11 @@ variable "create_read_only_user" {
   type        = bool
   default     = false
 }
+variable "iam_users" {
+  description = "List of IAM user emails for database access"
+  type        = list(string)
+  default     = []
+}
 
 output "user" {
   value = postgresql_role.user.name
@@ -237,6 +242,41 @@ resource "google_bigquery_connection_iam_member" "user" {
   connection_id = google_bigquery_connection.db[0].connection_id
   role          = "roles/bigquery.connectionUser"
   member        = each.value
+}
+
+resource "postgresql_grant" "iam_user_connect" {
+  for_each = toset(var.iam_users)
+
+  database    = postgresql_database.db.name
+  role        = each.value
+  object_type = "database"
+  privileges  = ["CONNECT", "CREATE", "TEMPORARY"]
+
+  depends_on = [postgresql_grant.revoke_public]
+}
+
+resource "postgresql_grant" "iam_user_schema" {
+  for_each = toset(var.iam_users)
+
+  database    = postgresql_database.db.name
+  role        = each.value
+  schema      = "public"
+  object_type = "schema"
+  privileges  = ["USAGE"]
+
+  depends_on = [postgresql_grant.iam_user_connect]
+}
+
+resource "postgresql_grant" "iam_user_tables" {
+  for_each = toset(var.iam_users)
+
+  database    = postgresql_database.db.name
+  role        = each.value
+  schema      = "public"
+  object_type = "table"
+  privileges  = ["SELECT"]
+
+  depends_on = [postgresql_grant.iam_user_schema]
 }
 
 terraform {
