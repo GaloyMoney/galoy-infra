@@ -29,7 +29,7 @@ EOF
 $ cat <<EOF > inception/users.auto.tfvars
 users = [
   {
-    id        = "<your-user-email>"
+    id        = "user:<your-user-email"
     bastion   = true
     inception = true
     platform  = true
