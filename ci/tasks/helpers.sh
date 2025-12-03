@@ -66,8 +66,7 @@ EOF
 
 function write_users() {
    echo ${TESTFLIGHT_ADMINS} | \
-     jq --arg sa "$(cat ${CI_ROOT}/gcloud-creds.json | jq -r '.client_email')" \
-     '{ users: [ .[] | { id: ., inception: true, platform: true, logs: true, bastion: true }, { id: "serviceAccount:\($sa)", inception: true, platform: true, logs: true, bastion: true } ]}' > inception/users.auto.tfvars.json
+     jq '{ users: [ .[] | { id: ., inception: true, platform: true, logs: true, bastion: true } ]}' > inception/users.auto.tfvars.json
 }
 
 function write_azure_users() {
