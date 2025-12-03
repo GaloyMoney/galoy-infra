@@ -55,8 +55,8 @@ locals {
   backups_bucket_location  = var.backups_bucket_location
   project                  = var.gcp_project
   inception_sa             = var.inception_sa
-  log_viewers              = [for user in var.users : "user:${user.id}" if user.logs]
-  inception_admins         = [for user in var.users : "user:${user.id}" if user.inception]
+  log_viewers              = concat([for user in var.users : "user:${user.id}" if user.logs], ["serviceAccount:${var.inception_sa}"])
+  inception_admins         = concat([for user in var.users : "user:${user.id}" if user.inception], ["serviceAccount:${var.inception_sa}"])
   platform_admins          = concat([for user in var.users : "user:${user.id}" if user.platform], ["serviceAccount:${var.inception_sa}"])
   bastion_users            = toset(concat([for user in var.users : "user:${user.id}" if user.bastion], local.platform_admins))
 
