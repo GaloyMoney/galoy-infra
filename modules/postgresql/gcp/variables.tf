@@ -66,12 +66,6 @@ variable "pre_promotion" {
   default     = false
 }
 
-variable "iam_users" {
-  description = "List of user email addresses for CloudSQL IAM authentication (for human access from bastion)"
-  type        = list(string)
-  default     = []
-}
-
 locals {
   gcp_project                   = var.gcp_project
   vpc_name                      = var.vpc_name
@@ -93,5 +87,4 @@ locals {
   prep_upgrade_as_source_db     = var.prep_upgrade_as_source_db
   pre_promotion                 = var.pre_promotion
   database_port                 = 5432
-  iam_users                     = var.iam_users
 }
