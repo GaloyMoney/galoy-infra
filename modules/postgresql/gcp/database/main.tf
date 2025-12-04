@@ -14,12 +14,6 @@ variable "create_read_only_user" {
   type        = bool
   default     = false
 }
-variable "iam_users" {
-  description = "List of IAM user emails for database access"
-  type        = list(string)
-  default     = []
-}
-
 output "user" {
   value = postgresql_role.user.name
 }
@@ -34,6 +28,14 @@ output "read_only_user" {
 
 output "read_only_password" {
   value = var.create_read_only_user ? random_password.read_only[0].result : null
+}
+
+output "manual_user" {
+  value = postgresql_role.manual.name
+}
+
+output "manual_user_password" {
+  value = random_password.manual.result
 }
 
 resource "random_password" "user" {
@@ -79,6 +81,17 @@ resource "postgresql_role" "read_only" {
   login    = true
 }
 
+resource "random_password" "manual" {
+  length  = 20
+  special = false
+}
+
+resource "postgresql_role" "manual" {
+  name     = "${var.db_name}-manual"
+  password = random_password.manual.result
+  login    = true
+}
+
 resource "postgresql_database" "db" {
   name       = var.db_name
   owner      = var.admin_user_name
@@ -106,9 +119,26 @@ resource "postgresql_grant" "grant_all" {
   ]
 }
 
+resource "postgresql_grant" "grant_all_manual" {
+  database    = postgresql_database.db.name
+  role        = postgresql_role.manual.name
+  object_type = "database"
+
+  privileges = ["CONNECT", "CREATE", "TEMPORARY"]
+}
+
 resource "postgresql_grant" "grant_public_schema" {
   database    = postgresql_database.db.name
   role        = postgresql_role.user.name
+  schema      = "public"
+  object_type = "schema"
+
+  privileges = ["USAGE", "CREATE"]
+}
+
+resource "postgresql_grant" "grant_public_schema_manual" {
+  database    = postgresql_database.db.name
+  role        = postgresql_role.manual.name
   schema      = "public"
   object_type = "schema"
 
@@ -242,41 +272,6 @@ resource "google_bigquery_connection_iam_member" "user" {
   connection_id = google_bigquery_connection.db[0].connection_id
   role          = "roles/bigquery.connectionUser"
   member        = each.value
-}
-
-resource "postgresql_grant" "iam_user_connect" {
-  for_each = toset(var.iam_users)
-
-  database    = postgresql_database.db.name
-  role        = each.value
-  object_type = "database"
-  privileges  = ["CONNECT", "CREATE", "TEMPORARY"]
-
-  depends_on = [postgresql_grant.revoke_public]
-}
-
-resource "postgresql_grant" "iam_user_schema" {
-  for_each = toset(var.iam_users)
-
-  database    = postgresql_database.db.name
-  role        = each.value
-  schema      = "public"
-  object_type = "schema"
-  privileges  = ["USAGE"]
-
-  depends_on = [postgresql_grant.iam_user_connect]
-}
-
-resource "postgresql_grant" "iam_user_tables" {
-  for_each = toset(var.iam_users)
-
-  database    = postgresql_database.db.name
-  role        = each.value
-  schema      = "public"
-  object_type = "table"
-  privileges  = ["SELECT"]
-
-  depends_on = [postgresql_grant.iam_user_schema]
 }
 
 terraform {
