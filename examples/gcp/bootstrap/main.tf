@@ -8,7 +8,7 @@ variable "tf_state_bucket_force_destroy" {
 }
 
 module "bootstrap" {
-  source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/bootstrap/gcp?ref=2bf4daf"
+  source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/bootstrap/gcp?ref=f85e6ed"
   # source = "../../../modules/bootstrap/gcp"
 
   name_prefix                   = var.name_prefix
