@@ -143,6 +143,10 @@ resource "postgresql_grant" "grant_public_schema_manual" {
   object_type = "schema"
 
   privileges = ["USAGE", "CREATE"]
+
+  depends_on = [
+    postgresql_grant.grant_public_schema
+  ]
 }
 
 resource "postgresql_grant" "grant_connect_replicator" {
