@@ -53,5 +53,5 @@ locals {
   cluster_location          = var.cluster_zone == "" ? local.region : "${local.region}-${var.cluster_zone}"
   postgres_tier             = var.postgres_tier
   pg_ha                     = var.pg_ha
-  node_location             = var.node_pool_zone == "" ? local.cluster_location : var.node_pool_zone
+  node_locations            = var.node_pool_zone == "" ? null : [var.node_pool_zone]
 }
