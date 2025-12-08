@@ -6,8 +6,10 @@ variable "region" {
 variable "cluster_zone" {
   default = ""
 }
-variable "node_pool_location" {
-  default = ""
+variable "node_pool_zone" {
+  default     = ""
+  description = "Set the zone to create a zonal node pool"
+  type        = string
 }
 variable "network_prefix" {
   default = "10.1"
@@ -51,5 +53,5 @@ locals {
   cluster_location          = var.cluster_zone == "" ? local.region : "${local.region}-${var.cluster_zone}"
   postgres_tier             = var.postgres_tier
   pg_ha                     = var.pg_ha
-  node_pool_location        = var.node_pool_location == "" ? local.cluster_location : var.node_pool_location
+  node_location             = var.node_pool_zone == "" ? local.cluster_location : var.node_pool_zone
 }

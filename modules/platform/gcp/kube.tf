@@ -111,10 +111,10 @@ resource "google_container_cluster" "primary" {
 resource "google_container_node_pool" "default" {
   provider = google-beta
 
-  name     = "${local.name_prefix}-${local.node_default_machine_type}-default"
-  project  = local.project
-  version  = google_container_cluster.primary.master_version
-  location = local.node_pool_location
+  name           = "${local.name_prefix}-${local.node_default_machine_type}-default"
+  project        = local.project
+  version        = google_container_cluster.primary.master_version
+  node_locations = [local.node_location]
 
   cluster = google_container_cluster.primary.id
 
