@@ -116,7 +116,7 @@ resource "google_container_node_pool" "default" {
   version  = google_container_cluster.primary.master_version
   location = local.node_pool_location
 
-  cluster = google_container_cluster.primary.name
+  cluster = google_container_cluster.primary.id
 
   max_pods_per_node = local.max_pods_per_node
   autoscaling {
