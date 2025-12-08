@@ -114,7 +114,7 @@ resource "google_container_node_pool" "default" {
   name           = "${local.name_prefix}-${local.node_default_machine_type}-default"
   project        = local.project
   version        = google_container_cluster.primary.master_version
-  node_locations = [local.node_location]
+  node_locations = local.node_locations
 
   cluster = google_container_cluster.primary.id
 
