@@ -5,7 +5,6 @@ locals {
   cepler_version   = "0.7.15"
   kubectl_version  = "1.30.4"
   k9s_version      = "0.32.5"
-  bos_version      = "18.2.0"
   opentofu_version = "1.8.2"
 }
 data "google_compute_image" "bastion" {
@@ -52,7 +51,6 @@ resource "google_compute_instance" "bastion" {
     cepler_version : local.cepler_version
     kubectl_version : local.kubectl_version
     k9s_version : local.k9s_version
-    bos_version : local.bos_version
     opentofu_version : local.opentofu_version
   })
 
