@@ -28,7 +28,6 @@ export GALOY_ENVIRONMENT=${project}
 export KUBE_CONFIG_PATH=~/.kube/config
 export BRIA_ADMIN_API_URL=http://10.1.2.2:2743
 export BRIA_API_URL=http://10.1.2.1:2742
-source <(bos completion bash)
 EOF
 
 %{ if bastion_revoke_on_exit }
@@ -74,11 +73,5 @@ mkdir k9s && cd k9s \
    && tar -xvf k9s_Linux_amd64.tar.gz \
    && mv k9s /usr/local/bin \
    && cd .. && rm -rf k9s*
-
-curl -sL https://deb.nodesource.com/setup_20.x | bash - \
-  && apt-get install -y nodejs \
-  && npm config set prefix '/usr' \
-  && npm i -g balanceofsatoshis@${bos_version} \
-  && ln -s ../lib/node_modules/balanceofsatoshis/bos /usr/bin/
 
 apt-get install -y google-cloud-sdk-gke-gcloud-auth-plugin
