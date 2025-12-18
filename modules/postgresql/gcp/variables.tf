@@ -66,6 +66,12 @@ variable "pre_promotion" {
   default     = false
 }
 
+variable "query_insights_enabled" {
+  description = "Enable query insights for the PostgreSQL instance"
+  type        = bool
+  default     = true
+}
+
 locals {
   gcp_project                   = var.gcp_project
   vpc_name                      = var.vpc_name
@@ -87,4 +93,5 @@ locals {
   prep_upgrade_as_source_db     = var.prep_upgrade_as_source_db
   pre_promotion                 = var.pre_promotion
   database_port                 = 5432
+  query_insights_enabled        = var.query_insights_enabled
 }
