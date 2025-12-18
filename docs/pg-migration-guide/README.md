@@ -178,7 +178,7 @@ $ ./terraform-state-rm.sh <main.tf directory> <module-name>
 #### Step 3.5.3
 
 Modify your source destination's `main.tf` to reflect the new destination instance by changing:
-- Change the `database_version` to `"POSTGRES_15"` and
+- Change the `database_version` to `"POSTGRES_17"` and
 - Set the `prep_upgrade_as_source_db` to `false` or remove the `prep_upgrade_as_source_db` as by default it has the `false` value
 - Set `pre_promotion` to `true`, as we need the backups disabled; (we need to enable them later):
 
@@ -196,7 +196,7 @@ module "postgresql" {
   highly_available       = false
   replication            = true
   // version change
-  database_version       = "POSTGRES_15"
+  database_version       = "POSTGRES_17"
   # We can enable this flag now
   provision_read_replica = true
   # We still need the backups disabled as the instance is a read-replica
@@ -254,7 +254,7 @@ module "postgresql" {
   user_can_create_db     = true
   databases              = ["test"]
   highly_available       = false
-  database_version       = "POSTGRES_15"
+  database_version       = "POSTGRES_17"
   replication            = true
   provision_read_replica = true
   # Enable backups now

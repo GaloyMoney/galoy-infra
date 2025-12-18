@@ -31,7 +31,7 @@ module "postgresql_migration_source" {
   databases                 = ["test"]
   replication               = true
   provision_read_replica    = true
-  database_version          = "POSTGRES_14"
+  database_version          = "POSTGRES_16"
   prep_upgrade_as_source_db = true
 }
 
@@ -48,5 +48,5 @@ module "postgresql_migration_destination" {
   replication            = false
   provision_read_replica = false
   pre_promotion          = true
-  database_version       = "POSTGRES_15"
+  database_version       = "POSTGRES_17"
 }
