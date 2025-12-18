@@ -20,6 +20,9 @@ resource "google_sql_database_instance" "instance" {
     edition                     = "ENTERPRISE"
     availability_type           = local.highly_available ? "REGIONAL" : "ZONAL"
     deletion_protection_enabled = !local.destroyable
+    insights_config {
+      query_insights_enabled  = local.query_insights_enabled
+    }
 
     dynamic "database_flags" {
       for_each = local.prep_upgrade_as_source_db ? [{
