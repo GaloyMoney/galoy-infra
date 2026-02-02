@@ -32,3 +32,49 @@ K8s versions can be upgraded at `ci/k8s-upgrade/main.tf`.
 Even though kubernetes themselves state that [they follow semantic versioning](https://kubernetes.io/releases/), `minor` versions may contain breaking changes, which is not in accordance to semantic versioning. Thus, unlike with dependencies that respect semantic versioning, `minor` upgrades must be done with care and supervision.
 
 Given this, be aware that both `major` and `minor` version upgrades should be done one version at a time (to go from `1.30` to `1.32`, for example, first upgrade to `1.31`). And that, on each upgrade, you should let the version stream into our deployments and confirm everything works fine before moving on to a new version.
+
+## Network diagram
+```mermaid
+graph TD
+    subgraph "External"
+        Internet([Internet])
+        GoogleServices([Google Services])
+    end
+
+    subgraph "GCP Project"
+        subgraph "VPC: {env}-vpc"
+            direction LR
+
+            subgraph "Subnet: {env}-dmz"
+                Bastion_Host[("Bastion Host")]
+            end
+
+            subgraph "Subnet: {env}-cluster"
+                GKE_Nodes[("GKE Cluster Nodes")]
+                GKE_Pods[("Pods Range")]
+                GKE_Services[("Services Range")]
+            end
+        end
+
+        subgraph "VPC Native Services"
+            Cloud_Router("Cloud Router<br/>{env}-router")
+            Cloud_NAT("Cloud NAT<br/>{env}-nat")
+            VPC_Peering("VPC Peering<br/>{env}-peering")
+        end
+
+        subgraph "Google Managed"
+            GKE_Master("GKE Master")
+        end
+    end
+
+    %% Connections
+    GKE_Nodes --> Cloud_Router
+    Bastion_Host --> Cloud_Router
+    Cloud_Router --> Cloud_NAT
+    Cloud_NAT -- "Outbound Traffic" --> Internet
+    VPC_Peering -- "Connects to" --> GoogleServices
+
+    %% Firewall Rules
+    Bastion_Host -- "{env}-bastion-nodes-ingress" --> GKE_Nodes
+    GKE_Master -- "{env}-webhook-ingress" --> GKE_Nodes
+```
