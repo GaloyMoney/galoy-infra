@@ -51,7 +51,7 @@ mkdir bria && cd bria \
   && tar --strip-components=1 -xf bria.tar.gz \
   && mv bria /usr/local/bin && cd ../ && rm -rf ./bria
 
-wget -O- https://k14s.io/install.sh | bash
+wget -O- https://carvel.dev/install.sh | bash
 
 wget https://github.com/bodymindarts/cepler/releases/download/v${cepler_version}/cepler-x86_64-unknown-linux-musl-${cepler_version}.tar.gz \
   && tar -zxvf cepler-x86_64-unknown-linux-musl-${cepler_version}.tar.gz \
