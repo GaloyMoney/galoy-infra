@@ -1,7 +1,6 @@
 resource "google_storage_bucket" "tf_state" {
   name                        = local.tf_state_bucket_name
   location                    = local.tf_state_bucket_location
-  project                     = local.project
   uniform_bucket_level_access = true
   versioning {
     enabled = true
