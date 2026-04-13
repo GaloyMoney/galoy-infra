@@ -25,7 +25,7 @@ provider "helm" {
 }
 
 module "smoketest" {
-  source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/smoketest?ref=da0c43e"
+  source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/smoketest?ref=505b67f"
   # source = "../../../modules/smoketest"
 
   name_prefix      = var.name_prefix
