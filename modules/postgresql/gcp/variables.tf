@@ -72,6 +72,12 @@ variable "query_insights_enabled" {
   default     = true
 }
 
+variable "create_galoy_agents_ro_user" {
+  description = "Create a dedicated read-only user in each database for galoy-agents"
+  type        = bool
+  default     = false
+}
+
 locals {
   gcp_project                   = var.gcp_project
   vpc_name                      = var.vpc_name
@@ -94,4 +100,5 @@ locals {
   pre_promotion                 = var.pre_promotion
   database_port                 = 5432
   query_insights_enabled        = var.query_insights_enabled
+  create_galoy_agents_ro_user   = var.create_galoy_agents_ro_user
 }

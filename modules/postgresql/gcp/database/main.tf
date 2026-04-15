@@ -14,6 +14,11 @@ variable "create_read_only_user" {
   type        = bool
   default     = false
 }
+variable "create_galoy_agents_ro_user" {
+  description = "Create a dedicated read-only user for galoy-agents to read this database"
+  type        = bool
+  default     = false
+}
 output "user" {
   value = postgresql_role.user.name
 }
@@ -28,6 +33,14 @@ output "read_only_user" {
 
 output "read_only_password" {
   value = var.create_read_only_user ? random_password.read_only[0].result : null
+}
+
+output "galoy_agents_ro_user" {
+  value = var.create_galoy_agents_ro_user ? postgresql_role.galoy_agents_ro[0].name : null
+}
+
+output "galoy_agents_ro_password" {
+  value = var.create_galoy_agents_ro_user ? random_password.galoy_agents_ro[0].result : null
 }
 
 output "manual_user" {
@@ -78,6 +91,19 @@ resource "postgresql_role" "read_only" {
   count    = var.create_read_only_user ? 1 : 0
   name     = "${var.db_name}-read-only"
   password = random_password.read_only[0].result
+  login    = true
+}
+
+resource "random_password" "galoy_agents_ro" {
+  count   = var.create_galoy_agents_ro_user ? 1 : 0
+  length  = 20
+  special = false
+}
+
+resource "postgresql_role" "galoy_agents_ro" {
+  count    = var.create_galoy_agents_ro_user ? 1 : 0
+  name     = "${var.db_name}-galoy-agents-ro"
+  password = random_password.galoy_agents_ro[0].result
   login    = true
 }
 
@@ -210,6 +236,47 @@ resource "postgresql_grant" "grant_select_read_only" {
 
   depends_on = [
     postgresql_grant.grant_usage_read_only
+  ]
+}
+
+resource "postgresql_grant" "grant_connect_galoy_agents_ro" {
+  count       = var.create_galoy_agents_ro_user ? 1 : 0
+  database    = postgresql_database.db.name
+  role        = postgresql_role.galoy_agents_ro[0].name
+  object_type = "database"
+
+  privileges = ["CONNECT"]
+
+  depends_on = [
+    postgresql_grant.revoke_public
+  ]
+}
+
+resource "postgresql_grant" "grant_usage_galoy_agents_ro" {
+  count       = var.create_galoy_agents_ro_user ? 1 : 0
+  database    = postgresql_database.db.name
+  role        = postgresql_role.galoy_agents_ro[0].name
+  schema      = "public"
+  object_type = "schema"
+
+  privileges = ["USAGE"]
+
+  depends_on = [
+    postgresql_grant.grant_connect_galoy_agents_ro
+  ]
+}
+
+resource "postgresql_grant" "grant_select_galoy_agents_ro" {
+  count       = var.create_galoy_agents_ro_user ? 1 : 0
+  database    = postgresql_database.db.name
+  role        = postgresql_role.galoy_agents_ro[0].name
+  schema      = "public"
+  object_type = "table"
+
+  privileges = ["SELECT"]
+
+  depends_on = [
+    postgresql_grant.grant_usage_galoy_agents_ro
   ]
 }
 
