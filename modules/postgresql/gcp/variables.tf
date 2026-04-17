@@ -72,6 +72,12 @@ variable "query_insights_enabled" {
   default     = true
 }
 
+variable "readonly_users" {
+  description = "List of read-only user suffixes to create in every database managed by this module. Each entry creates a role named '<db_name>-<suffix>' with CONNECT/USAGE/SELECT."
+  type        = list(string)
+  default     = []
+}
+
 locals {
   gcp_project                   = var.gcp_project
   vpc_name                      = var.vpc_name
@@ -94,4 +100,5 @@ locals {
   pre_promotion                 = var.pre_promotion
   database_port                 = 5432
   query_insights_enabled        = var.query_insights_enabled
+  readonly_users                = var.readonly_users
 }

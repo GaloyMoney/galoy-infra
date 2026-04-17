@@ -14,6 +14,11 @@ variable "create_read_only_user" {
   type        = bool
   default     = false
 }
+variable "readonly_users" {
+  description = "List of read-only user suffixes to create. Each entry creates a role named '<db_name>-<suffix>' with CONNECT/USAGE/SELECT grants."
+  type        = list(string)
+  default     = []
+}
 output "user" {
   value = postgresql_role.user.name
 }
@@ -28,6 +33,16 @@ output "read_only_user" {
 
 output "read_only_password" {
   value = var.create_read_only_user ? random_password.read_only[0].result : null
+}
+
+output "readonly_users" {
+  value = {
+    for name in var.readonly_users : name => {
+      user     = postgresql_role.readonly_user[name].name
+      password = random_password.readonly_user[name].result
+    }
+  }
+  sensitive = true
 }
 
 output "manual_user" {
@@ -78,6 +93,19 @@ resource "postgresql_role" "read_only" {
   count    = var.create_read_only_user ? 1 : 0
   name     = "${var.db_name}-read-only"
   password = random_password.read_only[0].result
+  login    = true
+}
+
+resource "random_password" "readonly_user" {
+  for_each = toset(var.readonly_users)
+  length   = 20
+  special  = false
+}
+
+resource "postgresql_role" "readonly_user" {
+  for_each = toset(var.readonly_users)
+  name     = "${var.db_name}-${each.value}"
+  password = random_password.readonly_user[each.key].result
   login    = true
 }
 
@@ -210,6 +238,47 @@ resource "postgresql_grant" "grant_select_read_only" {
 
   depends_on = [
     postgresql_grant.grant_usage_read_only
+  ]
+}
+
+resource "postgresql_grant" "grant_connect_readonly_user" {
+  for_each    = toset(var.readonly_users)
+  database    = postgresql_database.db.name
+  role        = postgresql_role.readonly_user[each.key].name
+  object_type = "database"
+
+  privileges = ["CONNECT"]
+
+  depends_on = [
+    postgresql_grant.revoke_public
+  ]
+}
+
+resource "postgresql_grant" "grant_usage_readonly_user" {
+  for_each    = toset(var.readonly_users)
+  database    = postgresql_database.db.name
+  role        = postgresql_role.readonly_user[each.key].name
+  schema      = "public"
+  object_type = "schema"
+
+  privileges = ["USAGE"]
+
+  depends_on = [
+    postgresql_grant.grant_connect_readonly_user
+  ]
+}
+
+resource "postgresql_grant" "grant_select_readonly_user" {
+  for_each    = toset(var.readonly_users)
+  database    = postgresql_database.db.name
+  role        = postgresql_role.readonly_user[each.key].name
+  schema      = "public"
+  object_type = "table"
+
+  privileges = ["SELECT"]
+
+  depends_on = [
+    postgresql_grant.grant_usage_readonly_user
   ]
 }
 

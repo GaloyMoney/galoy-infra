@@ -26,6 +26,7 @@ output "creds" {
       read_host_public        = local.provision_read_replica && var.public_read_replica ? google_sql_database_instance.replica[0].first_ip_address : ""
       manual_user             = module.database[db].manual_user
       manual_user_password    = module.database[db].manual_user_password
+      readonly_users          = module.database[db].readonly_users
     }
   }
   sensitive = true
