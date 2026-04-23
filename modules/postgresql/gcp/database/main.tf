@@ -282,6 +282,32 @@ resource "postgresql_grant" "grant_select_readonly_user" {
   ]
 }
 
+# `postgresql_grant` above is a one-time snapshot: SELECT is granted only
+# on tables that exist at apply time. Application schemas are created by
+# SQL migrations that run *after* Terraform (as `postgresql_role.user`),
+# so without this any later-added table is invisible to the readonly
+# role — `GRANT SELECT ON ALL TABLES` includes nothing future.
+#
+# `postgresql_default_privileges` installs an `ALTER DEFAULT PRIVILEGES`
+# rule scoped to objects created by the migrations-running role, so any
+# table that role creates in `public` auto-grants SELECT to the readonly
+# user at creation time. Covers all past, present, and future tables
+# when combined with the grant above.
+resource "postgresql_default_privileges" "readonly_user_select_future_tables" {
+  for_each    = toset(var.readonly_users)
+  database    = postgresql_database.db.name
+  role        = postgresql_role.readonly_user[each.key].name
+  owner       = postgresql_role.user.name
+  schema      = "public"
+  object_type = "table"
+
+  privileges = ["SELECT"]
+
+  depends_on = [
+    postgresql_grant.grant_usage_readonly_user,
+  ]
+}
+
 resource "random_password" "big_query" {
   length  = 20
   special = false
