@@ -8,9 +8,8 @@ locals {
   opentofu_version = "1.8.2"
 }
 data "google_compute_image" "bastion" {
-  family      = local.bastion_image_family
-  project     = local.bastion_image_project
-  most_recent = true
+  name    = local.bastion_image_name
+  project = local.bastion_image_project
 }
 
 resource "google_compute_instance" "bastion" {

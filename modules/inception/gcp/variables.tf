@@ -15,8 +15,9 @@ variable "bastion_machine_type" {
 variable "bastion_image_project" {
   default = "ubuntu-os-cloud"
 }
-variable "bastion_image_family" {
-  default = "ubuntu-2404-lts-amd64"
+variable "bastion_image_name" {
+  description = "Pinned bastion image name. Bump deliberately to upgrade; otherwise the bastion stays on the same image and avoids drift from upstream image family updates."
+  default     = "ubuntu-2404-noble-amd64-v20260503"
 }
 variable "bastion_revoke_on_exit" {
   default = true
@@ -68,7 +69,7 @@ locals {
   bastion_zone           = "${local.region}-${var.primary_zone}"
   bastion_machine_type   = var.bastion_machine_type
   bastion_image_project  = var.bastion_image_project
-  bastion_image_family   = var.bastion_image_family
+  bastion_image_name     = var.bastion_image_name
   bastion_revoke_on_exit = var.bastion_revoke_on_exit
   tf_state_bucket_policy = var.tf_state_bucket_policy
 }
