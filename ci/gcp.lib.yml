@@ -173,6 +173,7 @@ plan:
     passed:
     - #@ testflight_platform_job_name("gcp")
 - task: smoketest
+  attempts: 2
   config:
     platform: linux
     image_resource: #@ task_image_config()
