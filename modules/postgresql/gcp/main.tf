@@ -144,9 +144,6 @@ provider "postgresql" {
   username = google_sql_user.admin.name
   password = random_password.admin.result
 
-  # Serialize provider SQL so parallel Terraform grants do not race on PostgreSQL ACL rows.
-  max_connections = 1
-
   # GCP doesn't let superuser mode https://cloud.google.com/sql/docs/postgres/users#superuser_restrictions
   superuser = false
 }
