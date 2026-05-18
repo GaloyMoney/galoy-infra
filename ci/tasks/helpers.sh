@@ -76,11 +76,26 @@ function write_azure_users() {
 }
 
 function cleanup_inception_key() {
-  pushd bootstrap
-  inception_email=$(tofu output inception_sa | jq -r)
-  popd
-  key_id="$(cat ./inception-sa-creds.json | jq -r '.private_key_id')"
-  gcloud iam service-accounts keys delete "${key_id}" --iam-account="${inception_email}" --quiet
+  if [[ ! -f ./inception-sa-creds.json ]]; then
+    return 0
+  fi
+
+  key_id="$(jq -r '.private_key_id // empty' ./inception-sa-creds.json 2>/dev/null || true)"
+  if [[ "${key_id}" == "" ]]; then
+    rm -f ./inception-sa-creds.json
+    return 0
+  fi
+
+  inception_email="$(jq -r '.client_email // empty' ./inception-sa-creds.json 2>/dev/null || true)"
+  if [[ "${inception_email}" == "" ]]; then
+    inception_email="$(tofu -chdir=bootstrap output -raw inception_sa 2>/dev/null || true)"
+  fi
+
+  if [[ "${inception_email}" != "" ]]; then
+    gcloud iam service-accounts keys delete "${key_id}" --iam-account="${inception_email}" --quiet || true
+  fi
+
+  rm -f ./inception-sa-creds.json
 }
 
 function update_examples_git_ref() {
