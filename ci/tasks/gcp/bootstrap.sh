@@ -5,6 +5,7 @@ set -eu
 source pipeline-tasks/ci/tasks/helpers.sh
 
 pushd repo/examples/gcp
+trap cleanup_inception_key EXIT
 
 update_examples_git_ref
 
