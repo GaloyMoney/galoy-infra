@@ -108,7 +108,6 @@ function update_examples_git_ref() {
   sed -i'' "s/ref=.*\"/ref=${MODULES_GIT_REF}\"/" bootstrap/main.tf
   sed -i'' "s/ref=.*\"/ref=${MODULES_GIT_REF}\"/" inception/main.tf
   sed -i'' "s/ref=.*\"/ref=${MODULES_GIT_REF}\"/" platform/main.tf
-  sed -i'' "s/ref=.*\"/ref=${MODULES_GIT_REF}\"/" postgresql/main.tf
   sed -i'' "s/ref=.*\"/ref=${MODULES_GIT_REF}\"/" smoketest/main.tf
 }
 

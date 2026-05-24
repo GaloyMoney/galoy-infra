@@ -17,6 +17,8 @@ pushd inception
 
 bastion_name="$(tofu output bastion_name | jq -r)"
 bastion_zone="$(tofu output bastion_zone | jq -r)"
+vpc_name="${name_prefix}-vpc"
+region="${bastion_zone%-*}"
 
 popd
 
@@ -34,6 +36,8 @@ EOF
 cat <<EOF > terraform.tfvars
 gcp_project = "${gcp_project}"
 name_prefix = "${name_prefix}"
+vpc_name = "${vpc_name}"
+region = "${region}"
 EOF
 
 popd
