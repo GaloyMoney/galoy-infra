@@ -14,25 +14,6 @@ resource "google_sql_database_instance" "replica" {
     availability_type = local.highly_available ? "REGIONAL" : "ZONAL"
 
     dynamic "database_flags" {
-      for_each = local.prep_upgrade_as_source_db ? [{
-        name  = "cloudsql.enable_pglogical"
-        value = "on"
-      }] : []
-      content {
-        name  = database_flags.value.name
-        value = database_flags.value.value
-      }
-    }
-
-    dynamic "database_flags" {
-      for_each = local.max_connections > 0 ? [local.max_connections] : []
-      content {
-        name  = "max_connections"
-        value = local.max_connections
-      }
-    }
-
-    dynamic "database_flags" {
       for_each = var.enable_detailed_logging ? [{
         name  = "log_statement"
         value = "all"
@@ -46,30 +27,14 @@ resource "google_sql_database_instance" "replica" {
       }
     }
 
-    dynamic "database_flags" {
-      for_each = local.replication ? ["on"] : []
-      content {
-        name  = "cloudsql.logical_decoding"
-        value = "on"
-      }
-    }
-
     backup_configuration {
       enabled = false
     }
 
     ip_configuration {
-      ipv4_enabled    = local.public_read_replica ? true : false
+      ipv4_enabled    = false
       private_network = data.google_compute_network.vpc.id
       ssl_mode        = "ENCRYPTED_ONLY"
-
-      dynamic "authorized_networks" {
-        for_each = local.public_read_replica ? [1] : []
-        content {
-          value = "0.0.0.0/0"
-          name  = "public-access"
-        }
-      }
     }
   }
 
