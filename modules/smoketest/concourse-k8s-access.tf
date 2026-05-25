@@ -1,4 +1,4 @@
-resource "kubernetes_service_account" "concourse" {
+resource "kubernetes_service_account_v1" "concourse" {
   count = local.k8s_secret_reader_enabled ? 1 : 0
   metadata {
     name      = "concourse"
@@ -6,13 +6,13 @@ resource "kubernetes_service_account" "concourse" {
   }
 }
 
-resource "kubernetes_secret" "concourse_k8s_access_token" {
+resource "kubernetes_secret_v1" "concourse_k8s_access_token" {
   count = local.k8s_secret_reader_enabled ? 1 : 0
   metadata {
     name      = "concourse-k8s-service-account-token"
     namespace = local.concourse_namespace
     annotations = {
-      "kubernetes.io/service-account.name" = kubernetes_service_account.concourse[0].metadata[0].name
+      "kubernetes.io/service-account.name" = kubernetes_service_account_v1.concourse[0].metadata[0].name
     }
   }
 

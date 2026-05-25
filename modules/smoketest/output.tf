@@ -4,6 +4,6 @@ output "smoketest_kubeconfig" {
       namespace : local.smoketest_namespace,
       cert : local.cluster_ca_cert,
       endpoint : local.cluster_endpoint,
-      token = data.kubernetes_secret.smoketest_token.data.token
+      token = data.kubernetes_secret_v1.smoketest_token.data.token
   }))
 }
