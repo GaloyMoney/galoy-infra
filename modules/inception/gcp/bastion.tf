@@ -3,9 +3,9 @@ locals {
   bria_version     = "0.1.108"
   bitcoin_version  = "25.2"
   cepler_version   = "0.7.15"
-  kubectl_version  = "1.30.4"
-  k9s_version      = "0.32.5"
-  opentofu_version = "1.8.2"
+  kubectl_version  = "1.33.12"
+  k9s_version      = "0.50.18"
+  opentofu_version = "1.12.0"
 }
 data "google_compute_image" "bastion" {
   family      = local.bastion_image_family
