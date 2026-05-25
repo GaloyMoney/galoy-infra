@@ -1,8 +1,8 @@
 locals {
   cepler_version   = "0.7.15"
-  kubectl_version  = "1.30.4"
-  k9s_version      = "0.32.5"
-  opentofu_version = "1.9.0"
+  kubectl_version  = "1.30.14"
+  k9s_version      = "0.50.18"
+  opentofu_version = "1.12.0"
 }
 
 resource "tls_private_key" "bastion_key" {
