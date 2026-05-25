@@ -23,12 +23,6 @@ variable "node_default_machine_type" {
 variable "destroyable_cluster" {
   default = false
 }
-variable "postgres_tier" {
-  default = "db-f1-micro"
-}
-variable "pg_ha" {
-  default = false
-}
 variable "node_service_account" {}
 variable "min_default_node_count" {
   default = 1
@@ -51,7 +45,5 @@ locals {
   min_default_node_count    = var.min_default_node_count
   max_default_node_count    = var.max_default_node_count
   cluster_location          = var.cluster_zone == "" ? local.region : "${local.region}-${var.cluster_zone}"
-  postgres_tier             = var.postgres_tier
-  pg_ha                     = var.pg_ha
   node_locations            = var.node_pool_zone == "" ? null : [var.node_pool_zone]
 }
