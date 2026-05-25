@@ -25,14 +25,6 @@ removed {
   from = kubernetes_service_account.smoketest
 }
 
-removed {
-  from = kubernetes_secret.concourse_k8s_access_token
-}
-
-removed {
-  from = kubernetes_service_account.concourse
-}
-
 import {
   to = kubernetes_namespace_v1.smoketest
   id = local.smoketest_namespace
@@ -56,18 +48,4 @@ import {
 import {
   to = kubernetes_service_account_v1.smoketest
   id = "${local.smoketest_namespace}/${local.smoketest_name}"
-}
-
-import {
-  for_each = local.k8s_secret_reader_enabled ? toset(["concourse"]) : toset([])
-
-  to = kubernetes_secret_v1.concourse_k8s_access_token[0]
-  id = "${local.concourse_namespace}/concourse-k8s-service-account-token"
-}
-
-import {
-  for_each = local.k8s_secret_reader_enabled ? toset(["concourse"]) : toset([])
-
-  to = kubernetes_service_account_v1.concourse[0]
-  id = "${local.concourse_namespace}/concourse"
 }
