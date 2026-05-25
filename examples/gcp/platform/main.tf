@@ -4,9 +4,6 @@ variable "node_service_account" {}
 variable "node_default_machine_type" {
   default = "e2-medium"
 }
-variable "letsencrypt_issuer_email" {
-  default = "bot@galoy.io"
-}
 variable "destroyable_cluster" {
   default = false
 }
