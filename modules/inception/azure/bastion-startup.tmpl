@@ -32,7 +32,7 @@ curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | tee
   && apt-get install azure-cli -y \
   && az extension add --name ssh
 
-curl -LO https://storage.googleapis.com/kubernetes-release/release/v${kubectl_version}/bin/linux/amd64/kubectl
+curl -LO https://dl.k8s.io/release/v${kubectl_version}/bin/linux/amd64/kubectl
 chmod +x ./kubectl
 mv ./kubectl /usr/local/bin
 
