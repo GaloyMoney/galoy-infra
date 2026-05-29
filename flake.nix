@@ -48,6 +48,10 @@
           tofuResource
           pkgsUnstable.opentofu
           pkgsUnstable.cacert
+          pkgs.bash
+          pkgs.coreutils
+          pkgs.curl
+          pkgs.gnused
         ];
         extraCommands = ''
           mkdir -p tmp usr/local/bin root/.ssh
@@ -66,7 +70,8 @@
           tofu-resource-image = tofuResourceImage;
         };
 
-        devShells.default = mkShell
+        devShells.default =
+          mkShell
           {
             nativeBuildInputs = [
               alejandra
