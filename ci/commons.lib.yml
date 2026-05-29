@@ -75,7 +75,7 @@
 #@ end
 
 #@ def resource_types():
-- name: terraform
+- name: tofu
   type: registry-image
   source:
     username: #@ data.values.gar_registry_user
