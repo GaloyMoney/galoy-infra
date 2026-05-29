@@ -72,9 +72,11 @@
 
 #@ def resource_types():
 - name: terraform
-  type: docker-image
+  type: registry-image
   source:
-    repository: ljfranklin/terraform-resource
+    username: #@ data.values.gar_registry_user
+    password: #@ data.values.gar_registry_password
+    repository: #@ data.values.docker_registry + "/terraform-resource"
     tag: latest
 
 - name: cepler-in
