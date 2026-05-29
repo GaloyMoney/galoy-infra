@@ -51,6 +51,7 @@
           pkgs.bash
           pkgs.coreutils
           pkgs.curl
+          pkgs.gnugrep
           pkgs.gnused
         ];
         extraCommands = ''
@@ -61,7 +62,11 @@
           chmod 0600 root/.ssh/config
         '';
         config = {
-          Env = ["PATH=/usr/local/bin:/bin"];
+          Env = [
+            "PATH=/usr/local/bin:/bin"
+            "SSL_CERT_FILE=/etc/ssl/certs/ca-bundle.crt"
+            "GIT_SSL_CAINFO=/etc/ssl/certs/ca-bundle.crt"
+          ];
         };
       };
     in
