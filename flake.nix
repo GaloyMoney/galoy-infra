@@ -16,7 +16,7 @@
     flake-utils.lib.eachDefaultSystem (system: let
       pkgs = import nixpkgs {inherit system;};
       pkgsUnstable = import nixpkgs-unstable {inherit system;};
-      terraformResourceSrc = pkgs.fetchFromGitHub {
+      upstreamResourceSrc = pkgs.fetchFromGitHub {
         owner = "ljfranklin";
         repo = "terraform-resource";
         rev = "2eba5a46e96587d0eafcee857ee8591e9e9a8b01";
@@ -25,7 +25,7 @@
       tofuResource = pkgs.buildGoModule {
         pname = "tofu-resource";
         version = "2026-05-29";
-        src = "${terraformResourceSrc}/src/terraform-resource";
+        src = "${upstreamResourceSrc}/src/terraform-resource";
         vendorHash = null;
         subPackages = [
           "cmd/check"
