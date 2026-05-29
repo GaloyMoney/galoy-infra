@@ -5,7 +5,7 @@ locals {
   cepler_version   = "0.7.15"
   kubectl_version  = "1.33.12"
   k9s_version      = "0.50.18"
-  opentofu_version = "1.12.0"
+  opentofu_version = "1.12.1"
 }
 data "google_compute_image" "bastion" {
   family      = local.bastion_image_family
