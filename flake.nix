@@ -47,18 +47,11 @@
         contents = [
           tofuResource
           pkgsUnstable.opentofu
-          pkgs.bash
-          pkgs.cacert
-          pkgs.coreutils
-          pkgs.curl
-          pkgs.git
-          pkgs.gnugrep
-          pkgs.gnused
-          pkgs.openssh
-          pkgs.unzip
+          pkgsUnstable.cacert
         ];
         extraCommands = ''
-          mkdir -p usr/local/bin root/.ssh
+          mkdir -p tmp usr/local/bin root/.ssh
+          chmod 1777 tmp
           ln -s /bin/tofu usr/local/bin/terraform
           printf '%s\n' 'StrictHostKeyChecking no' 'LogLevel quiet' > root/.ssh/config
           chmod 0600 root/.ssh/config
