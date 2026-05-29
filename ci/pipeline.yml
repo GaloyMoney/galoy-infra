@@ -11,18 +11,18 @@
 #@   "testflight_cleanup_postgresql_job_name",
 #@   "bump_repos_job_name",
 #@   "build_pipeline_image_job_name",
+#@   "build_tofu_resource_image_job_name",
 #@   "common_resources",
-#@   "resource_types")
+#@   "resource_types",
+#@   "tofu_resource_image_build_job",
+#@   "tofu_resource_image_def_resource",
+#@   "tofu_resource_image_resource")
 
 #@ load("gcp.lib.yml",
 #@   "gcp_jobs",
 #@   "gcp_resources")
 
-#@ load("azure.lib.yml",
-#@   "azure_jobs",
-#@   "azure_resources")
-
-#@ supported_iaas = ["gcp", "azure"]
+#@ supported_iaas = ["gcp"]
 groups:
 - name: all
   jobs:
@@ -38,6 +38,7 @@ groups:
 #@ end
 #@ for/end cloud in supported_iaas:
   - #@ build_pipeline_image_job_name(cloud)
+  - #@ build_tofu_resource_image_job_name()
   - check-and-upgrade-k8s
 #@ for cloud in supported_iaas:
 - name: #@ testflight_group_name(cloud)
@@ -55,6 +56,7 @@ groups:
   jobs:
 #@ for/end cloud in supported_iaas:
   - #@ build_pipeline_image_job_name(cloud)
+  - #@ build_tofu_resource_image_job_name()
 - name: k8s-upgrade
   jobs:
   - check-and-upgrade-k8s
@@ -63,8 +65,7 @@ jobs:
 #@ for/end job in gcp_jobs():
 - #@ job
 
-#@ for/end job in azure_jobs():
-- #@ job
+- #@ tofu_resource_image_build_job()
 
 - name: check-and-upgrade-k8s
   plan:
@@ -104,8 +105,8 @@ resources:
 #@ for/end resource in gcp_resources():
 - #@ resource
 
-#@ for/end resource in azure_resources():
-- #@ resource
+- #@ tofu_resource_image_resource()
+- #@ tofu_resource_image_def_resource()
 
 - name: every-1h
   type: time

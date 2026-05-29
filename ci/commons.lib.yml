@@ -40,6 +40,10 @@
 #@   return "build-" + cloud + "-pipeline-image"
 #@ end
 
+#@ def build_tofu_resource_image_job_name():
+#@   return "build-tofu-resource-image"
+#@ end
+
 #@ def modules_resource_name(cloud):
 #@   return cloud + "-modules"
 #@ end
@@ -72,9 +76,11 @@
 
 #@ def resource_types():
 - name: terraform
-  type: docker-image
+  type: registry-image
   source:
-    repository: ljfranklin/terraform-resource
+    username: #@ data.values.gar_registry_user
+    password: #@ data.values.gar_registry_password
+    repository: #@ data.values.docker_registry + "/tofu-resource"
     tag: latest
 
 - name: cepler-in
@@ -95,4 +101,61 @@
     repository: #@ data.values.docker_registry + "/honeymarker-resource"
     tag: edge
 
+#@ end
+
+---
+
+#@ def tofu_resource_image():
+#@   return data.values.docker_registry + "/tofu-resource"
+#@ end
+
+#@ def tofu_resource_image_resource():
+name: tofu-resource-image
+type: registry-image
+source:
+  tag: latest
+  username: #@ data.values.gar_registry_user
+  password: #@ data.values.gar_registry_password
+  repository: #@ tofu_resource_image()
+#@ end
+
+#@ def tofu_resource_image_def_resource():
+name: tofu-resource-image-def
+type: git
+source:
+  paths: [flake.nix, flake.lock]
+  uri: #@ data.values.git_uri
+  branch: #@ data.values.git_branch
+  private_key: #@ data.values.github_private_key
+#@ end
+
+#@ def tofu_resource_image_build_job():
+name: #@ build_tofu_resource_image_job_name()
+serial: true
+plan:
+- {get: tofu-resource-image-def, trigger: true}
+- task: build
+  config:
+    platform: linux
+    image_resource:
+      type: registry-image
+      source:
+        repository: nixos/nix
+        tag: latest
+    inputs:
+    - name: tofu-resource-image-def
+      path: repo
+    outputs:
+    - name: image
+    run:
+      path: sh
+      args:
+      - -exc
+      - |
+        cd repo
+        nix --extra-experimental-features 'nix-command flakes' build .#tofu-resource-image
+        ./result > ../image/image.tar
+- put: tofu-resource-image
+  params:
+    image: image/image.tar
 #@ end
