@@ -42,6 +42,12 @@ variable "query_insights_enabled" {
   default     = true
 }
 
+variable "max_connections" {
+  description = "Maximum allowed PostgreSQL connections. Set to 0 to use the Cloud SQL default."
+  type        = number
+  default     = 0
+}
+
 locals {
   gcp_project                    = var.gcp_project
   vpc_name                       = var.vpc_name
@@ -56,4 +62,16 @@ locals {
   point_in_time_recovery_enabled = var.point_in_time_recovery_enabled
   database_port                  = 5432
   query_insights_enabled         = var.query_insights_enabled
+  max_connections_database_flags = var.max_connections > 0 ? [{
+    name  = "max_connections"
+    value = tostring(var.max_connections)
+  }] : []
+  detailed_logging_database_flags = var.enable_detailed_logging ? [{
+    name  = "log_statement"
+    value = "all"
+    }, {
+    name  = "log_lock_waits"
+    value = "on"
+  }] : []
+  database_flags = concat(local.max_connections_database_flags, local.detailed_logging_database_flags)
 }

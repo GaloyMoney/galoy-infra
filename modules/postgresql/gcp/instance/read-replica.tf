@@ -14,13 +14,7 @@ resource "google_sql_database_instance" "replica" {
     availability_type = local.highly_available ? "REGIONAL" : "ZONAL"
 
     dynamic "database_flags" {
-      for_each = var.enable_detailed_logging ? [{
-        name  = "log_statement"
-        value = "all"
-        }, {
-        name  = "log_lock_waits"
-        value = "on"
-      }] : []
+      for_each = local.database_flags
       content {
         name  = database_flags.value.name
         value = database_flags.value.value
